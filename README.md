@@ -1,7 +1,7 @@
 # March-23-Batch
 
 ## Rules
-1. Create an issue for any update you're going to make.
+1. Create an issue for any update you're going to make. Unless an issue has already been made for you.
    - Title: YOUR_NAME: [Issue Title]
 2. Use proper labels, assignees, description in all of the issues you're creating.
 3. Create a branch with your name and title. For example: rujal_manandhar-add-multithreading-example-1. Always create a branch for any changes.
