@@ -1,0 +1,50 @@
+Mockito and HttpUnit
+
+Mockito(It is built on th top of Junit tool)
+
+It is given to perform unit testing by mocking the local Dependent or external Dependent Object.
+
+
+Service class             DAO Class
+(Having business logic)     (Persistence logic to acess database)
+
+Let us assume DAO Class coding is not completed.But we service coding is completed and we want to finish unit testing
+of service class . Then we need to create Mock obj/Fake obj dummy object for DAO Class and assign/Inject to Service class
+.Inorder write test cases on service class methods.
+
+Mocks objs are for temporary needs , mostly they will be used in the Unit Testing and the mock objs created in test methods or Test
+case class does not real code.
+
+Mocking can be done in 3 ways
+a)Mock obj / fake obj(Provides Temporary Object)
+b)Using Stub ojb(Providing Some Functionality for the methods of mock obj
+like specifying for certain inputs or certain output should come)
+c)Using Spy object(It is called Partial Mock obj/Half Mock obj that means if u need functionality
+to method that will be used otherwise real object will be used)
+
+note:While working with spy object we will having real object also.
+
+*Instead of creating classes manually to prepare Mock , Stub and Spy objecs we can use mocking frameworks available in the market which are
+capable generating such classes dynamically at runtime as InMemory classes(That classes are generated in the JVM Memory of RAM)
+
+(Compile Time)
+.java -----> .class -----> JVM ----> Output |Normal Classes
+(HDD)        (HDD)       (Runtime)
+
+In Memory Class
+.java-------> bytecode ------->JVM----->Output
+(RAM)          (RAM)            (RAM)
+-------------Run Time-----------
+
+List of Mocking Frameworks(Mockito ,JMockito ,EasyMock ,PowerMock and etc.)
+
+Spy Objects are used to check how many methods are called whether they are called or not.
+Spy objects is always linked with real object.
+
+
+Mockito Annotations
+@Mock -> To Generate Mock Object
+@Spy -> To Generate Spy Object
+@InjectMocks-> To inject Mock or Spy Objects
+
+MockitoAnnotations.openMocks(this); --> call this method @Before
