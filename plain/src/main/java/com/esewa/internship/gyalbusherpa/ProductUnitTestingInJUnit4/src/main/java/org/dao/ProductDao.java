@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDao {
+
     private final List<Product> productList;
 
     public ProductDao() {
@@ -42,5 +43,20 @@ public class ProductDao {
 
     public boolean deleteProduct(Product product) {
         return productList.remove(product);
+    }
+
+    public static double calculateAveragePrice(List<Product> products) {
+        double sum = 0.0;
+        for (Product product : products) {
+            sum += product.getPrice();
+        }
+        return products.isEmpty() ? 0.0 : sum / products.size();
+    }
+
+    private double calculateDiscount(Product product) {
+        if (product.getPrice() > 50) {
+            return 10.0;
+        }
+        return 0;
     }
 }

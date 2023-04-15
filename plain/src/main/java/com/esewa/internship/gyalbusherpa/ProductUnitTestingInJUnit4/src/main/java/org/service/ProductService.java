@@ -6,6 +6,7 @@ import org.entity.Product;
 import java.util.List;
 
 public class ProductService {
+
     private final ProductDao productDao;
 
     public ProductService(ProductDao productDao) {
@@ -39,7 +40,7 @@ public class ProductService {
     public boolean deleteProduct(Product product) {
         boolean success = productDao.deleteProduct(product);
         if (!success) {
-            throw new RuntimeException("Unable to delete product with ID " + product.getId());
+            throw new RuntimeException("Unable to delete product with Id " + product.getId());
         }
         return true;
     }
@@ -52,4 +53,10 @@ public class ProductService {
         }
         return totalPrice;
     }
+
+    public double getAveragePriceOfProducts() {
+        List<Product> products = productDao.getAllProducts();
+        return ProductDao.calculateAveragePrice(products);
+    }
+
 }

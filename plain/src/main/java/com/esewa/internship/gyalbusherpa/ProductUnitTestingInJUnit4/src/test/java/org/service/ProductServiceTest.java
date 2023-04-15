@@ -2,27 +2,27 @@ package org.service;
 
 import org.dao.ProductDao;
 import org.entity.Product;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.powermock.reflect.Whitebox;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertNotNull;
 
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 
-
-@ExtendWith(MockitoExtension.class)
-class ProductServiceTest {
+@RunWith(MockitoJUnitRunner.class)
+public class ProductServiceTest {
 
     @Mock
     private ProductDao productDao;
@@ -32,15 +32,13 @@ class ProductServiceTest {
 
     @Test
     public void testGetProductById() {
-        // Arrange
         Product product = new Product(1, "Product 1", 10.0);
         when(productDao.getProductById(1)).thenReturn(product);
 
-        // Act Assert
         assertNotNull(productService.getProductById(1));
         assertEquals(product, productService.getProductById(1));
         assertEquals("Product 1", productService.getProductById(1).getName());
-        assertEquals(10.0, productService.getProductById(1).getPrice());
+        assertEquals(10.0, productService.getProductById(1).getPrice(), 0.5);
 
         verify(productDao, times(4)).getProductById(1);
     }
@@ -61,17 +59,15 @@ class ProductServiceTest {
         when(productDao.getAllProducts()).thenReturn(productList);
 
         assertEquals(3, productService.getAllProducts().size());
-
         verify(productDao, times(1)).getAllProducts();
     }
 
     @Test
     public void testCreateProduct() {
-        Product product = new Product(4, "Product 4", 40.0);
+        Product product = new Product(1, "Product 1", 10.0);
         when(productDao.createProduct(product)).thenReturn(true);
 
         assertTrue(productService.createProduct(product));
-
         verify(productDao, times(1)).createProduct(product);
     }
 
@@ -118,6 +114,6 @@ class ProductServiceTest {
 
         when(productDao.getAllProducts()).thenReturn(productList);
 
-        assertEquals(60.0, productService.getTotalPriceOfProducts());
+        assertEquals(60.0, productService.getTotalPriceOfProducts(), 0.5);
     }
 }
