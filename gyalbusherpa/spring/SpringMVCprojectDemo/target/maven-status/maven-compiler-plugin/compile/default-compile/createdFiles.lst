@@ -1,0 +1,7 @@
+com\config\LoveCalculatorAppConfig.class
+com\controller\RegistrationController.class
+com\controller\TestController.class
+com\api\UserInfoDTO.class
+com\controller\LCAppController.class
+com\config\LoveCalculatorInitializer.class
+com\api\UserRegisterDTO.class
