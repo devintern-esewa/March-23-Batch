@@ -1,12 +1,6 @@
-package com.config;
+package springMvc.config;
 
-import org.springframework.web.WebApplicationInitializer;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
-
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
 
 //public class LoveCalculatorInitializer implements WebApplicationInitializer {
 //    public void onStartup(javax.servlet.ServletContext servletContext) throws ServletException {

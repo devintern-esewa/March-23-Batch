@@ -1,6 +1,6 @@
-package com.formatter;
+package springMvc.formatter;
 
-import com.api.Phone;
+import springMvc.api.Phone;
 import org.springframework.format.Formatter;
 
 import java.text.ParseException;

@@ -1,6 +1,6 @@
-package com.controller;
+package springMvc.controller;
 
-import com.api.UserRegisterDTO;
+import springMvc.api.UserRegisterDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;

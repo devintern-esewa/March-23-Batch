@@ -1,4 +1,4 @@
-package com.api;
+package springMvc.api;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotBlank;

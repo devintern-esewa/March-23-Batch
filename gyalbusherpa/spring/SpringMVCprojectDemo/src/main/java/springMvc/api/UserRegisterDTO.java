@@ -1,6 +1,6 @@
-package com.api;
+package springMvc.api;
 
-import com.annotation.Don;
+import springMvc.annotation.Don;
 
 public class UserRegisterDTO {
     private String name;

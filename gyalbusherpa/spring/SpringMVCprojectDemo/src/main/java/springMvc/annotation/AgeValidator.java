@@ -1,4 +1,4 @@
-package com.annotation;
+package springMvc.annotation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

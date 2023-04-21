@@ -1,4 +1,4 @@
-package com.api;
+package springMvc.api;
 
 public class EmailDTO {
     private String userEmail;
