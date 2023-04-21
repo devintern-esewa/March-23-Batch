@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <context:annotation-config/>
-    <context:component-scan base-package="springBeanScope.component"/>
-    
+    <bean id="student" class="springCore.dependencies.Student">
+        <constructor-arg name="studentName" value="don"></constructor-arg>
+        <constructor-arg name="id" value="1"></constructor-arg>
+        <!--        <property name="studentName" value="don"/>-->
+        <!--        <property name="id" value="1"/>-->
+    </bean>
+
+    <bean id="student2" class="springCore.dependencies.Student">
+        <constructor-arg name="id" value="1"></constructor-arg>
+        <!--        <property name="studentName" value="don"/>-->
+        <!--        <property name="id" value="1"/>-->
+    </bean>
+
+    <!--    <bean id="student2" class="org.dependencies.Student">-->
+    <!--        <property name="studentName" value="hero"/>-->
+    <!--        <property name="id" value="2"/>-->
+    <!--    </bean>-->
+
 </beans>
