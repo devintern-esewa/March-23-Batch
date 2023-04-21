@@ -8,17 +8,14 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-3.2.xsd"
        xmlns:context="http://www.springframework.org/schema/context">
-    <context:annotation-config />
 
-    <bean id = "humanHeart" class="springCore.autowire.Heart">
-        <property name="nameOfAnimal" value="Human"/>
-        <property name="noOfHeart" value="1"/>
-    </bean>
-    <bean id = "donHeart" class="springCore.autowire.Heart">
-        <property name="noOfHeart" value="2"/>
-        <property name="nameOfAnimal" value="Octopus"/>
-    </bean>
+    <context:annotation-config/>
+    <context:property-placeholder location="student-info.properties"/>
 
-    <bean id="human" class="springCore.autowire.Human"/>
+    <bean id="student" class="springCore.frompropertyfile.Student">
+        <!--        <property name="name" value="${student.name}"/>-->
+        <!--        <property name="interestedCourse" value="${student.interestedCourse}"/>-->
+        <!--        <property name="hobby" value="${student.hobby}"/>-->
+    </bean>
 
 </beans>
