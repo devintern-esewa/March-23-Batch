@@ -13,9 +13,16 @@
 <body>
     <h1 align="center">Love Calculator</h1>
     <hr>
+    <h2>The Love calculator predicts</h2>
 
-    <p>User Name : ${userInfo.userName}</p>
-    <p>Crush Name : ${userInfo.crushName}</p>
+    ${userInfo.userName} and ${userInfo.crushName} are: ${userInfo.result}
+
+
+
+    <br>
+
+    <a href="/SpringMVCprojectDemo/sendEmail">Send your result to your email</a><br>
+    <a href="playAgain">Play again?</a>
 
 </body>
 </html>

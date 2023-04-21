@@ -25,6 +25,11 @@
     </c:forEach> <br>
 
     Gender : ${register.gender} <br>
+
+    Age : ${register.age} <br>
+
+    Email: ${register.communicationDTO.email} <br>
+    Phone: ${register.communicationDTO.phone} <br>
 </div>
 </body>
 </html>
