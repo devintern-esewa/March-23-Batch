@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@ComponentScan(basePackages = "org.college")
+@ComponentScan(basePackages = "springCore.college")
 @PropertySource("classpath:college-info.properties")
 public class CollegeConfig {
 

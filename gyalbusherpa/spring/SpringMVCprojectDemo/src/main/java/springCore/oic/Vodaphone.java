@@ -1,5 +1,8 @@
 package springCore.oic;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class Vodaphone implements Sim{
 
     @Override
