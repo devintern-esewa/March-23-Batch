@@ -4,6 +4,9 @@ import org.dao.ProductDao;
 import org.entity.Product;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ProductService {
 
@@ -14,15 +17,24 @@ public class ProductService {
     }
 
     public Product getProductById(int id) {
-        Product product = productDao.getProductById(id);
-        if (product == null) {
+        Optional<Product> optionalProduct = productDao.getProductById(id);
+        if (optionalProduct.isPresent()) {
+            return optionalProduct.get();
+        } else {
             throw new RuntimeException("Product with Id " + id + " does not exist");
         }
-        return product;
     }
 
     public List<Product> getAllProducts() {
         return productDao.getAllProducts();
+    }
+
+    public List<Product> getAllProductsWithSameName(String name) {
+        List<Product> pr = productDao.getAllProducts()
+                .stream()
+                .filter(product -> product.getName().equals(name)).
+                collect(Collectors.toList());
+        return pr;
     }
 
     public boolean createProduct(Product product) {
@@ -58,5 +70,7 @@ public class ProductService {
         List<Product> products = productDao.getAllProducts();
         return ProductDao.calculateAveragePrice(products);
     }
+
+
 
 }

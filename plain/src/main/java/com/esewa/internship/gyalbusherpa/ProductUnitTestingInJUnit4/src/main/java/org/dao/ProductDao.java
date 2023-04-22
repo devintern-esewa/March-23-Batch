@@ -4,6 +4,7 @@ import org.entity.Product;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ProductDao {
 
@@ -13,13 +14,13 @@ public class ProductDao {
         productList = new ArrayList<>();
     }
 
-    public Product getProductById(int id) {
+    public Optional<Product> getProductById(int id) {
         for (Product product : productList) {
             if (product.getId() == id) {
-                return product;
+                return Optional.of(product);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     public List<Product> getAllProducts() {
@@ -59,4 +60,5 @@ public class ProductDao {
         }
         return 0;
     }
+
 }

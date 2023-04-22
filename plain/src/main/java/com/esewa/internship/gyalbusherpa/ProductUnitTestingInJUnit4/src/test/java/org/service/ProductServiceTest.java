@@ -2,15 +2,21 @@ package org.service;
 
 import org.dao.ProductDao;
 import org.entity.Product;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -22,6 +28,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
+//@PrepareForTest({ProductDao.class,ProductService.class})
 public class ProductServiceTest {
 
     @Mock
@@ -30,27 +37,32 @@ public class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
-    @Test
-    public void testGetProductById() {
-        Product product = new Product(1, "Product 1", 10.0);
-        when(productDao.getProductById(1)).thenReturn(product);
 
-        assertNotNull(productService.getProductById(1));
-        assertEquals(product, productService.getProductById(1));
-        assertEquals("Product 1", productService.getProductById(1).getName());
-        assertEquals(10.0, productService.getProductById(1).getPrice(), 0.5);
-
-        verify(productDao, times(4)).getProductById(1);
+    @Before
+    public void setUp() throws Exception {
+//        productService = new ProductService(productDao);
+        // PowerMockito.mockStatic(ProductDao.class);
     }
 
     @Test
-    public void testGetProductByIdNotFound() {
+    public void testGetProductById_whenFound_returnCorrectValue() {
+        Product product = new Product(1, "Product 1", 10.0);
+        when(productDao.getProductById(1)).thenReturn(Optional.of(product));
+
+        assertNotNull(productService.getProductById(1));
+        assertEquals(product, productService.getProductById(1));
+
+        verify(productDao, times(2)).getProductById(1);
+    }
+
+    @Test
+    public void testGetProductByIdNotFound_checkIfIdExist() {
         when(productDao.getProductById(5)).thenReturn(null);
         assertThrows(RuntimeException.class, () -> productService.getProductById(5));
     }
 
     @Test
-    public void testGetAllProducts() {
+    public void testGetAllProducts_getsAllProductInList() {
         List<Product> productList = new ArrayList<>();
         productList.add(new Product(1, "Product 1", 10.0));
         productList.add(new Product(2, "Product 2", 20.0));
@@ -63,7 +75,7 @@ public class ProductServiceTest {
     }
 
     @Test
-    public void testCreateProduct() {
+    public void testCreateProduct_createNewProduct() {
         Product product = new Product(1, "Product 1", 10.0);
         when(productDao.createProduct(product)).thenReturn(true);
 
@@ -116,4 +128,5 @@ public class ProductServiceTest {
 
         assertEquals(60.0, productService.getTotalPriceOfProducts(), 0.5);
     }
+
 }
