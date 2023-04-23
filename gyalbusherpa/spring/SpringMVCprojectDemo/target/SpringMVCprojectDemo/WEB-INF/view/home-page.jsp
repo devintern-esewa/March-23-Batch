@@ -10,11 +10,21 @@
 <html>
 <head>
     <title>Title</title>
+    <style type="text/css">
+
+        .error {
+            color: red;
+            position: fixed;
+            text-align: left;
+            margin-left: 30px;
+        }
+
+    </style>
     <script type="text/javascript">
 
         function validateUserName() {
             const userName = document.getElementById('yn').value;
-            if (userName.length < 1) {
+            if (userName.length < 3) {
                 alert("your name should have at-least one character");
                 return false;
             } else {
@@ -33,11 +43,19 @@
         <p>
             <label for="yn"> Your name: </label>
             <form:input id="yn" path="userName"/>
+            <form:errors path="userName" cssClass="error"/>
         </p>
 
         <p>
             <label for="cn"> Crush name: </label>
             <form:input id="cn" path="crushName"/>
+            <form:errors path="crushName" cssClass="error"/>
+        </p>
+        
+        <p>
+            <form:checkbox path="termAndCondition" id="check"/>
+            <label>I agree that this is for fun</label>
+            <form:errors path="termAndCondition" cssClass="error"/>
         </p>
 
         <input type="submit" value="calculate">
