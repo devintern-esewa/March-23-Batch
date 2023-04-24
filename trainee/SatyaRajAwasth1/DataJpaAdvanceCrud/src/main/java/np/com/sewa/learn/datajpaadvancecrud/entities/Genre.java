@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@Entity(name = "GENRES")
+@Entity(name = "genres")
 public class Genre {
     @Id
     private String name;
