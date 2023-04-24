@@ -8,8 +8,8 @@ import java.util.List;
 public interface BookService {
     public void addbook(Book book);
     public boolean editBookDetails(Book bookToBeEdited, long ISBN) throws BooKNotFoundException;
-    public boolean deleteBook(long ISBN);
+    public boolean deleteBook(long ISBN) throws BooKNotFoundException;
     public List<Book> getAllBooks();
-    public Book getBookByIsbn(long ISBN);
+    public Book getBookByIsbn(long ISBN) throws BooKNotFoundException;
 
 }
