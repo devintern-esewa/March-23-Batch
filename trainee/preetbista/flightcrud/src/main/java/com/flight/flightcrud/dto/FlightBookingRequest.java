@@ -1,7 +1,5 @@
 package com.flight.flightcrud.dto;
 
-import com.flight.flightcrud.model.PassengerInfo;
-import com.flight.flightcrud.model.PaymentInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FlightBookingRequest {
-    private PassengerInfo passengerInfo;
-    private PaymentInfo paymentInfo;
+    private PassengerInfoDto passengerInfo;
+    private PaymentInfoDto paymentInfo;
 }

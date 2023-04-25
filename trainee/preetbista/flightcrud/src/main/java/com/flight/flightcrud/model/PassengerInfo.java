@@ -12,18 +12,29 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="PASSENGER_INFO")
+@Table(name="passenger_info")
 public class PassengerInfo {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     private String name;
+
     private String email;
+
     private String source;
+
     private String destination;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @Column(name = "travel_date")
     private Date travelDate;
+
+    @Column(name = "pickup_time")
     private String pickupTime;
+
+    @Column(name = "arrival_time")
     private String arrivalTime;
+
     private double fare;
 }
