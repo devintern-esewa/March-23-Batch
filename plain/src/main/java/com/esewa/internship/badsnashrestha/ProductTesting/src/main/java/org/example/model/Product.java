@@ -1,32 +1,35 @@
 package org.example.model;
 
 public class Product {
-    //hey let you store data in a program that a specific place in the program can only access.
-    //to read and change value we need getter and setter method
-    private int product_id;
-    private String product_name;
+    /*
+    they let you store data in a program that a specific place in the program can only access.
+    to read and change value we need getter and setter method
+
+     */
+    private int productId;
+    private String productName;
     private float price;
 
-    public Product(int product_id, String product_name, float price) {
-        this.product_id = product_id;
-        this.product_name = product_name;
+    public Product(int productId, String productName, float price) {
+        this.productId = productId;
+        this.productName = productName;
         this.price = price;
     }
 
-    public int getProduct_id() {
-        return product_id;
+    public int getProductId() {
+        return productId;
     }
 
-    public void setProduct_id(int product_id) {
-        this.product_id = product_id;
+    public void setProductId(int productId) {
+        this.productId = productId;
     }
 
-    public String getProduct_name() {
-        return product_name;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setProduct_name(String product_name) {
-        this.product_name = product_name;
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     public float getPrice() {
@@ -35,5 +38,14 @@ public class Product {
 
     public void setPrice(float price) {
         this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "productId=" + productId +
+                ", productName='" + productName + '\'' +
+                ", price=" + price +
+                '}';
     }
 }
