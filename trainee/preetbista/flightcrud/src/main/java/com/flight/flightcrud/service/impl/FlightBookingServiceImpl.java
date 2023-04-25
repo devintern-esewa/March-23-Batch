@@ -1,9 +1,6 @@
 package com.flight.flightcrud.service.impl;
 
-import com.flight.flightcrud.dto.FlightBookingAcknowledgment;
-import com.flight.flightcrud.dto.FlightBookingRequest;
-import com.flight.flightcrud.dto.PassengerInfoDto;
-import com.flight.flightcrud.dto.PaymentInfoDto;
+import com.flight.flightcrud.dto.*;
 import com.flight.flightcrud.model.PassengerInfo;
 import com.flight.flightcrud.model.PaymentInfo;
 import com.flight.flightcrud.repository.PassengerInfoRepository;
@@ -13,6 +10,7 @@ import com.flight.flightcrud.utils.PaymentUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -28,6 +26,8 @@ public class FlightBookingServiceImpl implements FlightBookingService {
 
     @Transactional
     public FlightBookingAcknowledgment bookFlightTicket(FlightBookingRequest flightBookingRequest) {
+        TicketInfo ticketInfo = paymentInfoRepository.getTicketInfoByPassengerId(flightBookingRequest.getPaymentInfo().getPassengerInfo().getId());
+
         PassengerInfoDto passengerInfoDto = flightBookingRequest.getPassengerInfo();
 
         PassengerInfo passengerInfo = convertPassegerDtoToPassengerInfo(passengerInfoDto);
@@ -35,12 +35,13 @@ public class FlightBookingServiceImpl implements FlightBookingService {
 
         PaymentInfoDto paymentInfoDto = flightBookingRequest.getPaymentInfo();
         PaymentInfo paymentInfo = convertToPassengerInfo(paymentInfoDto);
+        paymentInfo.setPassengerInfo(passengerInfo);
 
         PaymentUtils.validateCreditLimit(paymentInfoDto.getAccountNo(), passengerInfoDto.getFare());
 
         paymentInfo.setAmount(passengerInfoDto.getFare());
         paymentInfoRepository.save(paymentInfo);
-        return new FlightBookingAcknowledgment("SUCCESS", passengerInfoDto.getFare(), UUID.randomUUID().toString().split("-")[0], passengerInfo);
+        return new FlightBookingAcknowledgment("SUCCESS", passengerInfoDto.getFare(), UUID.randomUUID().toString().split("-")[0], passengerInfo, ticketInfo);
     }
 
     private PaymentInfo convertToPassengerInfo(PaymentInfoDto paymentInfoDto) {

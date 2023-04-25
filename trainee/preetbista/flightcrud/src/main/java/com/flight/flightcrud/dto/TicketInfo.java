@@ -7,13 +7,19 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class TicketInfo implements Serializable {
-    private String passengerId;
+    private Long id;
     private String name;
     private String email;
     private String cardType;
+
+    public TicketInfo(Long id, String name, String email, String cardType) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.cardType = cardType;
+    }
 }

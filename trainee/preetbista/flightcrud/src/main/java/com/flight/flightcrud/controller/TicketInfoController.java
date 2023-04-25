@@ -16,8 +16,8 @@ public class TicketInfoController {
         this.ticketInfoService = ticketInfoService;
     }
 
-    @GetMapping("/bookFlightTicket/{passengerId}")
-    public List<TicketInfo> findTicketInfoByPassengerId(@PathVariable Integer passengerId) {
-        return ticketInfoService.findTicketInfoByPassengerId(passengerId);
+    @GetMapping("/bookFlightTicket/{id}")
+    public TicketInfo findTicketInfoByPassengerId(@PathVariable Long id) {
+        return ticketInfoService.findTicketInfoByPassengerId(id);
     }
 }

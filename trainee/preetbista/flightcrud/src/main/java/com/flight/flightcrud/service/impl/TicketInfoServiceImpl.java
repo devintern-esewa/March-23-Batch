@@ -25,13 +25,13 @@ public class TicketInfoServiceImpl implements TicketInfoService {
         this.paymentInfoRepository = paymentInfoRepository;
     }
 
-    public List<TicketInfo> findTicketInfoByPassengerId(Integer passengerId){
-        Optional<PassengerInfo> passengerInfo = passengerInfoRepository.findById(Long.valueOf(passengerId));
+    public TicketInfo findTicketInfoByPassengerId(Long id){
+        Optional<PassengerInfo> passengerInfo = passengerInfoRepository.findById(id);
         if (!passengerInfo.isPresent()){
-            throw new PassengerNotFoundException("Passenger not found for id : " + passengerId);
+            throw new PassengerNotFoundException("Passenger not found for id : " + id);
         }
-        List<PaymentInfo> paymentInfos = paymentInfoRepository.findAllByPassengerInfo(passengerInfo.get());
-        return convertToDetails(paymentInfos);
+        TicketInfo ticketInfo = paymentInfoRepository.getTicketInfoByPassengerId(id);
+        return ticketInfo;
     }
 
     private List<TicketInfo> convertToDetails(List<PaymentInfo> paymentInfos) {
