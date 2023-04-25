@@ -37,7 +37,8 @@ public class ProductServiceImpl implements ProductService {
         //if product with productId is found, it overrides the product info
         System.out.println(productDto.getProductName());
         Product product;
-        if (productDto.getProductId() != null) {
+        if(productDto.getProductName().isEmpty() ||productDto.getPrice()==0.0 ) throw new RuntimeException("Invalid fileds");
+        if (!(productDto.getProductName().isEmpty()) && productDto.getPrice()!=0.0) {
             product = productRepo.findById(productDto.getProductId()).orElse(new Product());
         }
         product = objectMapper.convertValue(productDto, Product.class);
