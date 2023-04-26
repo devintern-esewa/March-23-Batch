@@ -10,15 +10,17 @@ import java.util.List;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
-    @Query(value = "SELECT * FROM books b WHERE b.bookStatus LIKE %?1%", nativeQuery = true)
+//    @Query(value = "SELECT * FROM books b WHERE b.status LIKE %?1%", nativeQuery = true)
+//    List<Book> findAllByBookStatus(BookStatus status);
+
+
     List<Book> findAllByBookStatus(BookStatus bookStatus);
     @Query(value = "SELECT * FROM Book b WHERE EXISTS (SELECT 1 FROM unnest(b.authors) a WHERE a.name = :authorName)", nativeQuery = true)
-    List<Book> searchBooksByAuthor(String authorName);
-    @Query
+    List<Book> searchBooksByAuthorName(String authorName);
     List<Book> searchBooksByTitle(String title);
-    @Query
-    List<Book> searchBooksByPublisher(String publisherName);
-    @Query
-    List<Book> searchBooksByGenre(String genreName);
+    @Query(value = "SELECT * FROM Book b WHERE EXISTS (SELECT 1 FROM unnest(b.publisher) p WHERE p.name = :publisherName)", nativeQuery = true)
+    List<Book> searchBooksByPublisherName(String publisherName);
+    @Query(value = "SELECT * FROM Book b WHERE EXISTS (SELECT 1 FROM unnest(b.genres) g WHERE g.name = :genreName)", nativeQuery = true)
+    List<Book> searchBooksByGenreName(String genreName);
 
 }
