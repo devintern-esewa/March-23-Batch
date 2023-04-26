@@ -1,6 +1,7 @@
 package com.example.springbootcrud.service;
 
 import com.example.springbootcrud.dto.ProductDto;
+import com.example.springbootcrud.exception.EmptyFieldException;
 import com.example.springbootcrud.exception.IdAlreadyExistsException;
 import com.example.springbootcrud.exception.IdDoesNotExistsException;
 import com.example.springbootcrud.exception.InvalidIdException;
@@ -31,23 +32,23 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void addNewProduct(ProductDto productDto) {
-        Product product;
-        if (productDto.getProductId() != null)
-            product = productRepo.findProductById(productDto.getProductId()).orElse(new Product());
-        product = objectMapper.convertValue(productDto, Product.class);
-//       productRepo.save(product);
-        logger.info("Adding product " + productDto.getProductName());
-        productRepo.addNewProduct(product.getProductName(), product.getPrice());
-        logger.info("Added product " + productDto.getProductName());
-
-        // In the below code we have to manually pass the id also
-        /*Optional<Product> product = productRepo.findById(productDto.getProductId());
-        if (productDto.getProductId() <= 0)
-            throw new InvalidIdException("Invalid product id " + productDto.getProductId());
-        else if (product.isPresent())
-            throw new IdAlreadyExistsException("Product id " + productDto.getProductId() + " already exists");
-        product = Optional.of(objectMapper.convertValue(productDto, Product.class));
-        productRepo.save(product.get());*/
+        Optional<Product> product = productRepo.findProductByName(productDto.getProductName());
+        if (productDto.getProductName().isEmpty() || productDto.getPrice() == 0.0) {
+            logger.error("Empty fields are not allowed");
+            throw new EmptyFieldException("Empty fields are not allowed");
+        } else if (product.isPresent()) {
+            Product existingProduct = product.get();
+            logger.info("Price of " + existingProduct.getProductName() + " before updating " + existingProduct.getPrice());
+            existingProduct.setPrice(productDto.getPrice() + existingProduct.getPrice());
+            logger.info("Adding existing product after updating price " + existingProduct.getProductName() + ", " + existingProduct.getPrice());
+            productRepo.save(existingProduct);
+            logger.info("Added existing product " + existingProduct.getProductName() + ", " + existingProduct.getPrice());
+        } else {
+            product = Optional.of(objectMapper.convertValue(productDto, Product.class));
+            logger.info("Adding product " + productDto.getProductName());
+            productRepo.addNewProduct(product.get().getProductName(), product.get().getPrice());
+            logger.info("Added product " + productDto.getProductName());
+        }
     }
 
     @Override
@@ -56,7 +57,7 @@ public class ProductServiceImpl implements ProductService {
         if (productId <= 0) {
             logger.error("Invalid product id " + productId);
             throw new InvalidIdException("Invalid product id " + productId);
-        } else if (!product.isPresent()) {
+        } else if (product.isEmpty()) {
             logger.error("Product with id " + productId + " does not exists");
             throw new IdDoesNotExistsException("Product with id " + productId + " does not exists");
         }
@@ -70,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
         if (productDto.getProductId() <= 0) {
             logger.error("Invalid product id " + productDto.getProductId());
             throw new InvalidIdException("Invalid product id " + productDto.getProductId());
-        } else if (!product.isPresent()) {
+        } else if (product.isEmpty()) {
             logger.error("Product with id " + productDto.getProductId() + " does not exists");
             throw new IdDoesNotExistsException("Product with id " + productDto.getProductId() + " does not exists");
         }
@@ -89,7 +90,7 @@ public class ProductServiceImpl implements ProductService {
         if (productId <= 0) {
             logger.error("Invalid product id " + productId);
             throw new InvalidIdException("Invalid product id " + productId);
-        } else if (!product.isPresent()) {
+        } else if (product.isEmpty()) {
             logger.error("Product with id " + productId + " does not exists");
             throw new IdDoesNotExistsException("Product with id " + productId + " does not exists");
         }

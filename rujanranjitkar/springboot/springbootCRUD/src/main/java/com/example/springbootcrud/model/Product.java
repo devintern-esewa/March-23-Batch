@@ -30,6 +30,5 @@ public class Product {
     @Column(name = "product_name")
     private String productName;
 
-    @Column(name = "price")
     private double price;
 }

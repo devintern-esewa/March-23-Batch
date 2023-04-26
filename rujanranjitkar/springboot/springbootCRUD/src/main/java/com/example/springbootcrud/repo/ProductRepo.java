@@ -19,6 +19,9 @@ public interface ProductRepo extends JpaRepository<Product, Long> {
     @Query(value = "select * from products where product_id=?1", nativeQuery = true)
     Optional<Product> findProductById(Long productId);
 
+    @Query(value = "select p from Product p where p.productName=:productName")
+    Optional<Product> findProductByName(String productName);
+
     //In JPQl, table name should be entity name(Product) and column name should be variable name
     @Transactional
     @Modifying
@@ -29,6 +32,7 @@ public interface ProductRepo extends JpaRepository<Product, Long> {
     @Modifying
     @Query(value = "update Product p set p.productName=?2, p.price=?3 where p.productId=?1")
     void updateProduct(Long productId, String productName, double price);
+
     @Transactional
     @Modifying
     @Query(value = "delete from products where product_id=?1", nativeQuery = true)
