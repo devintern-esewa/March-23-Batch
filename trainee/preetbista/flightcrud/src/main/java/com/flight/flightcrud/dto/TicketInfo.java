@@ -11,9 +11,13 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class TicketInfo implements Serializable {
+
     private Long id;
+
     private String name;
+
     private String email;
+
     private String cardType;
 
     public TicketInfo(Long id, String name, String email, String cardType) {

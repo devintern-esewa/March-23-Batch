@@ -10,7 +10,6 @@ import com.flight.flightcrud.utils.PaymentUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -26,36 +25,41 @@ public class FlightBookingServiceImpl implements FlightBookingService {
 
     @Transactional
     public FlightBookingAcknowledgment bookFlightTicket(FlightBookingRequest flightBookingRequest) {
-        TicketInfo ticketInfo = paymentInfoRepository.getTicketInfoByPassengerId(flightBookingRequest.getPaymentInfo().getPassengerInfo().getId());
-
         PassengerInfoDto passengerInfoDto = flightBookingRequest.getPassengerInfo();
 
         PassengerInfo passengerInfo = convertPassegerDtoToPassengerInfo(passengerInfoDto);
-        passengerInfoRepository.save(passengerInfo);
+        passengerInfo.setId(passengerInfoRepository.save(passengerInfo).getId());
+        System.out.println("passenger info id: "+passengerInfo.getId());
+
+        TicketInfo ticketInfo = paymentInfoRepository.getTicketInfoByPassengerId(passengerInfo.getId());
 
         PaymentInfoDto paymentInfoDto = flightBookingRequest.getPaymentInfo();
-        PaymentInfo paymentInfo = convertToPassengerInfo(paymentInfoDto);
+        PaymentInfo paymentInfo = convertToPaymentInfo(paymentInfoDto);
         paymentInfo.setPassengerInfo(passengerInfo);
 
-        PaymentUtils.validateCreditLimit(paymentInfoDto.getAccountNo(), passengerInfoDto.getFare());
+        PaymentUtils.validateCreditLimit(paymentInfoDto.getAccountNo(),
+                passengerInfoDto.getFare());
 
         paymentInfo.setAmount(passengerInfoDto.getFare());
         paymentInfoRepository.save(paymentInfo);
-        return new FlightBookingAcknowledgment("SUCCESS", passengerInfoDto.getFare(), UUID.randomUUID().toString().split("-")[0], passengerInfo, ticketInfo);
+        return new FlightBookingAcknowledgment("SUCCESS", passengerInfoDto.getFare(),
+                UUID.randomUUID().toString().split("-")[0],
+                passengerInfo, ticketInfo);
     }
 
-    private PaymentInfo convertToPassengerInfo(PaymentInfoDto paymentInfoDto) {
-        PaymentInfo paymentInfos = new PaymentInfo();
-        paymentInfos.setPassengerInfo(paymentInfoDto.getPassengerInfo());
-        paymentInfos.setCardType(paymentInfoDto.getCardType());
-        paymentInfos.setAmount(paymentInfoDto.getAmount());
-        paymentInfos.setAccountNo(paymentInfoDto.getAccountNo());
-        return paymentInfos;
+    private PaymentInfo convertToPaymentInfo(PaymentInfoDto paymentInfoDto) {
+        PaymentInfo paymentInfo = new PaymentInfo();
+        paymentInfo.setPassengerInfo(paymentInfo.getPassengerInfo());
+        paymentInfo.setCardType(paymentInfoDto.getCardType());
+        paymentInfo.setAmount(paymentInfoDto.getAmount());
+        paymentInfo.setAccountNo(paymentInfoDto.getAccountNo());
+        return paymentInfo;
     }
 
     private PassengerInfo convertPassegerDtoToPassengerInfo(PassengerInfoDto passengerInfoDto) {
         PassengerInfo info = new PassengerInfo();
         info.setName(passengerInfoDto.getName());
+        info.setCitizenshipNumber(passengerInfoDto.getCitizenshipNumber());
         info.setEmail(passengerInfoDto.getEmail());
         info.setSource(passengerInfoDto.getSource());
         info.setDestination(passengerInfoDto.getDestination());

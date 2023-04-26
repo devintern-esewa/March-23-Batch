@@ -20,6 +20,9 @@ public class PassengerInfo {
 
     private String name;
 
+    @Column(name = "citizenship_number")
+    private Long citizenshipNumber;
+
     private String email;
 
     private String source;

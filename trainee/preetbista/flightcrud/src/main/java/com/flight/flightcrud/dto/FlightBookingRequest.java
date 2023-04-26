@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FlightBookingRequest {
+
     private PassengerInfoDto passengerInfo;
+
     private PaymentInfoDto paymentInfo;
 }
