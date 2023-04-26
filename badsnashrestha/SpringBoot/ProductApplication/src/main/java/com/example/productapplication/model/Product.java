@@ -1,17 +1,15 @@
 package com.example.productapplication.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter //to generate getter method for the class field
 @Setter //to generate setter method for  the class field
 @Entity
 // indicates that the  annotated class is a JPA entity and should be persisted to a db using JPA. Creates an corresponding db table based on class field
-@RequiredArgsConstructor //generates the constructor that initalizes all final fields in the class
-@Table(name = "products_info") //to customize db table name, should be snake_case
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "product_info") //to customize db table name, should be snake_case
 public class Product {
     @Id //to declare an entity as a primary key
 
@@ -37,6 +35,7 @@ public class Product {
     @Column(name = "product_name")
     private String productName;
 
-    @Column(name = "price")
     private double price;
+
+
 }

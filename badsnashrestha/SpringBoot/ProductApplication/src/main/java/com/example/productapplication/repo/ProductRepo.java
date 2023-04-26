@@ -32,14 +32,17 @@ public interface ProductRepo extends JpaRepository<Product, Integer> {
 
 
     @Query(value = "select s from Product s where s.productId=:productId")
-    Optional<Product> findProductById(@Param("productId") Integer integer);
+    Optional<Product> findProductById(@Param("productId") Integer productId);
+
+    @Query(value = "select s from Product s where s.productName=:productName")
+    Optional<Product> findProductByName(@Param("productName") String name);
 
     //native Query
     //dependent on db
 
     @Transactional
     @Modifying
-    @Query(value = "update products_info set product_name=:productName,price=:price where product_id=:productId", nativeQuery = true)
+    @Query(value = "update product_info set product_name=:productName,price=:price where product_id=:productId", nativeQuery = true)
     void updateProduct(@Param("productId") Integer integer, @Param("productName") String productName, @Param("price") double price);
 
 

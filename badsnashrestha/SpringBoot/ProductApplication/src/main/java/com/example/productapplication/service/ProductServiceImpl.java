@@ -1,8 +1,8 @@
 package com.example.productapplication.service;
 
 import com.example.productapplication.controller.ProductController;
-import com.example.productapplication.customException.IdAlreadyExistsException;
 import com.example.productapplication.customException.IdDoesntExistsException;
+import com.example.productapplication.customException.EmptyFieldException;
 import com.example.productapplication.customException.InvalidIdException;
 import com.example.productapplication.dto.ProductDto;
 import com.example.productapplication.model.Product;
@@ -34,27 +34,25 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public void addNewProduct(ProductDto productDto) {
-        //if product with productId is found, it overrides the product info
-        System.out.println(productDto.getProductName());
-        Product product;
-        if(productDto.getProductName().isEmpty() ||productDto.getPrice()==0.0 ) throw new RuntimeException("Invalid fileds");
-        if (!(productDto.getProductName().isEmpty()) && productDto.getPrice()!=0.0) {
-            product = productRepo.findById(productDto.getProductId()).orElse(new Product());
+        Optional<Product> product=productRepo.findProductByName(productDto.getProductName());
+        if(productDto.getProductName().isEmpty() ||productDto.getPrice()==0.0 ){
+            logger.error("Empty field "+productDto.getProductName() + " "+ productDto.getPrice());
+            throw new EmptyFieldException("Empty field");
         }
-        product = objectMapper.convertValue(productDto, Product.class);
-        System.out.println(productDto.getProductName());
-        logger.info("Adding product " + productDto.getProductName());
-        productRepo.saveNewProduct(product.getProductName(), product.getPrice());
-        logger.info("Adding product " + productDto.getProductName());
-        //productRepo.save(product);
-
-        //if product with productId is found, it returns productId already exists else add product as new product
-       /* Optional<Product> product=productRepo.findById(productDto.getProductId());
-        if(productDto.getProductId()<=0) throw new InvalidIdException("Invalid productId "+ productDto.getProductId());
-       else if(product.isPresent()) throw new IdAlreadyExistsException("productId "+ productDto.getProductId()+ " already exists to add");
-
-        product= Optional.ofNullable(objectMapper.convertValue(productDto, Product.class));*/
-
+        if (product.isPresent()){
+            Product existingProduct = product.get();
+            logger.warn("Product you are trying to add already exists "+product.get().getProductName());
+            logger.info("Price of existing product "+existingProduct.getProductName()+" " + existingProduct.getPrice());
+            existingProduct.setPrice(productDto.getPrice()+ existingProduct.getPrice());
+            logger.info("Updated  price of the product "+ existingProduct.getProductName()+" "+existingProduct.getPrice());
+            productRepo.save(existingProduct);
+        }
+        else{
+            product = Optional.ofNullable(objectMapper.convertValue(productDto, Product.class));
+            logger.info("Adding product " + productDto.getProductName());
+            productRepo.saveNewProduct(product.get().getProductName(), product.get().getPrice());
+            logger.info("Adding product " + productDto.getProductName());
+        }
 
     }
 
@@ -69,7 +67,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Optional<Product> getProductById(Integer productId) {
-        Optional<Product> product = productRepo.findById(productId);
+        Optional<Product> product = productRepo.findProductById(productId);
+        if(product.isPresent()){
+            return productRepo.findProductById(productId);
+        }
         if (productId <= 0) {
             logger.error(" Invalid ProductId " + productId);
             throw new InvalidIdException(" Invalid ProductId " + productId);
@@ -77,8 +78,8 @@ public class ProductServiceImpl implements ProductService {
             logger.error("ProductId " + productId + " doesn't exists");
             throw new IdDoesntExistsException("ProductId " + productId + " doesn't exists");
         }
-        logger.info("Product with product id " + productId + " is " + product.get());
-        return productRepo.findProductById(productId);
+        //logger.info("Product with product id " + productId + " is " + product.get());
+        return product;
     }
 
     @Override
