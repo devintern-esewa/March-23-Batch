@@ -14,6 +14,8 @@ public class PassengerInfoDto implements Serializable {
 
     private String email;
 
+    private Long citizenshipNumber;
+
     private String source;
 
     private String destination;

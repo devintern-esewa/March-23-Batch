@@ -25,9 +25,9 @@ public class TicketInfoServiceImpl implements TicketInfoService {
         this.paymentInfoRepository = paymentInfoRepository;
     }
 
-    public TicketInfo findTicketInfoByPassengerId(Long id){
+    public TicketInfo findTicketInfoByPassengerId(Long id) {
         Optional<PassengerInfo> passengerInfo = passengerInfoRepository.findById(id);
-        if (!passengerInfo.isPresent()){
+        if (!passengerInfo.isPresent()) {
             throw new PassengerNotFoundException("Passenger not found for id : " + id);
         }
         TicketInfo ticketInfo = paymentInfoRepository.getTicketInfoByPassengerId(id);
