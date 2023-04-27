@@ -73,7 +73,21 @@ public class ProductServiceImpTest {
         verify(productRepoMock,times(1)).saveNewProduct(productDto.getProductName(),productDto.getPrice());
     }
 
+    //error while  testing
+    @Test
+    public void addNewProductList_WhenListOfProductIsToBeAdded_ThenReturnAddListOfProducts(){
+        List<ProductDto> productList=new ArrayList<>();
+        productList.add(new ProductDto(1,"Coke",160.0));
+        productList.add(new ProductDto(2,"Fanta",150.0));
 
+        Product product=new Product(1, "Coke", 160.0);
+        Product product1=new Product(2, "Fanta", 150.0);
+
+        productService.addNewProductList(productList);
+        verify(productRepoMock,times(1)).save(product);
+        verify(productRepoMock,times(1)).save(product1);
+
+    }
 
     @Test
     public void getProductById_WhenInvalidId_ThenThrowInvalidIdException(){
