@@ -1,15 +1,18 @@
 package com.flight.flightcrud.service.impl;
 
 import com.flight.flightcrud.dto.*;
+import com.flight.flightcrud.exception.DuplicateBookingException;
 import com.flight.flightcrud.model.PassengerInfo;
 import com.flight.flightcrud.model.PaymentInfo;
 import com.flight.flightcrud.repository.PassengerInfoRepository;
 import com.flight.flightcrud.repository.PaymentInfoRepository;
 import com.flight.flightcrud.service.FlightBookingService;
+import com.flight.flightcrud.utils.FlightBookingUtils;
 import com.flight.flightcrud.utils.PaymentUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -25,26 +28,36 @@ public class FlightBookingServiceImpl implements FlightBookingService {
 
     @Transactional
     public FlightBookingAcknowledgment bookFlightTicket(FlightBookingRequest flightBookingRequest) {
+
         PassengerInfoDto passengerInfoDto = flightBookingRequest.getPassengerInfo();
 
         PassengerInfo passengerInfo = convertPassegerDtoToPassengerInfo(passengerInfoDto);
         passengerInfo.setId(passengerInfoRepository.save(passengerInfo).getId());
-        System.out.println("passenger info id: "+passengerInfo.getId());
 
         TicketInfo ticketInfo = paymentInfoRepository.getTicketInfoByPassengerId(passengerInfo.getId());
 
-        PaymentInfoDto paymentInfoDto = flightBookingRequest.getPaymentInfo();
-        PaymentInfo paymentInfo = convertToPaymentInfo(paymentInfoDto);
-        paymentInfo.setPassengerInfo(passengerInfo);
+        Optional<PassengerInfo> existingBooking = passengerInfoRepository.findById(passengerInfo.getId());
+        if(!existingBooking.isPresent()) {
+            throw new DuplicateBookingException("not present");
+        }
+        if (FlightBookingUtils.validateBooking(passengerInfo , existingBooking.get())) {
 
-        PaymentUtils.validateCreditLimit(paymentInfoDto.getAccountNo(),
-                passengerInfoDto.getFare());
+            PaymentInfoDto paymentInfoDto = flightBookingRequest.getPaymentInfo();
+            PaymentInfo paymentInfo = convertToPaymentInfo(paymentInfoDto);
+            paymentInfo.setPassengerInfo(passengerInfo);
 
-        paymentInfo.setAmount(passengerInfoDto.getFare());
-        paymentInfoRepository.save(paymentInfo);
-        return new FlightBookingAcknowledgment("SUCCESS", passengerInfoDto.getFare(),
-                UUID.randomUUID().toString().split("-")[0],
-                passengerInfo, ticketInfo);
+            PaymentUtils.validateCreditLimit(paymentInfoDto.getAccountNo(),
+                    passengerInfoDto.getFare());
+
+            paymentInfo.setAmount(passengerInfoDto.getFare());
+            paymentInfoRepository.save(paymentInfo);
+            return new FlightBookingAcknowledgment("SUCCESS", passengerInfoDto.getFare(),
+                    UUID.randomUUID().toString().split("-")[0],
+                    passengerInfo, ticketInfo);
+        }else {
+            throw new DuplicateBookingException("Your ticket has already been placed");
+        }
+
     }
 
     private PaymentInfo convertToPaymentInfo(PaymentInfoDto paymentInfoDto) {

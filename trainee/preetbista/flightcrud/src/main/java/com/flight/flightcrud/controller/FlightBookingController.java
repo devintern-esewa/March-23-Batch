@@ -18,4 +18,6 @@ public class FlightBookingController {
     public FlightBookingAcknowledgment bookFlightTicket(@RequestBody FlightBookingRequest flightBookingRequest) {
         return flightBookingService.bookFlightTicket(flightBookingRequest);
     }
+
+
 }
