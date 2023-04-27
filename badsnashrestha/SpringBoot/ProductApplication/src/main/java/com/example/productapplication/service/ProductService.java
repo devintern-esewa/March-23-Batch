@@ -2,10 +2,6 @@ package com.example.productapplication.service;
 
 import com.example.productapplication.dto.ProductDto;
 import com.example.productapplication.model.Product;
-import com.example.productapplication.repo.ProductRepo;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,5 +18,5 @@ public interface ProductService {
 
     public void deleteProductById(Integer productId);
 
-    public void updateProduct(ProductDto productDto);
+    public void updateProduct(com.example.productapplication.dto.ProductDto productDto);
 }

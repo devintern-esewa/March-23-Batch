@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
         else{
             product = Optional.ofNullable(objectMapper.convertValue(productDto, Product.class));
             logger.info("Adding product " + productDto.getProductName());
-            productRepo.saveNewProduct(product.get().getProductName(), product.get().getPrice());
+            productRepo.saveNewProduct(productDto.getProductName(), productDto.getPrice());
             logger.info("Adding product " + productDto.getProductName());
         }
 
@@ -68,9 +69,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Optional<Product> getProductById(Integer productId) {
         Optional<Product> product = productRepo.findProductById(productId);
-        if(product.isPresent()){
-            return productRepo.findProductById(productId);
-        }
         if (productId <= 0) {
             logger.error(" Invalid ProductId " + productId);
             throw new InvalidIdException(" Invalid ProductId " + productId);
@@ -78,13 +76,12 @@ public class ProductServiceImpl implements ProductService {
             logger.error("ProductId " + productId + " doesn't exists");
             throw new IdDoesntExistsException("ProductId " + productId + " doesn't exists");
         }
-        //logger.info("Product with product id " + productId + " is " + product.get());
         return product;
     }
 
     @Override
     public void deleteProductById(Integer productId) {
-        Optional<Product> product = productRepo.findById(productId);
+        Optional<Product> product = productRepo.findProductById(productId);
         if (productId <= 0) {
             logger.error("Invalid productId " + productId);
             throw new InvalidIdException("Invalid productId " + productId);
@@ -98,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void updateProduct(ProductDto productDto) {
-        Optional<Product> product = productRepo.findById(productDto.getProductId());
+        Optional<Product> product = productRepo.findProductById(productDto.getProductId());
         if (productDto.getProductId() <= 0) {
             logger.error("Invalid ProductId " + productDto.getProductId());
             throw new InvalidIdException("Invalid ProductId " + productDto.getProductId());
