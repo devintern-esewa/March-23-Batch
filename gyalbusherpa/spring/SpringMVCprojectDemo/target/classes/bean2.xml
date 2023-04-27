@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<!--  <bean id = "mathCheatObjectValue" class="org.depend2.MathCheat">-->
+
+<!--  </bean>-->
+<!--  <bean id = "stu" class="org.depend2.Student">-->
+<!--    <property name="id" value = "1">-->
+
+<!--    </property>-->
+<!--    <property name="mathCheat" ref="mathCheatObjectValue">-->
+
+<!--    </property>-->
+<!--  </bean>-->
+
+<!--  <bean id = "stu2" class="org.depend2.AnotherStudent">-->
+<!--    <property name="cheat" ref ="mathCheatObjectValue">-->
+
+<!--    </property>-->
+<!--  </bean>-->
+
+<bean id="science" class="springCore.depend2.ScienceCheat"></bean>
+
+  <bean id="stu" class="springCore.depend2.Student">
+    <property name="cheat" ref="science"></property>
+  </bean>
+
+</beans>
