@@ -3,6 +3,7 @@ package com.product.service;
 import com.product.dto.ProductDto;
 import com.product.enums.ProductEnum;
 import com.product.exception.ProductAlreadyExistException;
+import com.product.exception.ResourceNotFoundException;
 import com.product.model.Product;
 import com.product.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,30 +35,48 @@ class ProductServiceImplTest {
 
     @Test
     void saveProduct_whenProductAlreadyExists_shouldThrowException() {
+        String productName = "phone";
 
-        ProductDto productDto = new ProductDto();
-        productDto.setProductName("Test Product");
-        productDto.setProductCode("TP01");
-        productDto.setQuantity(10);
-        productDto.setPrice(100.00);
-        when(productRepository.findByProductName(anyString())).thenReturn(Optional.of(new Product()));
+        Product product = Product.builder()
+                .productName("phone")
+                .productCode("TP01")
+                .quantity(10)
+                .price(100.00)
+                .build();
+
+        when(productRepository.findByProductName(productName)).thenReturn(Optional.of(product));
+
+        ProductDto productDto = ProductDto.builder()
+                .productName(product.getProductName())
+                .productCode(product.getProductCode())
+                .quantity(product.getQuantity())
+                .build();
 
         assertThrows(ProductAlreadyExistException.class, () -> productService.saveProduct(productDto));
+        verify(productRepository, times(1)).findByProductName(productName);
+        verify(productRepository, never()).save(any(Product.class));
     }
 
     @Test
     void saveProduct_whenProductDoesNotExist_shouldSaveProduct() {
 
-        ProductDto productDto = new ProductDto();
-        productDto.setProductName("Test Product");
-        productDto.setProductCode("TP001");
-        productDto.setQuantity(10);
-        productDto.setPrice(20.0);
+        Product product = Product.builder()
+                .productName("phone")
+                .productCode("TP01")
+                .quantity(10)
+                .price(100.00)
+                .build();
 
-        when(productRepository.findByProductName(productDto.getProductName())).thenReturn(Optional.empty());
+        when(productRepository.save(any(Product.class))).thenReturn(product);
+
+        ProductDto productDto = ProductDto.builder()
+                .productName(product.getProductName())
+                .productCode(product.getProductCode())
+                .quantity(product.getQuantity())
+                .build();
 
         assertNotNull(productService.saveProduct(productDto));
-        assertEquals(productDto.getProductName(), productService.saveProduct(productDto).getProductName());
+        assertEquals(product.getProductName(), productService.saveProduct(productDto).getProductName());
 
         verify(productRepository, times(2)).findByProductName(productDto.getProductName());
         verify(productRepository, times(2)).save(any(Product.class));
@@ -67,19 +86,21 @@ class ProductServiceImplTest {
     void getAllProducts_shouldReturnListOfProductDto() {
         List<ProductDto> productDtoList = new ArrayList<>();
 
-        ProductDto productDto1 = new ProductDto();
-        productDto1.setProductName("Test Product 1");
-        productDto1.setProductCode("TP001");
-        productDto1.setQuantity(10);
-        productDto1.setPrice(20.0);
+        ProductDto productDto1 = ProductDto.builder()
+                .productName("Test Product")
+                .productCode("T1")
+                .quantity(20)
+                .price(10)
+                .build();
 
         productDtoList.add(productDto1);
 
-        ProductDto productDto2 = new ProductDto();
-        productDto2.setProductName("Test Product 2");
-        productDto2.setProductCode("TP002");
-        productDto2.setQuantity(20);
-        productDto2.setPrice(30.0);
+        ProductDto productDto2 = ProductDto.builder()
+                .productName("Test Product 2")
+                .productCode("T12")
+                .quantity(205)
+                .price(101)
+                .build();
 
         productDtoList.add(productDto2);
 
@@ -91,13 +112,15 @@ class ProductServiceImplTest {
     }
 
     @Test
-    public void testGetProductById() {
+    public void getProductById_whenProductIdExists_shouldReturnProductDto() {
         long productId = 1L;
-        ProductDto productDto = new ProductDto();
-        productDto.setProductName("Product 1");
-        productDto.setProductCode("P001");
-        productDto.setQuantity(10);
-        productDto.setPrice(100.0);
+
+        ProductDto productDto = ProductDto.builder()
+                .productName("Product 1")
+                .productCode("P001")
+                .quantity(10)
+                .price(100.0)
+                .build();
 
         when(productRepository.getProductDtoById(productId))
                 .thenReturn(Optional.of(productDto));
@@ -112,54 +135,97 @@ class ProductServiceImplTest {
     }
 
     @Test
-    public void testUpdateProduct() {
+    void getProductById_whenProductIdDoesNotExist_shouldThrowResourceNotFoundException() {
+        when(productRepository.getProductDtoById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> productService.getProductById(1L));
+        verify(productRepository, times(1)).getProductDtoById(1L);
+    }
+
+    @Test
+    public void updateProduct_whenProductExists_shouldUpdateProduct() {
         long productId = 1L;
-        ProductDto productDto = new ProductDto();
-        productDto.setProductName("Product 1 Updated");
-        productDto.setProductCode("P001U");
-        productDto.setQuantity(20);
-        productDto.setPrice(200.0);
+        ProductDto productDto = ProductDto.builder()
+                .productName("Product 1 Updated")
+                .productCode("P001U")
+                .quantity(20)
+                .price(200.0)
+                .build();
 
-        Product product = new Product();
-        product.setId(productId);
-        product.setProductName("Product 1");
-        product.setProductCode("P001U");
-        product.setProductStatus(ProductEnum.ACTIVE);
-        product.setQuantity(20);
-        product.setPrice(200.0);
+        Product existingProduct = Product.builder()
+                .id(productId)
+                .productName("Product 1")
+                .productCode("P001U")
+                .productStatus(ProductEnum.ACTIVE)
+                .quantity(10)
+                .price(100.0)
+                .build();
+
+        when(productRepository.findById(productId)).thenReturn(Optional.of(existingProduct));
 
 
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
-
-        // when
         ProductDto updatedProductDto = productService.updateProduct(productId, productDto);
 
-        // then
+        assertNotNull(updatedProductDto);
         assertEquals(productDto.getProductName(), updatedProductDto.getProductName());
         assertEquals(productDto.getProductCode(), updatedProductDto.getProductCode());
         assertEquals(productDto.getQuantity(), updatedProductDto.getQuantity());
         assertEquals(productDto.getPrice(), updatedProductDto.getPrice());
 
         verify(productRepository, times(1)).findById(productId);
-        verify(productRepository, times(1)).save(product);
+        verify(productRepository, times(1)).save(existingProduct);
     }
 
     @Test
-    public void testDeleteProduct() {
+    public void updateProduct_whenProductDoNotExist_shouldThrowResourceNotFoundException() {
+        // Arrange
         long productId = 1L;
-        Product product = new Product();
-        product.setId(productId);
-        product.setProductName("Product 1");
-        product.setProductCode("P001");
-        product.setQuantity(10);
-        product.setPrice(100.0);
+        ProductDto productDto = ProductDto.builder()
+                .productName("Product 1 Updated")
+                .productCode("P001U")
+                .quantity(20)
+                .price(200.0)
+                .build();
+
+        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> productService.updateProduct(productId, productDto));
+
+        verify(productRepository, times(1)).findById(productId);
+        verify(productRepository, never()).save(any(Product.class));
+    }
+
+    @Test
+    public void deleteProduct_whenProductIdExist_shouldDeleteProduct() {
+        long productId = 1L;
+
+        Product product = Product.builder()
+                .productName("phone")
+                .productCode("TP01")
+                .quantity(10)
+                .productStatus(ProductEnum.ACTIVE)
+                .price(100.00)
+                .build();
 
         when(productRepository.findById(productId)).thenReturn(Optional.of(product));
 
         productService.deleteProduct(productId);
 
-        verify(productRepository).findById(productId);
-        verify(productRepository).delete(product);
+        verify(productRepository, times(1)).findById(productId);
+        verify(productRepository, times(1)).delete(product);
+    }
+
+    @Test
+    public void deleteProduct_whenProductIdDoNotExist_shouldThrowException() {
+
+        long invalidProductId = 999L;
+
+        when(productRepository.findById(invalidProductId)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> productService.deleteProduct(invalidProductId));
+
+        verify(productRepository, times(1)).findById(invalidProductId);
+        verify(productRepository, never()).delete(any());
     }
 
 }
