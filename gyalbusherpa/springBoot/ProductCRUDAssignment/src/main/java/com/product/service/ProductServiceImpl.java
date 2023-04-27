@@ -79,4 +79,16 @@ public class ProductServiceImpl implements ProductService {
         productRepository.delete(product);
         logger.info("Deleted successfully");
     }
+
+    @Override
+    public ProductDto getByProductName(String productName) {
+        Optional<Product> byProductName = productRepository.findByProductName(productName);
+        ProductDto productDto = new ProductDto();
+        productDto.setProductName(byProductName.get().getProductName());
+        productDto.setProductCode(byProductName.get().getProductCode());
+        productDto.setQuantity(byProductName.get().getQuantity());
+        productDto.setPrice(byProductName.get().getPrice());
+
+        return productDto;
+    }
 }

@@ -15,9 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -226,6 +224,40 @@ class ProductServiceImplTest {
 
         verify(productRepository, times(1)).findById(invalidProductId);
         verify(productRepository, never()).delete(any());
+    }
+
+
+    @Test
+    public void getProduct_whenProductExistByName_shouldReturnProduct(){
+
+        String name = "phone";
+        Product products = Product.builder()
+                .productName("phone")
+                .productCode("TP01")
+                .quantity(10)
+                .price(100.00)
+                .build();
+
+        Optional<Product> optionalProduct = Optional.of(products);
+
+        when(productRepository.findByProductName(name)).thenReturn(optionalProduct);
+
+        ProductDto productDto = ProductDto.builder()
+                .productName(optionalProduct.get().getProductName())
+                .productCode(optionalProduct.get().getProductCode())
+                .quantity(optionalProduct.get().getQuantity())
+                .price(optionalProduct.get().getPrice())
+                .build();
+
+
+        ProductDto byProductName = productService.getByProductName(name);
+
+        assertNotNull(byProductName);
+        assertEquals(productDto.getProductName(), byProductName.getProductName());
+        assertTrue(optionalProduct.isPresent());
+
+        verify(productRepository, times(1)).findByProductName(name);
+
     }
 
 }

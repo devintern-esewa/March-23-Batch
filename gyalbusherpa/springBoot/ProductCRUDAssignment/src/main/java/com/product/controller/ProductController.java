@@ -45,7 +45,6 @@ public class ProductController {
         logger.info("Fetching product..");
         return new ResponseEntity<ProductDto>(productService.getProductById(id), HttpStatus.OK);
     }
-
     //update product
     @PutMapping("/product/{id}")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable("id") long id, @RequestBody ProductDto productDto){
@@ -58,6 +57,13 @@ public class ProductController {
         logger.info("Deleting product..");
         productService.deleteProduct(id);
         return new ResponseEntity<ApiResponse>(new ApiResponse("deleted product successfully",true),HttpStatus.OK);
+    }
+
+    // get by name
+    @GetMapping("/products/{name}")
+    public ResponseEntity<ProductDto> getProductByName(@PathVariable("name") String productName) {
+        logger.info("Fetching product by name..");
+        return new ResponseEntity<ProductDto>(productService.getByProductName(productName), HttpStatus.OK);
     }
 
 }
