@@ -2,12 +2,12 @@ package com.example.springbootcrud.service;
 
 import com.example.springbootcrud.dto.ProductDto;
 import com.example.springbootcrud.exception.EmptyFieldException;
-import com.example.springbootcrud.exception.IdAlreadyExistsException;
 import com.example.springbootcrud.exception.IdDoesNotExistsException;
 import com.example.springbootcrud.exception.InvalidIdException;
 import com.example.springbootcrud.model.Product;
 import com.example.springbootcrud.repo.ProductRepo;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> getAllProducts() {
-        logger.info("Selecting all products from database: " + productRepo.findAllProducts().size());
+        logger.info("Selecting number of products in database: " + productRepo.findAllProducts().size());
         return productRepo.findAllProducts();
     }
 
@@ -44,10 +44,10 @@ public class ProductServiceImpl implements ProductService {
             productRepo.save(existingProduct);
             logger.info("Added existing product " + existingProduct.getProductName() + ", " + existingProduct.getPrice());
         } else {
-            product = Optional.of(objectMapper.convertValue(productDto, Product.class));
-            logger.info("Adding product " + productDto.getProductName());
-            productRepo.addNewProduct(product.get().getProductName(), product.get().getPrice());
-            logger.info("Added product " + productDto.getProductName());
+            Product prod = objectMapper.convertValue(productDto, Product.class);
+            logger.info("Adding product " + prod.getProductName());
+            productRepo.addNewProduct(prod.getProductName(), prod.getPrice());
+            logger.info("Added product " + prod.getProductName());
         }
     }
 
