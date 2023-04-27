@@ -12,6 +12,6 @@ import java.util.List;
 public class Genre {
     @Id
     private String name;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Book> listOfBooks;
 }

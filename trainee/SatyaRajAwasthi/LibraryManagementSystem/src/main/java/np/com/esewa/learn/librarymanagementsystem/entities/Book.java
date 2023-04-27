@@ -17,7 +17,7 @@ public class Book {
     private long isbn;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Genre> genres;
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL)
     private Publisher publisher;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Author> authors;
