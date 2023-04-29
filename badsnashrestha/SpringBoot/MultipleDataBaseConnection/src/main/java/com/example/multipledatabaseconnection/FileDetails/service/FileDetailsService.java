@@ -4,6 +4,7 @@ import com.example.multipledatabaseconnection.FileDetails.dto.FileDetailsRequest
 import com.example.multipledatabaseconnection.FileDetails.dto.FileDetailsResponseDto;
 import com.example.multipledatabaseconnection.FileDetails.model.FileDetails;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface FileDetailsService {
@@ -13,4 +14,6 @@ public interface FileDetailsService {
      FileDetails addNewFileDetails(FileDetailsRequestDto fileDetailsRequestDto);
 
      void updateFileDetails(FileDetailsRequestDto fileDetailsRequestDto);
+
+     public  void readFile() throws IOException;
 }
