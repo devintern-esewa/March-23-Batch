@@ -14,7 +14,7 @@ public class FileDetails extends OtherInfo{
             allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "file_details")
-    private Long productFileId;
+    private Long fileDetailsId;
     private String filePath;
     @Enumerated(EnumType.STRING)
     private FileStatus fileStatus;
