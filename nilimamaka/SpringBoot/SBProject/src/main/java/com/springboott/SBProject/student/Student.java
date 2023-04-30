@@ -30,6 +30,10 @@ public class Student{
     @Transient
     private Integer age;
 
+    public Student() {
+        
+    }
+
     @Override
     public String toString() {
         return "Student{" +
