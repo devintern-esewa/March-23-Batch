@@ -1,9 +1,9 @@
-package com.example.multipledatabaseconnection.FileDetails.controller;
+package com.example.multipledatabaseconnection.fileDetails.controller;
 
-import com.example.multipledatabaseconnection.FileDetails.dto.FileDetailsRequestDto;
-import com.example.multipledatabaseconnection.FileDetails.dto.FileDetailsResponseDto;
-import com.example.multipledatabaseconnection.FileDetails.model.FileDetails;
-import com.example.multipledatabaseconnection.FileDetails.service.FileDetailsService;
+import com.example.multipledatabaseconnection.fileDetails.dto.FileDetailsRequestDto;
+import com.example.multipledatabaseconnection.fileDetails.dto.FileDetailsResponseDto;
+import com.example.multipledatabaseconnection.fileDetails.model.FileDetails;
+import com.example.multipledatabaseconnection.fileDetails.service.FileDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

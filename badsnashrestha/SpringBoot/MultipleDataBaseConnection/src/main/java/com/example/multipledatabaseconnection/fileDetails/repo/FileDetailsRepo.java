@@ -1,7 +1,7 @@
-package com.example.multipledatabaseconnection.FileDetails.repo;
+package com.example.multipledatabaseconnection.fileDetails.repo;
 
-import com.example.multipledatabaseconnection.FileDetails.enums.FileStatus;
-import com.example.multipledatabaseconnection.FileDetails.model.FileDetails;
+import com.example.multipledatabaseconnection.fileDetails.enums.FileStatus;
+import com.example.multipledatabaseconnection.fileDetails.model.FileDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

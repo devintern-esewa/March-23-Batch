@@ -1,18 +1,16 @@
-package com.example.multipledatabaseconnection.FileDetails.service;
+package com.example.multipledatabaseconnection.fileDetails.service;
 
 
-import com.example.multipledatabaseconnection.FileDetails.dto.FileDetailsRequestDto;
-import com.example.multipledatabaseconnection.FileDetails.dto.FileDetailsResponseDto;
-import com.example.multipledatabaseconnection.FileDetails.enums.FileStatus;
-import com.example.multipledatabaseconnection.FileDetails.model.FileDetails;
-import com.example.multipledatabaseconnection.FileDetails.model.OtherInfo;
-import com.example.multipledatabaseconnection.FileDetails.repo.FileDetailsRepo;
+import com.example.multipledatabaseconnection.fileDetails.dto.FileDetailsRequestDto;
+import com.example.multipledatabaseconnection.fileDetails.dto.FileDetailsResponseDto;
+import com.example.multipledatabaseconnection.fileDetails.enums.FileStatus;
+import com.example.multipledatabaseconnection.fileDetails.model.FileDetails;
+import com.example.multipledatabaseconnection.fileDetails.repo.FileDetailsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;

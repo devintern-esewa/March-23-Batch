@@ -1,4 +1,4 @@
-package com.example.multipledatabaseconnection.FileDetails.enums;
+package com.example.multipledatabaseconnection.fileDetails.enums;
 
 public enum FileStatus {
     PENDING,
