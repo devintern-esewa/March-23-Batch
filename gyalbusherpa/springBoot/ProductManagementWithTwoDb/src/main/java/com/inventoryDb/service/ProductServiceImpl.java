@@ -1,9 +1,7 @@
 package com.inventoryDb.service;
 
-import com.configDb.enums.FileStatusEnum;
 import com.configDb.model.FileDetail;
 import com.configDb.repository.FileDetailRepository;
-import com.configDb.service.FileDetailService;
 import com.inventoryDb.enums.ProductEnum;
 import com.inventoryDb.model.Product;
 import com.inventoryDb.repository.ProductRepository;
