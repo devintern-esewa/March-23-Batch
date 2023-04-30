@@ -1,5 +1,6 @@
 package com.inventoryDb.model;
 
+import com.Times;
 import com.inventoryDb.enums.ProductEnum;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -16,7 +17,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Table(name = "products")
 @ToString
-public class Product {
+public class Product extends Times {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "don")
@@ -28,12 +29,4 @@ public class Product {
     private ProductEnum productStatus;
     private double quantity;
     private double price;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @CreatedDate
-    private Date createdDate;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @LastModifiedDate
-    private Date lastModifiedDate;
 }

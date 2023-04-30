@@ -34,10 +34,8 @@ class FileDetailRepositoryTest {
         FileDetail detail = FileDetail.builder()
                 .filePath("D:/don.csv")
                 .fileStatus(FileStatusEnum.PENDING)
-                .createdDate(new Date())
                 .failureCount(0)
                 .successCount(1)
-                .lastModifiedDate(new Date())
                 .build();
 
         fileDetailRepository.save(detail);
@@ -57,20 +55,18 @@ class FileDetailRepositoryTest {
         FileDetail detail = FileDetail.builder()
                 .filePath("D:/don.csv")
                 .fileStatus(FileStatusEnum.PENDING)
-                .createdDate(new Date())
+
                 .failureCount(0)
                 .successCount(1)
-                .lastModifiedDate(new Date())
+
                 .build();
         entityManager.persist(detail);
 
         FileDetail detail2 = FileDetail.builder()
                 .filePath("D:/don.csv")
                 .fileStatus(FileStatusEnum.PENDING)
-                .createdDate(new Date())
                 .failureCount(0)
                 .successCount(1)
-                .lastModifiedDate(new Date())
                 .build();
         entityManager.persist(detail2);
 

@@ -1,4 +1,9 @@
-name,code,productStatus,quantity,price
-fog,F1,ACTIVE,1,500
-Iphone,I1,DELETED,1,100000
-Biscuit,B1,ACTIVE,5,20
+name,code,status,quantity,price
+fog,F1,,1,500
+Iphone,I1,,1,100000
+Biscuit,B1,,5,20
+fog,F1,,2,230
+fog,F1,,2,230
+fog,F3,,2,230
+Biscuit,B1,,5,20
+Donut,D1,,3,50

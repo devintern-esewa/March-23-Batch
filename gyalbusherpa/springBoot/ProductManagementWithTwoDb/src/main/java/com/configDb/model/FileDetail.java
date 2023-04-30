@@ -1,5 +1,6 @@
 package com.configDb.model;
 
+import com.Times;
 import com.configDb.enums.FileStatusEnum;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -15,7 +16,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @Table(name = "file_details")
-public class FileDetail {
+public class FileDetail extends Times {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "don")
     @SequenceGenerator(
@@ -33,12 +34,5 @@ public class FileDetail {
     private int successCount;
     private int failureCount;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @CreatedDate
-    private Date createdDate;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @LastModifiedDate
-    private Date lastModifiedDate;
 
 }
