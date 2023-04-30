@@ -1,4 +1,4 @@
-package com.example.mulltipledbconnectiontask.fileDetails.model;
+package com.example.mulltipledbconnectiontask.timeStamp;
 
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
@@ -13,15 +13,17 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @MappedSuperclass
-public class OtherInfo {
+public class TimeStamp {
 
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
+
     @PrePersist
     private void prePersist() {
         createdDate = LocalDateTime.now();
         lastModifiedDate = createdDate;
     }
+
     @PreUpdate
     private void preUpdate() {
         lastModifiedDate = LocalDateTime.now();

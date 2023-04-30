@@ -8,7 +8,9 @@ import java.util.List;
 
 public interface FileDetailsService {
     List<FileDetails> getALLFileDetails();
+
     FileDetails addNewFileDetails(FileDetailsRequestDto fileDetailsRequestDto);
+
     FileDetailsResponseDto getFileDetailsById(Long fileDetailsId);
 
 }

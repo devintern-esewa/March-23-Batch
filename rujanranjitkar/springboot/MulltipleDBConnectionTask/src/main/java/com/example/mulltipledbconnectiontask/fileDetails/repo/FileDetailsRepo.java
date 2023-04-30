@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface FileDetailsRepo extends JpaRepository<FileDetails, Long> {
-     List<FileDetails> findByFileStatus(FileStatus fileStatus);
+    List<FileDetails> findByFileStatus(FileStatus fileStatus);
 }
