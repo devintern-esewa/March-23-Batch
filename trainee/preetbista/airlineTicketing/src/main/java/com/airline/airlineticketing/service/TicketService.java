@@ -5,10 +5,11 @@ import com.airline.airlineticketing.model.Ticket;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 public interface TicketService {
     TicketDto createTicket(TicketDto ticketDTO);
     List<TicketDto> getAllTickets();
-    TicketDto getTicketById(Long id);
+    Optional<TicketDto> getTicketById(Long id);
 
 }

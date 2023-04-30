@@ -3,7 +3,9 @@ package com.airline.airlineticketing.service.impl;
 import com.airline.airlineticketing.dto.TicketDto;
 import com.airline.airlineticketing.model.Ticket;
 import com.airline.airlineticketing.repository.TicketRepository;
+import com.airline.airlineticketing.repository.UserRepository;
 import com.airline.airlineticketing.service.TicketService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -13,6 +15,8 @@ import java.util.Optional;
 
 @Service
 public class TicketServiceImpl implements TicketService {
+    @Autowired
+    private UserRepository userRepository;
 
     private final TicketRepository ticketRepository;
 
@@ -23,13 +27,17 @@ public class TicketServiceImpl implements TicketService {
     @Override
     @Transactional
     public TicketDto createTicket(TicketDto ticketDTO) {
+
         Ticket ticket = new Ticket(
                 ticketDTO.getFlightNumber(),
                 ticketDTO.getDepartureAirport(),
                 ticketDTO.getArrivalAirport(),
                 ticketDTO.getDepartureTime(),
                 ticketDTO.getArrivalTime(),
-                ticketDTO.getPrice());
+                ticketDTO.getPrice()
+
+        );
+
         Ticket savedTicket = ticketRepository.save(ticket);
         return new TicketDto(savedTicket.getFlightNumber(),
                 savedTicket.getArrivalAirport(),
@@ -58,18 +66,13 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public TicketDto getTicketById(Long id) {
-        Optional<Ticket> optionalTicket = ticketRepository.findById(id);
-        if (optionalTicket.isPresent()) {
-            Ticket ticket = optionalTicket.get();
-            return new TicketDto(ticket.getFlightNumber(),
-                    ticket.getDepartureAirport(),
-                    ticket.getArrivalAirport(),
-                    ticket.getDepartureTime(),
-                    ticket.getArrivalTime(),
-                    ticket.getPrice());
-        } else {
-            return null;
-        }
+    public Optional<TicketDto> getTicketById(Long id) {
+        return ticketRepository.findById(id)
+                .map(ticket -> new TicketDto(ticket.getFlightNumber(),
+                            ticket.getDepartureAirport(),
+                            ticket.getArrivalAirport(),
+                            ticket.getDepartureTime(),
+                            ticket.getArrivalTime(),
+                            ticket.getPrice()));
     }
 }
