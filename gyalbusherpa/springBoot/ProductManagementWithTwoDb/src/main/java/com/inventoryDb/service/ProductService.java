@@ -1,5 +1,6 @@
 package com.inventoryDb.service;
 
+import com.inventoryDb.dto.ProductDto;
 import com.inventoryDb.model.Product;
 
 import java.util.List;
@@ -12,6 +13,7 @@ public interface ProductService {
 
     void saveProduct(List<Product> products);
 
+    List<ProductDto> getAllProducts();
 
-
+    void deleteProduct(long id);
 }

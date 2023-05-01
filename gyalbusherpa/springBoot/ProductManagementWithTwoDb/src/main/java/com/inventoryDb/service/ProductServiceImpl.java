@@ -2,7 +2,9 @@ package com.inventoryDb.service;
 
 import com.configDb.model.FileDetail;
 import com.configDb.repository.FileDetailRepository;
+import com.inventoryDb.dto.ProductDto;
 import com.inventoryDb.enums.ProductEnum;
+import com.inventoryDb.exception.ResourceNotFoundException;
 import com.inventoryDb.model.Product;
 import com.inventoryDb.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -101,5 +103,18 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void saveProduct(List<Product> products) {
         productRepository.saveAll(products);
+    }
+
+    @Override
+    public List<ProductDto> getAllProducts() {
+        return productRepository.getAllProductDto();
+    }
+
+    @Override
+    public void deleteProduct(long id) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product " +
+                "with id: " + id + " doesn't exist"));
+        product.setProductStatus(ProductEnum.DELETED);
+        productRepository.save(product);
     }
 }
