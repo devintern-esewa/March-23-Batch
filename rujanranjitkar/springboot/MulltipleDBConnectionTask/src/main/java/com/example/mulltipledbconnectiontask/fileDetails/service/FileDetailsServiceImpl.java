@@ -1,16 +1,17 @@
 package com.example.mulltipledbconnectiontask.fileDetails.service;
 
+import com.example.mulltipledbconnectiontask.exception.IdDoesNotExistsException;
 import com.example.mulltipledbconnectiontask.fileDetails.dto.FileDetailsRequestDto;
 import com.example.mulltipledbconnectiontask.fileDetails.dto.FileDetailsResponseDto;
 import com.example.mulltipledbconnectiontask.fileDetails.enums.FileStatus;
 import com.example.mulltipledbconnectiontask.fileDetails.model.FileDetails;
 import com.example.mulltipledbconnectiontask.fileDetails.repo.FileDetailsRepo;
+import com.example.mulltipledbconnectiontask.inventory.model.Product;
+import com.example.mulltipledbconnectiontask.inventory.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
@@ -18,6 +19,8 @@ import java.util.List;
 public class FileDetailsServiceImpl implements FileDetailsService {
     @Autowired
     private FileDetailsRepo fileDetailsRepo;
+    @Autowired
+    private ProductService productService;
 
     @Override
     public List<FileDetails> getALLFileDetails() {
@@ -37,7 +40,7 @@ public class FileDetailsServiceImpl implements FileDetailsService {
     @Override
     public FileDetailsResponseDto getFileDetailsById(Long fileDetailsId) {
         FileDetailsResponseDto fileDetailsResponseDto = new FileDetailsResponseDto();
-        FileDetails fileDetails = fileDetailsRepo.findById(fileDetailsId).orElseThrow();
+        FileDetails fileDetails = fileDetailsRepo.findById(fileDetailsId).orElseThrow(() -> new IdDoesNotExistsException("File with id " + fileDetailsId + " does not exists"));
         fileDetailsResponseDto.setFilePath(fileDetails.getFilePath());
         fileDetailsResponseDto.setFileStatus(fileDetails.getFileStatus());
         return fileDetailsResponseDto;
@@ -50,25 +53,8 @@ public class FileDetailsServiceImpl implements FileDetailsService {
             file.setFileStatus(FileStatus.PROCESSING);
             fileDetailsRepo.save(file);
 
-            String csvFile = file.getFilePath();
-            String csvSeparator = ",";
-            BufferedReader reader = new BufferedReader(new FileReader(csvFile));
-            String line = " ";
-            int value = 0;
-            while ((line = reader.readLine()) != null) {
-                if (value >= 1) {
-                    String[] row = line.split(csvSeparator);
-                    String id = row[0];
-                    String name = row[1];
-                    String status = row[2];
-                    String code = row[3];
-                    int quantity = Integer.parseInt(row[4]);
-                    double price = Double.parseDouble(row[5]);
-                    System.out.println(id + " " + name + " " + status + " " + code + " " + quantity + " " + price);
-                }
-                value++;
-            }
-            reader.close();
+            List<Product> products = productService.readProductDetailsFromFile(file.getFilePath());
+            productService.saveProducts(products);
 
             // created a new file to set status to complete
             FileDetails updatedFile = fileDetailsRepo.findById(file.getFileDetailsId()).orElseThrow();
