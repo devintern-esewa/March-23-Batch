@@ -7,7 +7,6 @@ import com.airline.airlineticketing.service.UserService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,7 +33,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Optional<UserDto> getUserById(Long id) {
         return userRepository.findById(id)
-                .map(user -> new UserDto(user.getUserName(),
+                .map(user -> new UserDto(
+                        user.getUserName(),
                         user.getPassword(),
                         user.getMobileNumber(),
                         user.getRole()));

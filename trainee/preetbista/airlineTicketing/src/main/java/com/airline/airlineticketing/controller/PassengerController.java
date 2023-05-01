@@ -25,12 +25,9 @@ public class PassengerController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PassengerDto> getPassengerById(@PathVariable Long id) {
-        PassengerDto passengerDto = passengerService.getPassengerById(id);
-        if (passengerDto != null) {
-            return ResponseEntity.ok(passengerDto);
-        } else {
-            return ResponseEntity.noContent().build();
-        }
+        return passengerService.getPassengerById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.noContent().build());
     }
 
     @GetMapping

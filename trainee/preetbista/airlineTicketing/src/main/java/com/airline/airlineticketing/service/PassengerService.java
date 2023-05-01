@@ -4,10 +4,11 @@ import com.airline.airlineticketing.dto.PassengerDto;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 public interface PassengerService {
     PassengerDto createPassenger(PassengerDto passengerDto);
-    PassengerDto getPassengerById(Long id);
+    Optional<PassengerDto> getPassengerById(Long id);
     List<PassengerDto> getAllPassengers();
     void deletePassenger(Long id);
 }

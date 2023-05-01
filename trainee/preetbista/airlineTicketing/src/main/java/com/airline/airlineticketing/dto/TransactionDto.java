@@ -2,6 +2,7 @@ package com.airline.airlineticketing.dto;
 
 import com.airline.airlineticketing.enums.TicketStatus;
 import com.airline.airlineticketing.model.Ticket;
+import com.airline.airlineticketing.model.Transaction;
 import com.airline.airlineticketing.model.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,5 +28,12 @@ public class TransactionDto implements Serializable {
 
     public TransactionDto(){
 
+    }
+
+    public static TransactionDto of(Transaction transaction){
+        return new TransactionDto(
+                transaction.getUser(),
+                transaction.getTicket(),
+                transaction.getTicketStatus());
     }
 }

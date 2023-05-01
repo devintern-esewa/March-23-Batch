@@ -3,21 +3,16 @@ package com.airline.airlineticketing.service.impl;
 import com.airline.airlineticketing.dto.TicketDto;
 import com.airline.airlineticketing.model.Ticket;
 import com.airline.airlineticketing.repository.TicketRepository;
-import com.airline.airlineticketing.repository.UserRepository;
 import com.airline.airlineticketing.service.TicketService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TicketServiceImpl implements TicketService {
-    @Autowired
-    private UserRepository userRepository;
-
     private final TicketRepository ticketRepository;
 
     public TicketServiceImpl(TicketRepository ticketRepository) {
@@ -50,19 +45,10 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public List<TicketDto> getAllTickets() {
-        List<Ticket> tickets = ticketRepository.findAll();
-        List<TicketDto> ticketDTOs = new ArrayList<>();
-        for (Ticket ticket : tickets) {
-            ticketDTOs.add(new TicketDto(
-                    ticket.getFlightNumber(),
-                    ticket.getDepartureAirport(),
-                    ticket.getArrivalAirport(),
-                    ticket.getDepartureTime(),
-                    ticket.getArrivalTime(),
-                    ticket.getPrice()
-            ));
-        }
-        return ticketDTOs;
+       return ticketRepository.findAll()
+               .stream()
+               .map(TicketDto::of)
+               .collect(Collectors.toList());
     }
 
     @Override

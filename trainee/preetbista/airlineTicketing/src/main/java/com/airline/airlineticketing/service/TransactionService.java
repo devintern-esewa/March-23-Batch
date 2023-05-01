@@ -4,8 +4,9 @@ import com.airline.airlineticketing.dto.TransactionDto;
 import com.airline.airlineticketing.model.Transaction;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TransactionService {
     List<TransactionDto> getAllTransaction();
-    TransactionDto getTransactionByUserId(Long userId);
+    Optional<TransactionDto> getTransactionByUserId(Long userId);
 }

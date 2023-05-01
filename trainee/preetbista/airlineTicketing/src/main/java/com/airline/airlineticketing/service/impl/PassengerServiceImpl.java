@@ -7,9 +7,9 @@ import com.airline.airlineticketing.service.PassengerService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PassengerServiceImpl implements PassengerService {
@@ -20,6 +20,7 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
+    @Transactional
     public PassengerDto createPassenger(PassengerDto passengerDTO) {
         Passenger passenger = new Passenger(passengerDTO.getFirstName(),
                 passengerDTO.getEmail(),
@@ -34,31 +35,20 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public PassengerDto getPassengerById(Long id) {
-        Optional<Passenger> optionalPassenger = passengerRepository.findById(id);
-        if (optionalPassenger.isPresent()) {
-            Passenger passenger = optionalPassenger.get();
-            return new PassengerDto(
-                    passenger.getFirstName(),
-                    passenger.getEmail(),
-                    passenger.getLastName(),
-                    passenger.getPhoneNumber());
-        } else {
-            return null;
-        }
+    public Optional<PassengerDto> getPassengerById(Long id) {
+        return passengerRepository.findById(id)
+                .map(passenger -> new PassengerDto(
+                        passenger.getFirstName(),
+                        passenger.getEmail(),
+                        passenger.getLastName(),
+                        passenger.getPhoneNumber()));
     }
 
     @Override
     public List<PassengerDto> getAllPassengers() {
-        List<Passenger> passengers = passengerRepository.findAll();
-        List<PassengerDto> passengerDTOs = new ArrayList<>();
-        for (Passenger passenger : passengers) {
-            passengerDTOs.add(new PassengerDto(
-                    passenger.getFirstName(), passenger.getEmail(),
-                    passenger.getLastName(),
-                    passenger.getPhoneNumber()));
-        }
-        return passengerDTOs;
+        return passengerRepository.findAll().stream()
+                .map(PassengerDto::of)
+                .collect(Collectors.toList());
     }
 
     @Override

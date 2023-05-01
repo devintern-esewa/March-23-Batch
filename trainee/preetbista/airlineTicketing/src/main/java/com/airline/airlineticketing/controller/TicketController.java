@@ -1,10 +1,6 @@
 package com.airline.airlineticketing.controller;
 
 import com.airline.airlineticketing.dto.TicketDto;
-import com.airline.airlineticketing.enums.TicketStatus;
-import com.airline.airlineticketing.model.Ticket;
-import com.airline.airlineticketing.model.Transaction;
-import com.airline.airlineticketing.model.User;
 import com.airline.airlineticketing.service.TicketService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
