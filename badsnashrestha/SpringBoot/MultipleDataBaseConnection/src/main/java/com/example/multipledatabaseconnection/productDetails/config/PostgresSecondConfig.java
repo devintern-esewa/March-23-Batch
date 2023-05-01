@@ -1,4 +1,5 @@
 package com.example.multipledatabaseconnection.productDetails.config;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,8 +35,8 @@ public class PostgresSecondConfig {
 
     @Bean(name = "secondDataSource")
     @Primary
-    public DataSource dataSource(){
-        DriverManagerDataSource dataSource=new DriverManagerDataSource();
+    public DataSource dataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setUrl(environment.getProperty("second.datasource.url"));
         dataSource.setDriverClassName(environment.getProperty("second.datasource.driver-class-name"));
         dataSource.setUsername(environment.getProperty("second.datasource.username"));
@@ -46,17 +47,17 @@ public class PostgresSecondConfig {
     //entityMangerFactory
     @Bean(name = "secondEntityMangerFactoryBean")
     @Primary
-    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(){
-        LocalContainerEntityManagerFactoryBean bean=new LocalContainerEntityManagerFactoryBean();
+    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean() {
+        LocalContainerEntityManagerFactoryBean bean = new LocalContainerEntityManagerFactoryBean();
         bean.setDataSource(dataSource());
 
-        JpaVendorAdapter adapter=new HibernateJpaVendorAdapter();
+        JpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
         bean.setJpaVendorAdapter(adapter);
 
-        Map<String, String> props=new HashMap<>();
-        props.put("hibernate.dialect","org.hibernate.dialect.PostgreSQLDialect");
-        props.put("hibernate.show_sql","true");
-        props.put("hibernate.hbm2ddl.auto","create-drop ");
+        Map<String, String> props = new HashMap<>();
+        props.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+        props.put("hibernate.show_sql", "true");
+        props.put("hibernate.hbm2ddl.auto", "create-drop ");
 
         bean.setJpaPropertyMap(props);
         bean.setPackagesToScan("com.example.multipledatabaseconnection.productDetails.model");
@@ -68,8 +69,8 @@ public class PostgresSecondConfig {
 
     @Bean(name = "secondTransactionManager")
     @Primary
-    public PlatformTransactionManager transactionManager(){
-        JpaTransactionManager manager=new JpaTransactionManager();
+    public PlatformTransactionManager transactionManager() {
+        JpaTransactionManager manager = new JpaTransactionManager();
         manager.setEntityManagerFactory(entityManagerFactoryBean().getObject());
         return manager;
     }

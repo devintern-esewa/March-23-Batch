@@ -11,10 +11,10 @@ import lombok.Data;
 public class FileDetails extends TimeStamp {
     @Id
     @SequenceGenerator(sequenceName = "file_details_sequence",
-    name="file_details",
-    allocationSize = 1)
+            name = "file_details",
+            allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
-    generator = "file_details")
+            generator = "file_details")
 
     private Long fileDetailsId;
 
@@ -22,8 +22,7 @@ public class FileDetails extends TimeStamp {
     @Enumerated(EnumType.STRING)
     private FileStatus fileStatus;
 
-
-    private Long successCount;
-    private Long failureCount;
+    private Integer successCount;
+    private Integer failureCount;
 
 }

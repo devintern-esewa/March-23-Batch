@@ -33,9 +33,8 @@ public class PostgresConfig {
 
     //datasource
     @Bean("dataSource")
-    @Primary
-    public DataSource dataSource(){
-        DriverManagerDataSource dataSource=new DriverManagerDataSource();
+    public DataSource dataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setUrl(environment.getProperty("spring.datasource.url"));
         dataSource.setDriverClassName(environment.getProperty("spring.datasource.driver-class-name"));
         dataSource.setUsername(environment.getProperty("spring.datasource.username"));
@@ -45,18 +44,17 @@ public class PostgresConfig {
 
     //entityMangerFactory
     @Bean(name = "entityMangerFactoryBean")
-    @Primary
-    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(){
-        LocalContainerEntityManagerFactoryBean bean=new LocalContainerEntityManagerFactoryBean();
+    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean() {
+        LocalContainerEntityManagerFactoryBean bean = new LocalContainerEntityManagerFactoryBean();
         bean.setDataSource(dataSource());
 
-        JpaVendorAdapter adapter=new HibernateJpaVendorAdapter();
-         bean.setJpaVendorAdapter(adapter);
+        JpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+        bean.setJpaVendorAdapter(adapter);
 
-        Map<String, String> props=new HashMap<>();
-        props.put("hibernate.dialect","org.hibernate.dialect.PostgreSQLDialect");
-        props.put("hibernate.show_sql","true");
-        props.put("hibernate.hbm2ddl.auto","create-drop ");
+        Map<String, String> props = new HashMap<>();
+        props.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+        props.put("hibernate.show_sql", "true");
+        props.put("hibernate.hbm2ddl.auto", "create-drop ");
 
         bean.setJpaPropertyMap(props);
         bean.setPackagesToScan("com.example.multipledatabaseconnection.fileDetails.model");
@@ -66,12 +64,11 @@ public class PostgresConfig {
     }
     //platformTransactionManger
 
-@Bean(name = "transactionManager")
-@Primary
-    public PlatformTransactionManager transactionManager(){
-    JpaTransactionManager manager=new JpaTransactionManager();
-    manager.setEntityManagerFactory(entityManagerFactoryBean().getObject());
-    return manager;
+    @Bean(name = "transactionManager")
+    public PlatformTransactionManager transactionManager() {
+        JpaTransactionManager manager = new JpaTransactionManager();
+        manager.setEntityManagerFactory(entityManagerFactoryBean().getObject());
+        return manager;
     }
 
 }

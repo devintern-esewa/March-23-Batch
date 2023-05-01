@@ -9,11 +9,13 @@ import java.util.List;
 
 public interface FileDetailsService {
 
-     List<FileDetails> getAllFileDetails();
-     FileDetailsResponseDto getFileDetailsById(Long fileDetailsId);
-     FileDetails addNewFileDetails(FileDetailsRequestDto fileDetailsRequestDto);
+    List<FileDetails> getAllFileDetails();
 
-     void updateFileDetails(FileDetailsRequestDto fileDetailsRequestDto);
+    FileDetailsResponseDto getFileDetailsById(Long fileDetailsId);
 
-     public  void readFile() throws IOException;
+    FileDetails addNewFileDetails(FileDetailsRequestDto fileDetailsRequestDto);
+
+    void updateFileDetails(FileDetailsRequestDto fileDetailsRequestDto);
+
+    public void readFile() throws IOException;
 }

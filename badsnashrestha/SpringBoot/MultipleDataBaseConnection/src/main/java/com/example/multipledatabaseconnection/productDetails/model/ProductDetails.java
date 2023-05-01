@@ -21,17 +21,16 @@ public class ProductDetails extends TimeStamp {
     @GeneratedValue(strategy = GenerationType.AUTO,
             generator = "product_name")
 
-    @Column(name = "product_id")
 
     private Long productId;
 
-    @Column(name = "product_name")
     private String productName;
     @Enumerated(EnumType.STRING)
     private ProductStatus productStatus;
-    private Long quantity;
+    private String code;
+    private Integer quantity;
 
-    @Column(name = "price")
     private double price;
+
 
 }

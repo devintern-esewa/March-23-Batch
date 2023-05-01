@@ -16,22 +16,24 @@ public class FileDetailsController {
     private FileDetailsService fileDetailsService;
 
     @GetMapping("/getAllFileDetails")
-    public List<FileDetails> getAllFileDetails(){
+    public List<FileDetails> getAllFileDetails() {
         return fileDetailsService.getAllFileDetails();
     }
 
     @GetMapping("/getFileDetailsById/{fileDetailsId}")
-    public FileDetailsResponseDto getFileDetailsById(@PathVariable("fileDetailsId") Long fileDetailsId){
-      return fileDetailsService.getFileDetailsById(fileDetailsId);
+    public FileDetailsResponseDto getFileDetailsById(@PathVariable("fileDetailsId") Long fileDetailsId) {
+        return fileDetailsService.getFileDetailsById(fileDetailsId);
     }
+
     @PostMapping("/addNewFileDetails")
-    public void addNewFileDetails(@RequestBody FileDetailsRequestDto fileDetailsRequestDto){
-        fileDetailsService.addNewFileDetails(fileDetailsRequestDto) ;
+    public void addNewFileDetails(@RequestBody FileDetailsRequestDto fileDetailsRequestDto) {
+        fileDetailsService.addNewFileDetails(fileDetailsRequestDto);
     }
 
     @PutMapping("/updateFileDetails")
-    public void updateFileDetails(@RequestBody FileDetailsRequestDto fileDetailsRequestDto){
+    public void updateFileDetails(@RequestBody FileDetailsRequestDto fileDetailsRequestDto) {
         fileDetailsService.updateFileDetails(fileDetailsRequestDto);
     }
+
 
 }
