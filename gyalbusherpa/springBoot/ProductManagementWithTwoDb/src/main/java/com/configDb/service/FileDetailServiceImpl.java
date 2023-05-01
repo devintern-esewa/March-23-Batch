@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -51,12 +50,18 @@ public class FileDetailServiceImpl implements FileDetailService {
             updateFileStatus.setFileStatus(FileStatusEnum.PROCESSING);
             fileDetailRepository.save(updateFileStatus);
 
-            ArrayList<Product> products = productService.convertFilePathToProduct(updateFileStatus.getFilePath());
+
+            // Converts products detail present in csv file to List of Product type
+            List<Product> products = productService.convertCsvDataInFilePathToProduct(updateFileStatus.getFilePath());
+
+            // Success and failure count logic
+            // Returns only unique list of products to be saved.
+            List<Product> processedProduct = productService.processProduct(products,updateFileStatus.getFilePath());
+
             logger.info("file processing");
-            productService.saveProduct(products);
+            productService.saveProduct(processedProduct);
 
             List<FileDetail> fileDetails1 = fileDetailRepository.findByFileStatus(FileStatusEnum.PROCESSING);
-            System.out.println(fileDetails1);
             for (FileDetail files : fileDetails1) {
                 files.setFileStatus(FileStatusEnum.COMPLETE);
                 fileDetailRepository.save(files);

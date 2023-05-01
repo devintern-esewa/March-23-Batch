@@ -2,15 +2,16 @@ package com.inventoryDb.service;
 
 import com.inventoryDb.model.Product;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface ProductService {
 
-    ArrayList<Product> convertFilePathToProduct(String filePath);
+    List<Product> convertCsvDataInFilePathToProduct(String filePath);
 
-    Product saveProduct(List<Product> products);
+    List<Product> processProduct(List<Product> products, String filepath);
+
+    void saveProduct(List<Product> products);
+
+
 
 }

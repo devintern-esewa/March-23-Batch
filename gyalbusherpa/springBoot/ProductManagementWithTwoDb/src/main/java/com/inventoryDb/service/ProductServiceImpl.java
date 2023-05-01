@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -26,15 +27,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ArrayList<Product> convertFilePathToProduct(String filePath) {
+    public List<Product> convertCsvDataInFilePathToProduct(String filePath) {
 
-        ArrayList<Product> products = new ArrayList<>();
-
-        List<String> allByCode = productRepository.getAllCode();
-
-        HashSet<String> codeIds = new HashSet<>();
-        int successCount = 0;
-        int failCount = 0;
+        List<Product> products = new ArrayList<>();
 
         String line;
         try {
@@ -49,24 +44,6 @@ public class ProductServiceImpl implements ProductService {
                 String code = split[1];
                 double quantity = Double.parseDouble(split[3]);
                 double price = Double.parseDouble(split[4]);
-
-                FileDetail fileDetail;
-
-                if (codeIds.contains(code) || allByCode.contains(code)) {
-                    fileDetail = fileDetailRepository.findFileDetailByFilePath(filePath);
-                    failCount++;
-
-                    fileDetail.setFailureCount(failCount);
-                    fileDetailRepository.save(fileDetail);
-                    continue;
-                } else {
-                    codeIds.add(code);
-                    successCount++;
-
-                    fileDetail = fileDetailRepository.findFileDetailByFilePath(filePath);
-                    fileDetail.setSuccessCount(successCount);
-                    fileDetailRepository.save(fileDetail);
-                }
 
                 Product product = Product.builder()
                         .name(name)
@@ -85,9 +62,44 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product saveProduct(List<Product> products) {
-        Product pro = new Product();
+    public List<Product> processProduct(List<Product> products, String filePath) {
+
+        List<Product> product = new ArrayList<>();
+        HashSet<String> codeIds = new HashSet<>();
+
+        int successCount = 0;
+        int failCount = 0;
+
+        FileDetail fileDetail;
+
+        for (Product processingProduct : products) {
+            Optional<Product> byCodeAndStatus = productRepository.getProductByProductStatusAndCode(ProductEnum.ACTIVE,
+                    processingProduct.getCode());
+
+            boolean flag = byCodeAndStatus.isPresent();
+
+            if (codeIds.contains(processingProduct.getCode()) ||
+                    flag && byCodeAndStatus.get().getCode().equals(processingProduct.getCode())) {
+                fileDetail = fileDetailRepository.findFileDetailByFilePath(filePath);
+                failCount++;
+
+                fileDetail.setFailureCount(failCount);
+                fileDetailRepository.save(fileDetail);
+            } else {
+                product.add(processingProduct);
+                codeIds.add(processingProduct.getCode());
+                successCount++;
+
+                fileDetail = fileDetailRepository.findFileDetailByFilePath(filePath);
+                fileDetail.setSuccessCount(successCount);
+                fileDetailRepository.save(fileDetail);
+            }
+        }
+        return product;
+    }
+
+    @Override
+    public void saveProduct(List<Product> products) {
         productRepository.saveAll(products);
-        return pro;
     }
 }
