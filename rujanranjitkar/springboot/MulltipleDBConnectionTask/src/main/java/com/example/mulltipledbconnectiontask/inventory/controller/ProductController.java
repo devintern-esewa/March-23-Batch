@@ -14,9 +14,9 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @GetMapping("/getAllProducts")
-    public List<Product> getAllProducts(){
-        return productService.getAllProducts();
+    @GetMapping("/getAllProducts/{startingPage}")
+    public List<ProductResponseDto> getAllProducts(@PathVariable("startingPage") int startingPage){
+        return productService.getAllProducts(startingPage);
     }
 
     @GetMapping("/getProductById/{productId}")
