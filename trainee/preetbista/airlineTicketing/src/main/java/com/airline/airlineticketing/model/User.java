@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,9 +28,10 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    private String role;
+    @ManyToMany(cascade = CascadeType.ALL)
+    private List<Role> role;
 
-    public User(String username, String password, Long mobileNumber, String role) {
+    public User(String username, String password, Long mobileNumber, List<Role> role) {
         this.userName = username;
         this.password = password;
         this.mobileNumber = mobileNumber;
