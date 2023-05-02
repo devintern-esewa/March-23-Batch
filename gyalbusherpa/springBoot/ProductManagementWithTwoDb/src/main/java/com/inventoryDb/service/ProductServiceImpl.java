@@ -7,6 +7,10 @@ import com.inventoryDb.enums.ProductEnum;
 import com.inventoryDb.exception.ResourceNotFoundException;
 import com.inventoryDb.model.Product;
 import com.inventoryDb.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -116,5 +120,25 @@ public class ProductServiceImpl implements ProductService {
                 "with id: " + id + " doesn't exist"));
         product.setProductStatus(ProductEnum.DELETED);
         productRepository.save(product);
+    }
+
+    @Override
+    public Page<ProductDto> getAllProductsByPage(int offSet, int pageSize, String field) {
+        Page<Product> allProducts = productRepository.findAll(PageRequest.of(offSet, pageSize).withSort(Sort.Direction.ASC,
+                field));
+        
+        List<ProductDto> productsDto = new ArrayList<>();
+        
+        for (Product products: allProducts ) {
+            productsDto.add(
+                    ProductDto.builder()
+                            .name(products.getName())
+                            .code(products.getCode())
+                            .quantity(products.getQuantity())
+                            .price(products.getPrice())
+                            .build()
+            );
+        }
+        return new PageImpl<>(productsDto, allProducts.getPageable(), allProducts.getTotalElements());
     }
 }
