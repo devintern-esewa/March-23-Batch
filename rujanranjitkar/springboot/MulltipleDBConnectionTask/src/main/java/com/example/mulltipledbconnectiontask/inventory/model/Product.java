@@ -1,11 +1,10 @@
 package com.example.mulltipledbconnectiontask.inventory.model;
 
+import com.example.mulltipledbconnectiontask.inventory.aop.AesEncryptor;
 import com.example.mulltipledbconnectiontask.inventory.enums.ProductStatus;
 import com.example.mulltipledbconnectiontask.timeStamp.TimeStamp;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 @Data
 @Entity
@@ -21,6 +20,7 @@ public class Product extends TimeStamp {
 
     private String productName;
 
+    @Convert(converter = AesEncryptor.class)
     private String code;
 
     @Enumerated(EnumType.STRING)

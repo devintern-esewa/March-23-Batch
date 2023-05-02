@@ -6,6 +6,7 @@ import com.example.mulltipledbconnectiontask.fileDetails.dto.FileDetailsResponse
 import com.example.mulltipledbconnectiontask.fileDetails.enums.FileStatus;
 import com.example.mulltipledbconnectiontask.fileDetails.model.FileDetails;
 import com.example.mulltipledbconnectiontask.fileDetails.repo.FileDetailsRepo;
+import com.example.mulltipledbconnectiontask.inventory.aop.AesEncryptor;
 import com.example.mulltipledbconnectiontask.inventory.model.Product;
 import com.example.mulltipledbconnectiontask.inventory.repo.ProductRepo;
 import com.example.mulltipledbconnectiontask.inventory.service.ProductService;
@@ -23,6 +24,8 @@ public class FileDetailsServiceImpl implements FileDetailsService {
     private ProductService productService;
     @Autowired
     private ProductRepo productRepo;
+    @Autowired
+    private AesEncryptor aesEncryptor;
 
     @Override
     public List<FileDetails> getALLFileDetails() {
@@ -57,6 +60,7 @@ public class FileDetailsServiceImpl implements FileDetailsService {
 
             List<Product> products = productService.readProductDetailsFromFile(file.getFilePath());
             List<Product> successProducts = productService.countSuccessFailureBeforeSavingProducts(products, file.getFilePath());
+
             productRepo.saveAll(successProducts);
 
             // created a new file to set status to complete

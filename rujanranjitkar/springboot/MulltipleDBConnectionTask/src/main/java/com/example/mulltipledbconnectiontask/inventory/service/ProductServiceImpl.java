@@ -29,7 +29,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductResponseDto> getAllProducts(int startingPage) {
-       List<ProductResponseDto> productResponseDto1=new ArrayList<>();
+       List<ProductResponseDto> productResponseDtoList=new ArrayList<>();
         PageRequest pageRequest=PageRequest.of(startingPage,10);
         List<Product> listOfProduct=productRepo.findAll(pageRequest).stream().toList();
         for(Product product: listOfProduct){
@@ -39,9 +39,9 @@ public class ProductServiceImpl implements ProductService {
             productResponseDto.setProductStatus(product.getProductStatus());
             productResponseDto.setQuantity(product.getQuantity());
             productResponseDto.setPrice(product.getPrice());
-            productResponseDto1.add(productResponseDto);
+            productResponseDtoList.add(productResponseDto);
         }
-        return productResponseDto1;
+        return productResponseDtoList;
     }
 
     @Override
