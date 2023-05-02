@@ -1,10 +1,12 @@
 package com.airline.airlineticketing.dto;
 
+import com.airline.airlineticketing.model.Role;
 import com.airline.airlineticketing.model.User;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,9 +18,9 @@ public class UserDto implements Serializable {
 
     private String password;
 
-    private String role;
+    private List<Role> role;
 
-    public UserDto(String userName, String password, Long mobileNumber, String role) {
+    public UserDto(String userName, String password, Long mobileNumber, List<Role> role) {
         this.userName = userName;
         this.password = password;
         this.mobileNumber = mobileNumber;

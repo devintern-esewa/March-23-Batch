@@ -4,6 +4,7 @@ import com.airline.airlineticketing.dto.UserDto;
 import com.airline.airlineticketing.model.User;
 import com.airline.airlineticketing.repository.UserRepository;
 import com.airline.airlineticketing.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -13,9 +14,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    private UserRepository userRepository;
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -53,4 +55,5 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
         return false;
     }
+
 }
