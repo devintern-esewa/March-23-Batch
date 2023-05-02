@@ -2,6 +2,7 @@ package com.inventoryDb.service;
 
 import com.configDb.model.FileDetail;
 import com.configDb.repository.FileDetailRepository;
+import com.inventoryDb.annotation.DecryptProduct;
 import com.inventoryDb.dto.ProductDto;
 import com.inventoryDb.enums.ProductEnum;
 import com.inventoryDb.exception.ResourceNotFoundException;
@@ -9,7 +10,6 @@ import com.inventoryDb.model.Product;
 import com.inventoryDb.repository.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -109,27 +109,23 @@ public class ProductServiceImpl implements ProductService {
         productRepository.saveAll(products);
     }
 
+
     @Override
+    @DecryptProduct
     public List<ProductDto> getAllProducts() {
         return productRepository.getAllProductDto();
     }
 
     @Override
-    public void deleteProduct(long id) {
-        Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product " +
-                "with id: " + id + " doesn't exist"));
-        product.setProductStatus(ProductEnum.DELETED);
-        productRepository.save(product);
-    }
+    @DecryptProduct
+    public List<ProductDto> getAllProductsByPage(int offSet, int pageSize, String field) {
+        Page<Product> allProducts =
+                productRepository.findAll(PageRequest.of(offSet, pageSize).withSort(Sort.Direction.ASC,
+                        field));
 
-    @Override
-    public Page<ProductDto> getAllProductsByPage(int offSet, int pageSize, String field) {
-        Page<Product> allProducts = productRepository.findAll(PageRequest.of(offSet, pageSize).withSort(Sort.Direction.ASC,
-                field));
-        
         List<ProductDto> productsDto = new ArrayList<>();
-        
-        for (Product products: allProducts ) {
+
+        for (Product products : allProducts) {
             productsDto.add(
                     ProductDto.builder()
                             .name(products.getName())
@@ -139,6 +135,33 @@ public class ProductServiceImpl implements ProductService {
                             .build()
             );
         }
-        return new PageImpl<>(productsDto, allProducts.getPageable(), allProducts.getTotalElements());
+        return productsDto;
+    }
+
+    @Override
+    @DecryptProduct
+    public List<ProductDto> getProductById(long id) {
+        Product products = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product is" +
+                " not found"));
+
+        List<ProductDto> productsDto = new ArrayList<>();
+
+        ProductDto productDto = new ProductDto();
+        productDto.setName(products.getName());
+        productDto.setCode(products.getCode());
+        productDto.setQuantity(products.getQuantity());
+        productDto.setPrice(products.getPrice());
+
+        productsDto.add(productDto);
+
+        return productsDto;
+    }
+
+    @Override
+    public void deleteProduct(long id) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product " +
+                "with id: " + id + " doesn't exist"));
+        product.setProductStatus(ProductEnum.DELETED);
+        productRepository.save(product);
     }
 }

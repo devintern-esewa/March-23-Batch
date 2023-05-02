@@ -6,6 +6,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
@@ -27,7 +28,11 @@ public class AspectConfig {
         }
     }
 
-    @Around("execution(* com.inventoryDb.service.ProductServiceImpl.getAllProducts())")
+    @Pointcut("@annotation(com.inventoryDb.annotation.DecryptProduct)")
+    public void decryptionPointCut() {
+    }
+
+    @Around("decryptionPointCut()")
     public Object decryptProductName(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         List<ProductDto> products = (List<ProductDto>) proceedingJoinPoint.proceed();
 
@@ -35,9 +40,7 @@ public class AspectConfig {
             String decryptedName = rsaEncryptionService.decryptProductName(product.getName());
             product.setName(decryptedName);
         }
-
         return products;
     }
-
 }
 
