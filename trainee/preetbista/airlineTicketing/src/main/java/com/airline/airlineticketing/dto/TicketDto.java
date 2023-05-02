@@ -1,5 +1,6 @@
 package com.airline.airlineticketing.dto;
 
+import com.airline.airlineticketing.model.Ticket;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,5 +33,16 @@ public class TicketDto implements Serializable {
     }
 
     public TicketDto() {
+    }
+
+    public static TicketDto of(Ticket ticket){
+        return new TicketDto(
+                ticket.getFlightNumber(),
+                ticket.getDepartureAirport(),
+                ticket.getArrivalAirport(),
+                ticket.getDepartureTime(),
+                ticket.getArrivalTime(),
+                ticket.getPrice()
+        );
     }
 }

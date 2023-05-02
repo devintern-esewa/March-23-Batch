@@ -36,12 +36,9 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long userId) {
-        UserDto user = userService.getUserById(userId);
-        if (user != null) {
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+       return userService.getUserById(userId)
+               .map(ResponseEntity::ok)
+               .orElse(ResponseEntity.noContent().build());
     }
 
     @DeleteMapping("/{userId}")

@@ -1,5 +1,6 @@
 package com.airline.airlineticketing.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,9 +19,9 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "passenger_id", referencedColumnName = "id")
-    private Passenger passenger;
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
     @Column(name = "flight_number")
     private String flightNumber;
@@ -37,7 +38,6 @@ public class Ticket {
     @Column(name = "arrival_time")
     private LocalDateTime arrivalTime;
 
-    @Column(nullable = false)
     private double price;
 
     public Ticket(String flightNumber, String departureAirport, String arrivalAirport, LocalDateTime departureTime, LocalDateTime arrivalTime, double price) {

@@ -35,12 +35,19 @@ public class TicketController {
 
     @GetMapping("/{ticketId}")
     public ResponseEntity<TicketDto> getTicketById(@PathVariable Long ticketId) {
-        TicketDto ticket = ticketService.getTicketById(ticketId);
-        if (ticket != null) {
-            return ResponseEntity.ok(ticket);
-        } else {
-            return ResponseEntity.noContent().build();
-        }
+        return ticketService.getTicketById(ticketId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.noContent().build());
     }
+
+    /*public void bookTicket(Long userId, List<String> ticketNumbers) {
+         User user = userService.findById(userId);
+         List<Ticket> tickets = ticketService.findByTicketNumbers(ticketNumbers);
+        Transaction transaction = new Transaction();
+        transaction.setTicket(tickets);
+        transaction.setUser(user);
+        transaction.setTicketStatus(TicketStatus.BOOKED);
+
+    }*/
 
 }

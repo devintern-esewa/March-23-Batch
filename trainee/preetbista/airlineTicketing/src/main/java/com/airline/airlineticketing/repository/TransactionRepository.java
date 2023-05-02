@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
-    @Query(value = "select 1 from transactions where user_id = :userId", nativeQuery = true)
+    @Query(value = "select t from transactions t where t.user_id = :userId", nativeQuery = true)
     Optional<Transaction> getTransactionByUserId(Long userId);
 }

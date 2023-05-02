@@ -1,15 +1,14 @@
 package com.airline.airlineticketing.service.impl;
 
 import com.airline.airlineticketing.dto.TransactionDto;
-import com.airline.airlineticketing.model.Transaction;
 import com.airline.airlineticketing.repository.TransactionRepository;
 import com.airline.airlineticketing.service.TransactionService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -23,28 +22,18 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public List<TransactionDto> getAllTransaction() {
-        List<Transaction> transactions = transactionRepository.findAll();
-        List<TransactionDto> transactionDtos = new ArrayList<>();
-        for (Transaction transaction : transactions) {
-            transactionDtos.add(new TransactionDto(
-                    transaction.getUser(),
-                    transaction.getTicket(),
-                    transaction.getTicketStatus()));
-        }
-        return transactionDtos;
+        return transactionRepository.findAll().stream()
+                .map(TransactionDto::of)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public TransactionDto getTransactionByUserId(Long userId) {
-        Optional<Transaction> optionalTransaction = transactionRepository.getTransactionByUserId(userId);
-        if(optionalTransaction.isPresent()){
-            Transaction transaction = optionalTransaction.get();
-            return new TransactionDto(transaction.getUser(),
-            transaction.getTicket(),
-                    transaction.getTicketStatus());
-        }else {
-            return null;
-        }
+    public Optional<TransactionDto> getTransactionByUserId(Long userId) {
+        return transactionRepository.getTransactionByUserId(userId)
+                .map(transaction -> new TransactionDto(
+                        transaction.getUser(),
+                        transaction.getTicket(),
+                        transaction.getTicketStatus()));
     }
 }

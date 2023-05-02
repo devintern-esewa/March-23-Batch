@@ -7,9 +7,9 @@ import com.airline.airlineticketing.service.UserService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -31,32 +31,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto getUserById(Long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            return new UserDto(user.getUserName(),
-                    user.getPassword(),
-                    user.getMobileNumber(),
-                    user.getRole());
-        } else {
-            return null;
-        }
+    public Optional<UserDto> getUserById(Long id) {
+        return userRepository.findById(id)
+                .map(user -> new UserDto(
+                        user.getUserName(),
+                        user.getPassword(),
+                        user.getMobileNumber(),
+                        user.getRole()));
     }
 
     @Override
     @Transactional
     public List<UserDto> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        List<UserDto> userDTOs = new ArrayList<>();
-        for (User user : users) {
-            userDTOs.add(new UserDto(
-                    user.getUserName(),
-                    user.getPassword(),
-                    user.getMobileNumber(),
-                    user.getRole()));
-        }
-        return userDTOs;
+        return userRepository.findAll().stream()
+                .map(UserDto::of)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.airline.airlineticketing.model;
 
+import com.airline.airlineticketing.dto.PassengerDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
