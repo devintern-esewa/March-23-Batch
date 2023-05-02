@@ -69,13 +69,13 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
         List<ProductDetails> sucessProductDetails = new ArrayList<>();
         for (ProductDetails productDetail : productDetails) {
             Optional<ProductDetails> sameProductDetails = Optional.ofNullable(productDetailsRepo.getByCode(productDetail.getCode()));
-            if (sameProductDetails.isPresent()) {
+            if (sameProductDetails.isPresent() && sameProductDetails.get().getProductStatus()==ProductStatus.ACTIVE) {
                 failCount++;
                 fileDetails = fileDetailsRepo.findByFilePath(filePath);
                 fileDetails.setFailureCount(failCount);
                 fileDetailsRepo.save(fileDetails);
 
-            } else {
+            }  else {
                 sucessCount++;
                 sucessProductDetails.add(productDetail);
                 fileDetails = fileDetailsRepo.findByFilePath(filePath);

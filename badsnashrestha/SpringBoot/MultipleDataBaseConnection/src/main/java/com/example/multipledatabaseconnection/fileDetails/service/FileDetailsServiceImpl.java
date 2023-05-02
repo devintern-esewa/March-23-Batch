@@ -72,6 +72,7 @@ public class FileDetailsServiceImpl implements FileDetailsService {
     public void readFile() throws IOException {
         List<FileDetails> fileDetails = fileDetailsRepo.findByFileStatus(FileStatus.PENDING);
         for (FileDetails fileDetail : fileDetails) {
+            logger.info("File Status set to Processing");
             fileDetail.setFileStatus(FileStatus.PROCESSING);
             fileDetailsRepo.save(fileDetail);
 
