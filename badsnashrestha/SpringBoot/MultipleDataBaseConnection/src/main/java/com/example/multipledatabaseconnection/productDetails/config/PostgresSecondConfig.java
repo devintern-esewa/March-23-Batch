@@ -26,10 +26,13 @@ import java.util.Map;
         transactionManagerRef = "secondTransactionManager"
 )
 public class PostgresSecondConfig {
-    @Autowired
-    //used to read code inside .properties
-    private Environment environment;
 
+    //used to read code inside .properties
+    private final Environment environment;
+
+    public PostgresSecondConfig(Environment environment) {
+        this.environment = environment;
+    }
 
     //datasource
 

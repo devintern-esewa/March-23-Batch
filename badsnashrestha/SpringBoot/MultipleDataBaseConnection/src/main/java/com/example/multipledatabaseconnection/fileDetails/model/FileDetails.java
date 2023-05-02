@@ -17,11 +17,9 @@ public class FileDetails extends TimeStamp {
             generator = "file_details")
 
     private Long fileDetailsId;
-
     private String filePath;
     @Enumerated(EnumType.STRING)
     private FileStatus fileStatus;
-
     private Integer successCount;
     private Integer failureCount;
 

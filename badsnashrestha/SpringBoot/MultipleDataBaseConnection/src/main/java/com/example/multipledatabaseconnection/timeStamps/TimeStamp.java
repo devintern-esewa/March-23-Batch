@@ -7,9 +7,7 @@ import jakarta.persistence.Version;
 
 import java.time.LocalDateTime;
 
-
 @MappedSuperclass
-
 public class TimeStamp {
     LocalDateTime createdDate;
     LocalDateTime modifiedDate;
@@ -19,7 +17,6 @@ public class TimeStamp {
         this.createdDate = LocalDateTime.now(); //set the value of createdDate to LocalDateTime.now();
         modifiedDate = LocalDateTime.now();    //set the value of modifiedDtae to LocalDateTIme.now();
     }
-
 
     @PreUpdate
     public void preUpdate() {

@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductDetailsRequestDto {
-
     private String productName;
     @Enumerated(EnumType.STRING)
     private ProductStatus productStatus;

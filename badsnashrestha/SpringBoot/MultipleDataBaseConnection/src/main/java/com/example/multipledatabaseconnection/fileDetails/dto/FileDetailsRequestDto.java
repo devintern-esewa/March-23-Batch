@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class FileDetailsRequestDto extends TimeStamp {
-    private Long fileDetailsId;
     //to save data
+    private Long fileDetailsId;
     private String filePath;
 }

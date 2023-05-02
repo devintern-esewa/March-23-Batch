@@ -3,7 +3,6 @@ package com.example.multipledatabaseconnection.fileDetails.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -30,15 +29,16 @@ public class PostgresConfig {
     //used to read code inside .properties
     private Environment environment;
 
-
     //datasource
     @Bean("dataSource")
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
+
         dataSource.setUrl(environment.getProperty("spring.datasource.url"));
         dataSource.setDriverClassName(environment.getProperty("spring.datasource.driver-class-name"));
         dataSource.setUsername(environment.getProperty("spring.datasource.username"));
         dataSource.setPassword(environment.getProperty("spring.datasource.password"));
+
         return dataSource;
     }
 
@@ -60,10 +60,9 @@ public class PostgresConfig {
         bean.setPackagesToScan("com.example.multipledatabaseconnection.fileDetails.model");
 
         return bean;
-
     }
-    //platformTransactionManger
 
+    //platformTransactionManger
     @Bean(name = "transactionManager")
     public PlatformTransactionManager transactionManager() {
         JpaTransactionManager manager = new JpaTransactionManager();

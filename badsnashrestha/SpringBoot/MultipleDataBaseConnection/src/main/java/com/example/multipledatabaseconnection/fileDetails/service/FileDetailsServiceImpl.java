@@ -14,14 +14,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+
 public class FileDetailsServiceImpl implements FileDetailsService {
     Logger logger = LoggerFactory.getLogger(FileDetailsServiceImpl.class);
     @Autowired
@@ -68,7 +66,6 @@ public class FileDetailsServiceImpl implements FileDetailsService {
 
     //to schedule the execution of method after 1 min of server start
     @Scheduled(cron = "0 */1 * * * * ")
-    @Override
     public void readFile() throws IOException {
         List<FileDetails> fileDetails = fileDetailsRepo.findByFileStatus(FileStatus.PENDING);
         for (FileDetails fileDetail : fileDetails) {

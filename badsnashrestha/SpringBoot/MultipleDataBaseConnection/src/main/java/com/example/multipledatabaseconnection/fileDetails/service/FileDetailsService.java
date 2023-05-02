@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.List;
 
 public interface FileDetailsService {
-
     List<FileDetails> getAllFileDetails();
 
     FileDetailsResponseDto getFileDetailsById(Long fileDetailsId);
@@ -17,5 +16,4 @@ public interface FileDetailsService {
 
     void updateFileDetails(FileDetailsRequestDto fileDetailsRequestDto);
 
-    public void readFile() throws IOException;
 }

@@ -1,7 +1,6 @@
 package com.example.multipledatabaseconnection.productDetails.service;
 
 import com.example.multipledatabaseconnection.exception.IdNotFoundException;
-import com.example.multipledatabaseconnection.fileDetails.dto.FileDetailsResponseDto;
 import com.example.multipledatabaseconnection.fileDetails.model.FileDetails;
 import com.example.multipledatabaseconnection.fileDetails.repo.FileDetailsRepo;
 import com.example.multipledatabaseconnection.productDetails.dto.ProductDetailsResponseDto;
@@ -11,12 +10,14 @@ import com.example.multipledatabaseconnection.productDetails.repo.ProductDetails
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +28,39 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
     @Autowired
     FileDetailsRepo fileDetailsRepo;
     Logger logger = LoggerFactory.getLogger(ProductDetailsServiceImpl.class);
+
+    @Override
+    public List<ProductDetailsResponseDto> getAllProductDetails(int startingPage) {
+        PageRequest pageRequest = PageRequest.of(startingPage, 10);
+        List<ProductDetails> productDetails=productDetailsRepo.findAll(pageRequest).stream().toList();
+
+        List<ProductDetailsResponseDto> productDetailsResponseDtoList=new ArrayList<>();
+
+        for(ProductDetails productDetail:productDetails){
+            ProductDetailsResponseDto productDetailsResponseDto=new ProductDetailsResponseDto();
+            productDetailsResponseDto.setProductName(productDetail.getProductName());
+            productDetailsResponseDto.setProductStatus(productDetail.getProductStatus());
+            productDetailsResponseDto.setCode(productDetail.getCode());
+            productDetailsResponseDto.setQuantity(productDetail.getQuantity());
+            productDetailsResponseDto.setPrice(productDetail.getPrice());
+
+            productDetailsResponseDtoList.add(productDetailsResponseDto);
+        }
+
+        return productDetailsResponseDtoList ;
+    }
+
+    @Override
+    public ProductDetailsResponseDto getProductDetailsById(Long productDetailsId) {
+        ProductDetails productDetails = productDetailsRepo.findById(productDetailsId).orElseThrow(() -> new IdNotFoundException("Product with " + productDetailsId + " doesn't exists"));
+        ProductDetailsResponseDto productDetailsResponseDto = new ProductDetailsResponseDto();
+        productDetailsResponseDto.setProductName(productDetails.getProductName());
+        productDetailsResponseDto.setProductStatus(productDetails.getProductStatus());
+        productDetailsResponseDto.setCode(productDetails.getCode());
+        productDetailsResponseDto.setQuantity(productDetails.getQuantity());
+        productDetailsResponseDto.setPrice(productDetails.getPrice());
+        return productDetailsResponseDto;
+    }
 
     @Override
     public List<ProductDetails> readCsvInsertIntoProductDetails(String filePath) throws IOException {
@@ -56,53 +90,44 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
     }
 
     @Override
-    public List<ProductDetails> addNewProduct(List<ProductDetails> productDetails) {
-        logger.info("Saving productDetails to the inventory_db");
-        return productDetailsRepo.saveAll(productDetails);
-    }
-
-    @Override
     public List<ProductDetails> processingProduct(List<ProductDetails> productDetails, String filePath) {
-        Integer sucessCount = 0;
+        Integer successCount = 0;
         Integer failCount = 0;
         FileDetails fileDetails;
-        List<ProductDetails> sucessProductDetails = new ArrayList<>();
+        HashSet<String> productsCode = new HashSet<>();
+        List<ProductDetails> successProductDetails = new ArrayList<>();
         for (ProductDetails productDetail : productDetails) {
             Optional<ProductDetails> sameProductDetails = Optional.ofNullable(productDetailsRepo.getByCode(productDetail.getCode()));
-            if (sameProductDetails.isPresent() && sameProductDetails.get().getProductStatus()==ProductStatus.ACTIVE) {
+            if (productsCode.contains(productDetail.getCode()) || sameProductDetails.isPresent() && sameProductDetails.get().getProductStatus() == ProductStatus.ACTIVE) {
                 failCount++;
                 fileDetails = fileDetailsRepo.findByFilePath(filePath);
                 fileDetails.setFailureCount(failCount);
                 fileDetailsRepo.save(fileDetails);
 
-            }  else {
-                sucessCount++;
-                sucessProductDetails.add(productDetail);
+            } else {
+                successCount++;
+                successProductDetails.add(productDetail);
+                productsCode.add(productDetail.getCode());
                 fileDetails = fileDetailsRepo.findByFilePath(filePath);
-                fileDetails.setSuccessCount(sucessCount);
+                fileDetails.setSuccessCount(successCount);
                 fileDetailsRepo.save(fileDetails);
             }
         }
-        logger.info("Return sucessProductDetails that contain only the productDetails having unique code");
-        return sucessProductDetails;
+        logger.info("Return successProductDetails that contain only the productDetails having unique code");
+        return successProductDetails;
 
     }
 
     @Override
-    public ProductDetailsResponseDto getProductDetailsById(Long productDetailsId) {
-        ProductDetails productDetails = productDetailsRepo.findById(productDetailsId).orElseThrow(() -> new IdNotFoundException("Product with " + productDetailsId + " dosen't exists"));
-        ProductDetailsResponseDto productDetailsResponseDto = new ProductDetailsResponseDto();
-        productDetailsResponseDto.setProductName(productDetails.getProductName());
-        productDetailsResponseDto.setProductStatus(productDetails.getProductStatus());
-        productDetailsResponseDto.setCode(productDetails.getCode());
-        productDetailsResponseDto.setQuantity(productDetails.getQuantity());
-        productDetailsResponseDto.setPrice(productDetails.getPrice());
-        return productDetailsResponseDto;
+    public List<ProductDetails> addNewProduct(List<ProductDetails> productDetails) {
+        logger.info("Saving productDetails to the inventory_db");
+        return productDetailsRepo.saveAll(productDetails);
     }
+
 
     @Override
     public void deleteProductDetailsById(Long productDetailsId) {
-        ProductDetails productDetails = productDetailsRepo.findById(productDetailsId).orElseThrow(() -> new IdNotFoundException("Product with " + productDetailsId + " dosen't exists"));
+        ProductDetails productDetails = productDetailsRepo.findById(productDetailsId).orElseThrow(() -> new IdNotFoundException("Product with " + productDetailsId + " doesn't exists"));
         productDetails.setProductStatus(ProductStatus.DELETED);
         productDetailsRepo.save(productDetails);
     }
