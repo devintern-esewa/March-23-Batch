@@ -3,7 +3,6 @@ package com.example.mulltipledbconnectiontask.inventory.service;
 import com.example.mulltipledbconnectiontask.exception.IdDoesNotExistsException;
 import com.example.mulltipledbconnectiontask.fileDetails.model.FileDetails;
 import com.example.mulltipledbconnectiontask.fileDetails.repo.FileDetailsRepo;
-import com.example.mulltipledbconnectiontask.inventory.dto.ProductRequestDto;
 import com.example.mulltipledbconnectiontask.inventory.dto.ProductResponseDto;
 import com.example.mulltipledbconnectiontask.inventory.enums.ProductStatus;
 import com.example.mulltipledbconnectiontask.inventory.model.Product;
@@ -29,11 +28,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductResponseDto> getAllProducts(int startingPage) {
-       List<ProductResponseDto> productResponseDtoList=new ArrayList<>();
-        PageRequest pageRequest=PageRequest.of(startingPage,10);
-        List<Product> listOfProduct=productRepo.findAll(pageRequest).stream().toList();
-        for(Product product: listOfProduct){
-            ProductResponseDto productResponseDto=new ProductResponseDto();
+        List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
+        PageRequest pageRequest = PageRequest.of(startingPage, 10);
+        List<Product> listOfProduct = productRepo.findAll(pageRequest).stream().toList();
+        for (Product product : listOfProduct) {
+            ProductResponseDto productResponseDto = new ProductResponseDto();
             productResponseDto.setProductName(product.getProductName());
             productResponseDto.setCode(product.getCode());
             productResponseDto.setProductStatus(product.getProductStatus());
@@ -46,8 +45,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponseDto getProductById(Long productId) {
-        ProductResponseDto productResponseDto = new ProductResponseDto();
         Product product = productRepo.findById(productId).orElseThrow(() -> new IdDoesNotExistsException("Product with id " + productId + " does not exists"));
+        ProductResponseDto productResponseDto = new ProductResponseDto();
         productResponseDto.setProductName(product.getProductName());
         productResponseDto.setCode(product.getCode());
         productResponseDto.setProductStatus(product.getProductStatus());
@@ -93,22 +92,22 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> countSuccessFailureBeforeSavingProducts(List<Product> products, String filePath) {
         List<Product> successProducts = new ArrayList<>();
-        HashSet<String> productsCode=new HashSet<>();
-        FileDetails fileDetails ;
+        HashSet<String> productsCode = new HashSet<>();
+        FileDetails fileDetails;
         Long successCount = 0L;
         Long failureCount = 0L;
         for (Product product : products) {
             Optional<Product> productsByCode = Optional.ofNullable(productRepo.findByCode(product.getCode()));
             if (productsCode.contains(product.getCode()) || productsByCode.isPresent() && productsByCode.get().getProductStatus() == ProductStatus.ACTIVE) {
                 failureCount++;
-                fileDetails= fileDetailsRepo.findByFilePath(filePath);
+                fileDetails = fileDetailsRepo.findByFilePath(filePath);
                 fileDetails.setFailureCount(failureCount);
                 fileDetailsRepo.save(fileDetails);
             } else {
                 successCount++;
                 successProducts.add(product);
                 productsCode.add(product.getCode());
-                fileDetails= fileDetailsRepo.findByFilePath(filePath);
+                fileDetails = fileDetailsRepo.findByFilePath(filePath);
                 fileDetails.setSuccessCount(successCount);
                 fileDetailsRepo.save(fileDetails);
             }

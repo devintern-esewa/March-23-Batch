@@ -1,12 +1,13 @@
 package com.example.mulltipledbconnectiontask.inventory.model;
 
-import com.example.mulltipledbconnectiontask.inventory.aop.AesEncryptor;
 import com.example.mulltipledbconnectiontask.inventory.enums.ProductStatus;
 import com.example.mulltipledbconnectiontask.timeStamp.TimeStamp;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "products")
 public class Product extends TimeStamp {
@@ -20,7 +21,7 @@ public class Product extends TimeStamp {
 
     private String productName;
 
-    @Convert(converter = AesEncryptor.class)
+    //    @Convert(converter = AesEncryptor.class) use this if you don't want to use aop for encryption and description
     private String code;
 
     @Enumerated(EnumType.STRING)

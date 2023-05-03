@@ -3,7 +3,6 @@ package com.example.mulltipledbconnectiontask.inventory.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -17,6 +16,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Configuration
 @EnableTransactionManagement
@@ -34,7 +34,7 @@ public class ProductConfig {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setUrl(environment.getProperty("second.datasource.url"));
-        dataSource.setDriverClassName(environment.getProperty("second.datasource.driver-class-name"));
+        dataSource.setDriverClassName(Objects.requireNonNull(environment.getProperty("second.datasource.driver-class-name")));
         dataSource.setUsername(environment.getProperty("second.datasource.username"));
         dataSource.setPassword(environment.getProperty("second.datasource.password"));
         return dataSource;

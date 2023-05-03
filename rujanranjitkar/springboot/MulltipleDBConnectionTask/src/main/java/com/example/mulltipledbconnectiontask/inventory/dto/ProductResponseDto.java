@@ -1,11 +1,11 @@
 package com.example.mulltipledbconnectiontask.inventory.dto;
 
 import com.example.mulltipledbconnectiontask.inventory.enums.ProductStatus;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProductResponseDto {
     private String productName;
     private String code;

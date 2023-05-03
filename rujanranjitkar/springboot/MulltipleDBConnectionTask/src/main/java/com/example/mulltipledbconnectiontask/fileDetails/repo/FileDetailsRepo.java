@@ -8,6 +8,5 @@ import java.util.List;
 
 public interface FileDetailsRepo extends JpaRepository<FileDetails, Long> {
     List<FileDetails> findByFileStatus(FileStatus fileStatus);
-
     FileDetails findByFilePath(String filePath);
 }
