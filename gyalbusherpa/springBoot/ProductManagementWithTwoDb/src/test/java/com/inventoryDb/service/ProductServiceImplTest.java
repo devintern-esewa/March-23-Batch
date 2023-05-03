@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
@@ -52,16 +51,30 @@ class ProductServiceImplTest {
         when(productRepository.getProductByProductStatusAndCode(eq(ProductEnum.ACTIVE), eq("c1")))
                 .thenReturn(Optional.empty());
 
-        // Call the method being tested
         List<Product> outputProducts = productService.processProduct(inputProducts, "test.csv");
 
-        // Verify the results
         assertEquals(4, outputProducts.size());
         assertEquals(4, fileDetail.getSuccessCount());
         assertEquals(0, fileDetail.getFailureCount());
 
-//        // Verify repository interactions
         verify(productRepository, times(4)).getProductByProductStatusAndCode(eq(ProductEnum.ACTIVE), anyString());
         verify(fileDetailRepository, times(4)).save(any(FileDetail.class));
     }
+
+    @Test
+    public void testConvertCsvDataInFilePathToProduct() {
+
+        String testFilePath = "D:\\Downloads\\March-23-Batch\\gyalbusherpa\\springBoot\\ProductManagementWithTwoDb\\src\\test\\resource\\product.csv";
+
+        List<Product> products = productService.convertCsvDataInFilePathToProduct(testFilePath);
+
+        assertEquals(8, products.size());
+
+        assertEquals("fog", products.get(0).getName());
+        assertEquals("F1", products.get(0).getCode());
+        assertEquals(ProductEnum.ACTIVE, products.get(0).getProductStatus());
+        assertEquals(1, products.get(0).getQuantity(), 0.001);
+        assertEquals(500, products.get(0).getPrice(), 0.001);
+    }
+
 }

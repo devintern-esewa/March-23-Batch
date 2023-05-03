@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -22,9 +23,17 @@ public class FileDetailController {
         this.fileDetailService = fileDetailService;
     }
 
-    @PostMapping("/fileDetail")
+/*    @PostMapping("/fileDetail")
     public ResponseEntity<FileResponseDto> saveFileDetail(@RequestBody FileRequestDto fileRequestDto){
         logger.info("File detail saved successfully");
         return new ResponseEntity<FileResponseDto>(fileDetailService.saveFileDetail(fileRequestDto), HttpStatus.CREATED);
+    }*/
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/fileDetail")
+    public FileResponseDto saveFileDetail(@RequestBody FileRequestDto fileRequestDto){
+        logger.info("File detail saved successfully");
+        return fileDetailService.saveFileDetail(fileRequestDto);
     }
+
 }

@@ -7,6 +7,7 @@ import com.configDb.service.FileDetailService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -32,16 +33,16 @@ class FileDetailControllerTest {
 
     @Test
     void testCreationOfFile() throws Exception {
-        FileRequestDto fileDetail = FileRequestDto.builder()
+    /*    FileRequestDto fileDetail = FileRequestDto.builder()
                 .filePath("D:/products.csv")
-                .build();
+                .build();*/
 
         FileResponseDto fileResponseDto = FileResponseDto.builder()
                 .filePath("D:/products.csv")
                 .status(FileStatusEnum.PENDING)
                 .build();
 
-        when(fileDetailService.saveFileDetail(fileDetail)).thenReturn(fileResponseDto);
+        when(fileDetailService.saveFileDetail(ArgumentMatchers.any(FileRequestDto.class))).thenReturn(fileResponseDto);
 
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectWriter objectWriter = objectMapper.writer();
@@ -54,9 +55,9 @@ class FileDetailControllerTest {
                                 .content(content)
                                 .accept(MediaType.APPLICATION_JSON)
                 ).andDo(print())
-                .andExpect(status().isCreated());
-//                .andExpect(jsonPath("$", notNullValue()))
-//                .andExpect(jsonPath("$.filePath", is("D:/products.csv")));
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$", notNullValue()))
+                .andExpect(jsonPath("$.filePath", is("D:/products.csv")));
     }
 
 }
