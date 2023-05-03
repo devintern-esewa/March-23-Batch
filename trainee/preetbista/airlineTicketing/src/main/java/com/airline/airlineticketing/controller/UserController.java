@@ -3,9 +3,12 @@ package com.airline.airlineticketing.controller;
 import com.airline.airlineticketing.dto.UserDto;
 import com.airline.airlineticketing.repository.UserRepository;
 import com.airline.airlineticketing.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,18 +24,23 @@ public class UserController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    private static final Logger log =  LoggerFactory.getLogger(UserController.class);
+
     private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PostMapping("/admin/add")
     public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDTO) {
+        log.info("before encoding");
         String password = userDTO.getPassword();
         String encryptPassword = passwordEncoder.encode(password);
         userDTO.setPassword(encryptPassword);
         UserDto newUser = userService.createUser(userDTO);
+        log.info("after encoding");
         return ResponseEntity.ok(newUser);
     }
 
