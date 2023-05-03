@@ -1,9 +1,7 @@
 package np.com.esewa.learn.librarymanagementsystem.controllers;
 
-import jakarta.websocket.server.PathParam;
 import np.com.esewa.learn.librarymanagementsystem.entities.Book;
 import np.com.esewa.learn.librarymanagementsystem.services.book.BookService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
