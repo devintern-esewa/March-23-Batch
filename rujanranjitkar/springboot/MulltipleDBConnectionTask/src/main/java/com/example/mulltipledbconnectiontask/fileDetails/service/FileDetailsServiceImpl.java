@@ -10,7 +10,6 @@ import com.example.mulltipledbconnectiontask.inventory.model.Product;
 import com.example.mulltipledbconnectiontask.inventory.repo.ProductRepo;
 import com.example.mulltipledbconnectiontask.inventory.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,7 +19,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class FileDetailsServiceImpl implements FileDetailsService {
 
     private final FileDetailsRepo fileDetailsRepo;
@@ -54,6 +52,8 @@ public class FileDetailsServiceImpl implements FileDetailsService {
         FileDetails fileDetails = new FileDetails();
 
         fileDetails.setFilePath(fileDetailsRequestDto.getFilePath());
+
+        logger.info("File status set to pending");
         fileDetails.setFileStatus(FileStatus.PENDING);
         fileDetails.setSuccessCount(0L);
         fileDetails.setFailureCount(0L);
@@ -67,18 +67,24 @@ public class FileDetailsServiceImpl implements FileDetailsService {
         List<FileDetails> fileDetails = fileDetailsRepo.findByFileStatus(FileStatus.PENDING);
         for (FileDetails file : fileDetails) {
 
-            logger.info("File status set to Processing");
+            logger.info("File status set to processing");
             file.setFileStatus(FileStatus.PROCESSING);
             fileDetailsRepo.save(file);
 
+            logger.info("Sending file path to readProductDetailsFromFile() of product service");
             List<Product> products = productService.readProductDetailsFromFile(file.getFilePath());
+
+            logger.info("Sending products to countSuccessFailureBeforeSavingProducts() of product service");
             List<Product> successProducts = productService.countSuccessFailureBeforeSavingProducts(products, file.getFilePath());
 
+            logger.info("Inserting successProducts in products database table");
             productRepo.saveAll(successProducts);
 
-            // created a new file to set status to complete
+            logger.info("Created a new transaction to set status to complete");
             FileDetails updatedFile = fileDetailsRepo.findById(file.getFileDetailsId()).orElseThrow();
             updatedFile.setFileStatus(FileStatus.COMPLETE);
+
+            logger.info("Inserting updated file details into file details database table");
             fileDetailsRepo.save(updatedFile);
         }
     }

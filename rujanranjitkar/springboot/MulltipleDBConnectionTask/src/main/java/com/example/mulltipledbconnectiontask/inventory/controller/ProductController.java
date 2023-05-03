@@ -2,7 +2,6 @@ package com.example.mulltipledbconnectiontask.inventory.controller;
 
 import com.example.mulltipledbconnectiontask.inventory.dto.ProductResponseDto;
 import com.example.mulltipledbconnectiontask.inventory.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,8 +9,11 @@ import java.util.List;
 @RestController
 @RequestMapping("api/products")
 public class ProductController {
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
+
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @GetMapping("/getAllProducts/{startingPage}")
     public List<ProductResponseDto> getAllProducts(@PathVariable("startingPage") int startingPage) {
