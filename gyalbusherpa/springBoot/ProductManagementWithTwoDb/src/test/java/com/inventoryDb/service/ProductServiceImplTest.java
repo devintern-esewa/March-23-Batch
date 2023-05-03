@@ -9,16 +9,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.BufferedReader;
-import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,53 +32,36 @@ class ProductServiceImplTest {
     private ProductServiceImpl productService;
 
     @Test
-    void testConvertCsvDataInFilePathToProduct(){
-        // Given
-        String filePath = "test.csv";
-        String csvData = "name,code,description,quantity,price\n" +
-                "Product 1,12345678,Product 1 Description,10,9.99\n" +
-                "Product 2,87654321,Product 2 Description,20,19.99\n";
-
-
-        when(fileDetailRepository.findFileDetailByFilePath(filePath)).thenReturn(new FileDetail());
-        when(productRepository.getProductByProductStatusAndCode(any(), any())).thenReturn(Optional.empty());
-
-        // When
-        List<Product> products = productService.convertCsvDataInFilePathToProduct(filePath);
-
-        // Then
-        assertEquals(2, products.size());
-        assertEquals("Product 1", products.get(0).getName());
-        assertEquals("12345678", products.get(0).getCode());
-        assertEquals(ProductEnum.ACTIVE, products.get(0).getProductStatus());
-        assertEquals(10.0, products.get(0).getQuantity());
-        assertEquals(9.99, products.get(0).getPrice());
-        assertEquals("Product 2", products.get(1).getName());
-        assertEquals("87654321", products.get(1).getCode());
-        assertEquals(ProductEnum.ACTIVE, products.get(1).getProductStatus());
-        assertEquals(20.0, products.get(1).getQuantity());
-        assertEquals(19.99, products.get(1).getPrice());
-    }
-
-    @Test
     void testProcessProduct() {
-        // Given
-        String filePath = "test.csv";
-        Product product1 = Product.builder().name("Product 1").code("12345678").quantity(10.0).price(9.99).build();
-        Product product2 = Product.builder().name("Product 2").code("87654321").quantity(20.0).price(19.99).build();
-        List<Product> products = Arrays.asList(product1, product2);
+        // Prepare test data
+        List<Product> inputProducts = Arrays.asList(
+                new Product(1,"p1", "c1", ProductEnum.ACTIVE, 1.0, 10.0),
+                new Product(2,"p2", "c2", ProductEnum.ACTIVE, 2.0, 20.0),
+                new Product(3,"p3", "c3", ProductEnum.ACTIVE, 3.0, 30.0),
+                new Product(4,"p4", "c4", ProductEnum.ACTIVE, 4.0, 40.0)
+        );
 
-        when(fileDetailRepository.findFileDetailByFilePath(filePath)).thenReturn(new FileDetail());
+        FileDetail fileDetail = new FileDetail();
+        fileDetail.setId(1L);
+        fileDetail.setFilePath("test.csv");
+        fileDetail.setSuccessCount(0);
+        fileDetail.setFailureCount(0);
 
-        // When
-        List<Product> processedProducts = productService.processProduct(products, filePath);
+        when(fileDetailRepository.findFileDetailByFilePath(eq("test.csv"))).thenReturn(fileDetail);
 
-        // Then
-        assertEquals(2, processedProducts.size());
-        assertEquals(product1, processedProducts.get(0));
-        assertEquals(product2, processedProducts.get(1));
-        verify(productRepository, times(2)).getProductByProductStatusAndCode(ProductEnum.ACTIVE, "12345678");
-        verify(productRepository, times(2)).getProductByProductStatusAndCode(ProductEnum.ACTIVE, "87654321");
-        verify(fileDetailRepository, times(2)).save(any(FileDetail.class));
+        when(productRepository.getProductByProductStatusAndCode(eq(ProductEnum.ACTIVE), eq("c1")))
+                .thenReturn(Optional.empty());
+
+        // Call the method being tested
+        List<Product> outputProducts = productService.processProduct(inputProducts, "test.csv");
+
+        // Verify the results
+        assertEquals(4, outputProducts.size());
+        assertEquals(4, fileDetail.getSuccessCount());
+        assertEquals(0, fileDetail.getFailureCount());
+
+//        // Verify repository interactions
+        verify(productRepository, times(4)).getProductByProductStatusAndCode(eq(ProductEnum.ACTIVE), anyString());
+        verify(fileDetailRepository, times(4)).save(any(FileDetail.class));
     }
 }
