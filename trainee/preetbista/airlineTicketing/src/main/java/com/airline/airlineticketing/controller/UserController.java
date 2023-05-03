@@ -21,9 +21,6 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-
     private static final Logger log =  LoggerFactory.getLogger(UserController.class);
 
     private final UserService userService;
@@ -35,12 +32,7 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping("/admin/add")
     public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDTO) {
-        log.info("before encoding");
-        String password = userDTO.getPassword();
-        String encryptPassword = passwordEncoder.encode(password);
-        userDTO.setPassword(encryptPassword);
         UserDto newUser = userService.createUser(userDTO);
-        log.info("after encoding");
         return ResponseEntity.ok(newUser);
     }
 

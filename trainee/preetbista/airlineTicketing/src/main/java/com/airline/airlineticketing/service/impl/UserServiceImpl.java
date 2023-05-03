@@ -6,6 +6,7 @@ import com.airline.airlineticketing.model.User;
 import com.airline.airlineticketing.repository.UserRepository;
 import com.airline.airlineticketing.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -15,6 +16,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     private UserRepository userRepository;
 
@@ -28,13 +32,15 @@ public class UserServiceImpl implements UserService {
     public UserDto createUser(UserDto userDTO) {
         User user = new User(userDTO.getUserName(),
                 userDTO.getPassword(), userDTO.getMobileNumber(), userDTO.getRole());
+        String password = user.getPassword();
+        String encryptPassword = passwordEncoder.encode(password);
+        user.setPassword(encryptPassword);
         User savedUser = userRepository.save(user);
         return new UserDto(savedUser.getUserName(),
                 savedUser.getPassword(), savedUser.getMobileNumber(), savedUser.getRole());
     }
 
     @Override
-    @Transactional
     public Optional<UserDto> findByUserName(UserDto userDto) {
         User user = userRepository.findByUserName(userDto.getUserName());
         if (user == null) {
