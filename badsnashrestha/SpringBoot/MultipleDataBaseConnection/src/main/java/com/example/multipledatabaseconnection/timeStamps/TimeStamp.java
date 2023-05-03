@@ -15,7 +15,7 @@ public class TimeStamp {
     @PrePersist  //method annotated with this will be executed before data is saved in db
     public void createdDate() {
         this.createdDate = LocalDateTime.now(); //set the value of createdDate to LocalDateTime.now();
-        modifiedDate = LocalDateTime.now();    //set the value of modifiedDtae to LocalDateTIme.now();
+        modifiedDate = LocalDateTime.now();    //set the value of modifiedDate to LocalDateTIme.now();
     }
 
     @PreUpdate

@@ -15,12 +15,10 @@ import java.util.Base64;
 //I want to store any type of data so Object
 //I will store all encrypted data in the form of String in db
 public class AesEncrypter implements AttributeConverter<Object, String> {
-
     //provide AESKey required for the encryption
-    //16 byte key will be generated
-    private final String encryptionKey = "this-is-test-key"; //16 character ie. 32 bytes
+    //16 byte ie. 32 bytes key will be generated
+    private final String encryptionKey = "this-is-test-key";
     private final String encryptionCipher = "AES";
-
     private Key key; //uses our encryptionKey
     private Cipher cipher; //uses our encryptionCipher
 
@@ -47,6 +45,7 @@ public class AesEncrypter implements AttributeConverter<Object, String> {
     @SneakyThrows
     @Override
     //plain text object to encrypted text
+
     public String convertToDatabaseColumn(Object attribute) {
         if (attribute == null)
             return null;
@@ -61,7 +60,6 @@ public class AesEncrypter implements AttributeConverter<Object, String> {
         getCipher():=>returns the initialized cipher object
         doFinal(bytes):=> process the bytes and return the encrypted bytes in the form of a  byte array
          */
-
         return Base64.getEncoder().encodeToString(getCipher().doFinal(bytes));
     }
 
@@ -71,7 +69,7 @@ public class AesEncrypter implements AttributeConverter<Object, String> {
     public Object convertToEntityAttribute(String dbData) {
         if (dbData == null)
             return null;
-        initCipher((Cipher.DECRYPT_MODE));
+        initCipher(Cipher.DECRYPT_MODE);
 
         byte[] bytes = getCipher().doFinal(Base64.getDecoder().decode(dbData));
         return SerializationUtils.deserialize(bytes);

@@ -1,8 +1,8 @@
 package com.example.multipledatabaseconnection.productDetails.controller;
 
 import com.example.multipledatabaseconnection.productDetails.dto.ProductDetailsResponseDto;
-import com.example.multipledatabaseconnection.productDetails.model.ProductDetails;
 import com.example.multipledatabaseconnection.productDetails.service.ProductDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,9 +10,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/productDetails")
+@RequiredArgsConstructor
 public class ProductDetailsController {
-    @Autowired
-    private ProductDetailsService productDetailsService;
+    private final ProductDetailsService productDetailsService;
 
     @GetMapping("/getAllProductDetailsUsingPagination/{startingPage}")
     public List<ProductDetailsResponseDto> getAllProductDetailsUsingPagination(@PathVariable("startingPage") int startingPage) {

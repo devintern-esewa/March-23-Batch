@@ -1,5 +1,6 @@
 package com.example.multipledatabaseconnection.fileDetails.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Configuration
 @EnableTransactionManagement
@@ -24,10 +26,11 @@ import java.util.Map;
         basePackages = {"com.example.multipledatabaseconnection.fileDetails.repo"},
         transactionManagerRef = "transactionManager"
 )
+@RequiredArgsConstructor
 public class PostgresConfig {
-    @Autowired
+
     //used to read code inside .properties
-    private Environment environment;
+    private final Environment environment;
 
     //datasource
     @Bean("dataSource")
@@ -35,7 +38,7 @@ public class PostgresConfig {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
         dataSource.setUrl(environment.getProperty("spring.datasource.url"));
-        dataSource.setDriverClassName(environment.getProperty("spring.datasource.driver-class-name"));
+        dataSource.setDriverClassName(Objects.requireNonNull(environment.getProperty("spring.datasource.driver-class-name")));
         dataSource.setUsername(environment.getProperty("spring.datasource.username"));
         dataSource.setPassword(environment.getProperty("spring.datasource.password"));
 

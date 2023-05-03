@@ -3,13 +3,10 @@ package com.example.multipledatabaseconnection.productDetails.dto;
 import com.example.multipledatabaseconnection.productDetails.enums.ProductStatus;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 public class ProductDetailsRequestDto {
     private String productName;
     @Enumerated(EnumType.STRING)

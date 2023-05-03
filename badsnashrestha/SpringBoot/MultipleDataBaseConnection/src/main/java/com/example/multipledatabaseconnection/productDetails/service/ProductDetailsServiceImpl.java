@@ -31,44 +31,58 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
 
     @Override
     public List<ProductDetailsResponseDto> getAllProductDetails(int startingPage) {
+        logger.info("Defining the page number and the size of productDetails to be shown");
         PageRequest pageRequest = PageRequest.of(startingPage, 10);
-        List<ProductDetails> productDetails=productDetailsRepo.findAll(pageRequest).stream().toList();
 
-        List<ProductDetailsResponseDto> productDetailsResponseDtoList=new ArrayList<>();
+        logger.info("Getting ProductDetails as per pageRequest and converting it into list");
+        List<ProductDetails> productDetails = productDetailsRepo.findAll(pageRequest).stream().toList();
 
-        for(ProductDetails productDetail:productDetails){
-            ProductDetailsResponseDto productDetailsResponseDto=new ProductDetailsResponseDto();
+        List<ProductDetailsResponseDto> productDetailsResponseDtoList = new ArrayList<>();
+
+        for (ProductDetails productDetail : productDetails) {
+            ProductDetailsResponseDto productDetailsResponseDto = new ProductDetailsResponseDto();
             productDetailsResponseDto.setProductName(productDetail.getProductName());
             productDetailsResponseDto.setProductStatus(productDetail.getProductStatus());
             productDetailsResponseDto.setCode(productDetail.getCode());
             productDetailsResponseDto.setQuantity(productDetail.getQuantity());
             productDetailsResponseDto.setPrice(productDetail.getPrice());
 
+            logger.info("Adding productDetailsResponseDto into productDetailsResponseDtoList ");
             productDetailsResponseDtoList.add(productDetailsResponseDto);
         }
 
-        return productDetailsResponseDtoList ;
+        logger.info("Returning productDetails as per productDetailsResponseDto");
+        return productDetailsResponseDtoList;
     }
 
     @Override
     public ProductDetailsResponseDto getProductDetailsById(Long productDetailsId) {
+
+        logger.info("Getting productDetails as per the productDetailsId");
         ProductDetails productDetails = productDetailsRepo.findById(productDetailsId).orElseThrow(() -> new IdNotFoundException("Product with " + productDetailsId + " doesn't exists"));
+
         ProductDetailsResponseDto productDetailsResponseDto = new ProductDetailsResponseDto();
+
         productDetailsResponseDto.setProductName(productDetails.getProductName());
         productDetailsResponseDto.setProductStatus(productDetails.getProductStatus());
         productDetailsResponseDto.setCode(productDetails.getCode());
         productDetailsResponseDto.setQuantity(productDetails.getQuantity());
         productDetailsResponseDto.setPrice(productDetails.getPrice());
+
+        logger.info("Returning productDetailsById as per productDetailsResponseDto");
         return productDetailsResponseDto;
     }
 
     @Override
     public List<ProductDetails> readCsvInsertIntoProductDetails(String filePath) throws IOException {
-        List<ProductDetails> productDetails = new ArrayList<>();
+        List<ProductDetails> productDetailsList = new ArrayList<>();
+
         String csvSeparator = ",";
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
         String line = " ";
         int value = 0;
+
+        logger.info("Reading csv file according to filePath");
         while ((line = reader.readLine()) != null) {
             if (value >= 1) {
                 String[] row = line.split(csvSeparator);
@@ -78,15 +92,18 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
                 String code = row[3];
                 int quantity = Integer.valueOf(row[4]);
                 double price = Double.parseDouble(row[5]);
-                ProductDetails productDetails1 = new ProductDetails(id, productName, productStatus, code, quantity, price);
-                productDetails.add(productDetails1);
+
+                ProductDetails productDetails = new ProductDetails(id, productName, productStatus, code, quantity, price);
+
+                logger.info("Adding productDetails read from file in productDetailsList");
+                productDetailsList.add(productDetails);
             }
             value++;
         }
 
         reader.close();
         logger.info("Returning productDetails as a list after reading productDetails from every file");
-        return productDetails;
+        return productDetailsList;
     }
 
     @Override
@@ -94,26 +111,51 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
         Integer successCount = 0;
         Integer failCount = 0;
         FileDetails fileDetails;
+
         HashSet<String> productsCode = new HashSet<>();
         List<ProductDetails> successProductDetails = new ArrayList<>();
+
         for (ProductDetails productDetail : productDetails) {
+
+            logger.info("Getting the productDetails from the database if database contains same code as current productCode");
             Optional<ProductDetails> sameProductDetails = Optional.ofNullable(productDetailsRepo.getByCode(productDetail.getCode()));
+
             if (productsCode.contains(productDetail.getCode()) || sameProductDetails.isPresent() && sameProductDetails.get().getProductStatus() == ProductStatus.ACTIVE) {
+
+                logger.info("Incrementing failCount when productDetails with same code exists and it status  is active in table ");
                 failCount++;
+
+                logger.info("Getting fileDetails of the given filePath");
                 fileDetails = fileDetailsRepo.findByFilePath(filePath);
+
+                logger.info("Setting the failureCount in fileDetails table");
                 fileDetails.setFailureCount(failCount);
+
+                logger.info("Updating failureCount in fileDetails table of given filePath");
                 fileDetailsRepo.save(fileDetails);
 
             } else {
+                logger.info("Incrementing successCount when productDetails with same code doesn't exists and it status is deleted in table ");
                 successCount++;
+
+                logger.info("Adding productDetail into successProductDetails list");
                 successProductDetails.add(productDetail);
+
+                logger.info("Getting and adding code of productDetail in Hash Set");
                 productsCode.add(productDetail.getCode());
+
+                logger.info("Getting fileDetails of the given filePath");
                 fileDetails = fileDetailsRepo.findByFilePath(filePath);
+
+                logger.info("Setting the successCount in fileDetails table");
                 fileDetails.setSuccessCount(successCount);
+
+                logger.info("Updating successCount in fileDetails table of given filePath");
                 fileDetailsRepo.save(fileDetails);
             }
         }
-        logger.info("Return successProductDetails that contain only the productDetails having unique code");
+
+        logger.info("Return list of successProductDetails that contain only the productDetails having unique code");
         return successProductDetails;
 
     }
@@ -127,8 +169,14 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
 
     @Override
     public void deleteProductDetailsById(Long productDetailsId) {
+
+        logger.info("Getting productDetails as per the productDetailsId");
         ProductDetails productDetails = productDetailsRepo.findById(productDetailsId).orElseThrow(() -> new IdNotFoundException("Product with " + productDetailsId + " doesn't exists"));
+
+        logger.info("Setting productStatus to deleted");
         productDetails.setProductStatus(ProductStatus.DELETED);
+
+        logger.info("Updating productDetails in productDetails table");
         productDetailsRepo.save(productDetails);
     }
 

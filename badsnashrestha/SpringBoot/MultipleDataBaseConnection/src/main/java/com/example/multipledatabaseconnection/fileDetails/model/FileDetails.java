@@ -3,9 +3,11 @@ package com.example.multipledatabaseconnection.fileDetails.model;
 import com.example.multipledatabaseconnection.fileDetails.enums.FileStatus;
 import com.example.multipledatabaseconnection.timeStamps.TimeStamp;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table
 public class FileDetails extends TimeStamp {

@@ -4,15 +4,17 @@ import com.example.multipledatabaseconnection.fileDetails.dto.FileDetailsRequest
 import com.example.multipledatabaseconnection.fileDetails.dto.FileDetailsResponseDto;
 import com.example.multipledatabaseconnection.fileDetails.model.FileDetails;
 import com.example.multipledatabaseconnection.fileDetails.service.FileDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("fileDetails")
+@RequiredArgsConstructor
 public class FileDetailsController {
-    @Autowired
-    private FileDetailsService fileDetailsService;
+    private final FileDetailsService fileDetailsService;
 
     @GetMapping("/getAllFileDetails")
     public List<FileDetails> getAllFileDetails() {
@@ -33,6 +35,5 @@ public class FileDetailsController {
     public void updateFileDetails(@RequestBody FileDetailsRequestDto fileDetailsRequestDto) {
         fileDetailsService.updateFileDetails(fileDetailsRequestDto);
     }
-
 
 }

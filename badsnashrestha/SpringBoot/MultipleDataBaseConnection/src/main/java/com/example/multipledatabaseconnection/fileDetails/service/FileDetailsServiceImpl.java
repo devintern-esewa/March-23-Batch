@@ -9,6 +9,7 @@ import com.example.multipledatabaseconnection.fileDetails.model.FileDetails;
 import com.example.multipledatabaseconnection.fileDetails.repo.FileDetailsRepo;
 import com.example.multipledatabaseconnection.productDetails.model.ProductDetails;
 import com.example.multipledatabaseconnection.productDetails.service.ProductDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,17 +17,14 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @Service
-
+@RequiredArgsConstructor
 public class FileDetailsServiceImpl implements FileDetailsService {
     Logger logger = LoggerFactory.getLogger(FileDetailsServiceImpl.class);
-    @Autowired
-    private FileDetailsRepo fileDetailsRepo;
+    private final FileDetailsRepo fileDetailsRepo;
 
-    @Autowired
-    private ProductDetailsService productDetailsService;
+    private final ProductDetailsService productDetailsService;
 
     @Override
     public List<FileDetails> getAllFileDetails() {
@@ -37,9 +35,11 @@ public class FileDetailsServiceImpl implements FileDetailsService {
     @Override
     public FileDetailsResponseDto getFileDetailsById(Long fileDetailsId) {
         FileDetailsResponseDto fileDetailsResponseDto = new FileDetailsResponseDto();
+
         FileDetails fileDetails = fileDetailsRepo.findById(fileDetailsId).orElseThrow(() -> new FileNotFoundException("File with " + fileDetailsId + " doesn't exists"));
         fileDetailsResponseDto.setFilePath(fileDetails.getFilePath());
         fileDetailsResponseDto.setFileStatus(fileDetails.getFileStatus());
+
         logger.info("Getting details of file using fileDetailsId");
         return fileDetailsResponseDto;
     }
@@ -47,19 +47,23 @@ public class FileDetailsServiceImpl implements FileDetailsService {
     @Override
     public FileDetails addNewFileDetails(FileDetailsRequestDto fileDetailsRequestDto) {
         FileDetails fileDetails = new FileDetails();
+
         fileDetails.setFilePath(fileDetailsRequestDto.getFilePath());
+        logger.info("File Status set to Pending");
         fileDetails.setFileStatus(FileStatus.PENDING);
         fileDetails.setFailureCount(0);
         fileDetails.setSuccessCount(0);
+
         logger.info("Adding New FileDetails");
         return fileDetailsRepo.save(fileDetails);
     }
 
     @Override
     public void updateFileDetails(FileDetailsRequestDto fileDetailsRequestDto) {
-        Optional<FileDetails> fileDetails = fileDetailsRepo.findById(fileDetailsRequestDto.getFileDetailsId());
-        FileDetails fileDetail = fileDetails.get();
+        FileDetails fileDetail = fileDetailsRepo.findById(fileDetailsRequestDto.getFileDetailsId()).orElseThrow(()->new FileNotFoundException("File not found"));
+
         fileDetail.setFilePath(fileDetailsRequestDto.getFilePath());
+
         logger.info("Updating the FileDetails ");
         fileDetailsRepo.save(fileDetail);
     }
@@ -69,6 +73,7 @@ public class FileDetailsServiceImpl implements FileDetailsService {
     public void readFile() throws IOException {
         List<FileDetails> fileDetails = fileDetailsRepo.findByFileStatus(FileStatus.PENDING);
         for (FileDetails fileDetail : fileDetails) {
+
             logger.info("File Status set to Processing");
             fileDetail.setFileStatus(FileStatus.PROCESSING);
             fileDetailsRepo.save(fileDetail);
@@ -85,6 +90,8 @@ public class FileDetailsServiceImpl implements FileDetailsService {
             logger.info("Creating new transaction to update FileStatus");
             FileDetails fileDetails1 = fileDetailsRepo.findById(fileDetail.getFileDetailsId()).orElseThrow(() -> new FileNotFoundException("File with " + fileDetail.getFileDetailsId() + " doesn't exists"));
             fileDetails1.setFileStatus(FileStatus.COMPLETE);
+
+            logger.info("Inserting updated fileDetails into fileDetails table");
             fileDetailsRepo.save(fileDetails1);
         }
     }
