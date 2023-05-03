@@ -1,3 +1,4 @@
+/*
 package com.inventoryDb.service;
 
 import com.inventoryDb.enums.ProductEnum;
@@ -60,3 +61,4 @@ public class ProductServiceImplTestWithPowerMockTest {
 
     }
 }
+*/

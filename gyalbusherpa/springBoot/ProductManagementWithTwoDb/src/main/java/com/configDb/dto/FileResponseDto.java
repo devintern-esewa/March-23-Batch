@@ -1,15 +1,13 @@
 package com.configDb.dto;
 
 import com.configDb.enums.FileStatusEnum;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class FileResponseDto {
 
     private String filePath;
