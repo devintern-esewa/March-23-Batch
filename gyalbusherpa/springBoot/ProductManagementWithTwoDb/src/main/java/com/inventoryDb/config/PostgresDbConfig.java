@@ -32,7 +32,7 @@ public class PostgresDbConfig {
 
     // entityManagerFactory
     @Bean(name = "secondEntityManagerFactoryBean")
-    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(){
+    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean() {
         LocalContainerEntityManagerFactoryBean bean;
         bean = new LocalContainerEntityManagerFactoryBean();
         bean.setDataSource(dataSource());
@@ -42,7 +42,7 @@ public class PostgresDbConfig {
 
         Map<String, String> properties = new HashMap<>();
         properties.put("hibernate.hbm2ddl.auto", "create-drop");
-        properties.put("hibernate.show_sql","true");
+        properties.put("hibernate.show_sql", "true");
         properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
 
         bean.setJpaPropertyMap(properties);
@@ -53,7 +53,7 @@ public class PostgresDbConfig {
 
     // platformTransactionManager
     @Bean(name = "secondTransactionManager")
-    public PlatformTransactionManager transactionManager(){
+    public PlatformTransactionManager transactionManager() {
         JpaTransactionManager manager = new JpaTransactionManager();
         manager.setEntityManagerFactory(entityManagerFactoryBean().getObject());
         return manager;

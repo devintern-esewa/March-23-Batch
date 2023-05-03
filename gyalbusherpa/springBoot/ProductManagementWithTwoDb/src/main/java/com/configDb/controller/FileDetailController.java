@@ -6,7 +6,6 @@ import com.configDb.service.FileDetailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -23,15 +22,9 @@ public class FileDetailController {
         this.fileDetailService = fileDetailService;
     }
 
-/*    @PostMapping("/fileDetail")
-    public ResponseEntity<FileResponseDto> saveFileDetail(@RequestBody FileRequestDto fileRequestDto){
-        logger.info("File detail saved successfully");
-        return new ResponseEntity<FileResponseDto>(fileDetailService.saveFileDetail(fileRequestDto), HttpStatus.CREATED);
-    }*/
-
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/fileDetail")
-    public FileResponseDto saveFileDetail(@RequestBody FileRequestDto fileRequestDto){
+    public FileResponseDto saveFileDetail(@RequestBody FileRequestDto fileRequestDto) {
         logger.info("File detail saved successfully");
         return fileDetailService.saveFileDetail(fileRequestDto);
     }

@@ -20,7 +20,7 @@ public class AspectConfig {
         this.rsaEncryptionService = rsaEncryptionService;
     }
 
-    @Before("execution(* com.inventoryDb.service.ProductServiceImpl.processProduct(..)) && args(products,filePath)")
+    @Before(value = "execution(* com.inventoryDb.service.ProductServiceImpl.processProduct(..)) && args(products,filePath)", argNames = "products,filePath")
     public void encryptProductName(List<Product> products, String filePath) throws Exception {
         for (Product product : products) {
             String encryptedName = rsaEncryptionService.encrypt(product.getName());
@@ -33,7 +33,7 @@ public class AspectConfig {
     }
 
     @Around("decryptionPointCut()")
-    public Object decryptProductName(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+    public List<ProductDto> decryptProductName(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         List<ProductDto> products = (List<ProductDto>) proceedingJoinPoint.proceed();
 
         for (ProductDto product : products) {

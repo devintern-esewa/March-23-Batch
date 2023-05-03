@@ -3,11 +3,8 @@ package com.inventoryDb.model;
 import com.Times;
 import com.inventoryDb.enums.ProductEnum;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Getter

@@ -64,7 +64,7 @@ class ProductServiceImplTest {
     @Test
     public void testConvertCsvDataInFilePathToProduct() {
 
-        String testFilePath = "D:\\Downloads\\March-23-Batch\\gyalbusherpa\\springBoot\\ProductManagementWithTwoDb\\src\\test\\resource\\product.csv";
+        String testFilePath = "src/test/resource/product.csv";
 
         List<Product> products = productService.convertCsvDataInFilePathToProduct(testFilePath);
 

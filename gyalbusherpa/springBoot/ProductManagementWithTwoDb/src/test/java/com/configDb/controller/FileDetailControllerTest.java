@@ -33,9 +33,6 @@ class FileDetailControllerTest {
 
     @Test
     void testCreationOfFile() throws Exception {
-    /*    FileRequestDto fileDetail = FileRequestDto.builder()
-                .filePath("D:/products.csv")
-                .build();*/
 
         FileResponseDto fileResponseDto = FileResponseDto.builder()
                 .filePath("D:/products.csv")

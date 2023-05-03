@@ -21,8 +21,7 @@ import java.util.Map;
 @EnableTransactionManagement
 @EnableJpaRepositories(
         entityManagerFactoryRef = "entityManagerFactoryBean",
-        basePackages = "com.configDb.repository",
-        transactionManagerRef = "transactionManager"
+        basePackages = "com.configDb.repository"
 )
 public class MySqlDbConfig {
 
