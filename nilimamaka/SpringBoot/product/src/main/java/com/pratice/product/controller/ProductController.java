@@ -1,5 +1,6 @@
 package com.pratice.product.controller;
 
+import com.pratice.product.dto.ProductDto;
 import com.pratice.product.model.Product;
 import com.pratice.product.service.ProductService;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class ProductController {
     }
 
     @GetMapping("/get")
-    public List<Product> getProduct() {
+    public List<ProductDto> getProduct() {
         return productService.getProduct();
     }
 

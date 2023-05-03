@@ -1,6 +1,8 @@
 package com.pratice.product.service;
 
 import com.pratice.product.customexception.BusinessException;
+import com.pratice.product.dto.ProductDto;
+import com.pratice.product.dto.ProductDtoMapper;
 import com.pratice.product.enums.ProductEnum;
 import com.pratice.product.model.Product;
 import com.pratice.product.repo.ProductRepo;
@@ -9,19 +11,26 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 
 @Service
+
 public class ProductServiceImpl implements ProductService {
 
     public final ProductRepo productRepo;
+    public final ProductDtoMapper productDtoMapper;
 
-    public ProductServiceImpl(ProductRepo productRepo) {
+    public ProductServiceImpl(ProductRepo productRepo, ProductDtoMapper productDtoMapper) {
         this.productRepo = productRepo;
+        this.productDtoMapper = productDtoMapper;
     }
 
     @Override
-    public List<Product> getProduct() {
-        return productRepo.findAll();
+    public List<ProductDto> getProduct() {
+        return productRepo.findAll()
+                .stream()
+                .map(productDtoMapper).collect(Collectors.toList());
     }
 
     @Override
