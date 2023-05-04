@@ -3,11 +3,15 @@ package com.example.mulltipledbconnectiontask.inventory.model;
 import com.example.mulltipledbconnectiontask.inventory.enums.ProductStatus;
 import com.example.mulltipledbconnectiontask.timeStamp.TimeStamp;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "products")
 public class Product extends TimeStamp {
