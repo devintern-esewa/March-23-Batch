@@ -34,11 +34,7 @@ public class ProductController {
         productService.addNewProduct(productDto);
     }
 
-    @PostMapping("/addNewProductList")
-    public void addNewProductList(@RequestBody List<ProductDto> productDto) {
 
-        productService.addNewProductList(productDto);
-    }
 
     @GetMapping("/getAllProduct/{productId}")
     public Optional<Product> getProductById(@PathVariable("productId") Integer productId) {

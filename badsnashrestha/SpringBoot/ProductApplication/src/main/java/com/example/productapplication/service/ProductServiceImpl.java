@@ -57,14 +57,6 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-    public void addNewProductList(List<ProductDto> productDto) {
-        for (ProductDto productDto1 : productDto) {
-            Product product = new Product();
-            product.setProductName(productDto1.getProductName());
-            product.setPrice(productDto1.getPrice());
-            productRepo.save(product);
-        }
-    }
 
     @Override
     public Optional<Product> getProductById(Integer productId) {

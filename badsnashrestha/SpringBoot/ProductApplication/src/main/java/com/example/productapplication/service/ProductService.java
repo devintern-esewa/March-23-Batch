@@ -12,8 +12,6 @@ public interface ProductService {
 
     public void addNewProduct(ProductDto productDto);
 
-    public void addNewProductList(List<ProductDto> productDto);
-
     public Optional<Product> getProductById(Integer productId);
 
     public void deleteProductById(Integer productId);
