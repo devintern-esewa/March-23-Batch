@@ -3,11 +3,15 @@ package com.example.mulltipledbconnectiontask.fileDetails.model;
 import com.example.mulltipledbconnectiontask.fileDetails.enums.FileStatus;
 import com.example.mulltipledbconnectiontask.timeStamp.TimeStamp;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table
 public class FileDetails extends TimeStamp {
