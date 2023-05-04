@@ -8,11 +8,9 @@ import java.util.Optional;
 
 public interface UserService {
     UserDto createUser(UserDto userDto);
-
     Optional<UserDto> findByUserName(UserDto userDto);
     Optional<UserDto> getUserById(Long id);
     List<UserDto> getAllUsers();
     boolean deleteUser(Long id);
-
     User findByUsername(String username);
 }
