@@ -10,7 +10,6 @@ import lombok.*;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Table(name = "products")
 public class ProductDetails extends TimeStamp {
     @Id
