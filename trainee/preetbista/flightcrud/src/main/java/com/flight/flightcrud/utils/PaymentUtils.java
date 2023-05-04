@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PaymentUtils {
-    private static Map<String, Double> paymentMap = new HashMap<>();
+    private static final Map<String, Double> paymentMap = new HashMap<>();
 
     static {
         paymentMap.put("acc1", 12000.0);
@@ -15,14 +15,11 @@ public class PaymentUtils {
         paymentMap.put("acc4", 8000.0);
     }
 
-    public static boolean validateCreditLimit(String accNo, double paidAmount) {
+    public static void validateCreditLimit(String accNo, double paidAmount) {
         if (paidAmount > paymentMap.get(accNo)) {
             throw new InsufficientAmountException("Amount exceeds");
-        } else if(paidAmount < paymentMap.get(accNo)){
+        } else if (paidAmount < paymentMap.get(accNo)) {
             throw new InsufficientAmountException("Amount is insufficient");
-        }
-        else {
-            return true;
         }
     }
 }

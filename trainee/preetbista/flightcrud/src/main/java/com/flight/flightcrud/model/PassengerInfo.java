@@ -1,7 +1,6 @@
 package com.flight.flightcrud.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +8,6 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name="passenger_info")
@@ -19,6 +17,9 @@ public class PassengerInfo {
     private Long id;
 
     private String name;
+
+    @Column(name = "citizenship_number")
+    private Long citizenshipNumber;
 
     private String email;
 

@@ -2,13 +2,14 @@ package np.com.esewa.learn.librarymanagementsystem.services.book;
 
 import lombok.extern.slf4j.Slf4j;
 import np.com.esewa.learn.librarymanagementsystem.entities.Book;
-import np.com.esewa.learn.librarymanagementsystem.entities.Publisher;
 import np.com.esewa.learn.librarymanagementsystem.entities.enums.BookStatus;
 import np.com.esewa.learn.librarymanagementsystem.exceptions.BooKNotFoundException;
 import np.com.esewa.learn.librarymanagementsystem.repositories.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public void addbook(Book book) {
-
+        book.setBookStatus(BookStatus.AVAILABLE);
         bookRepository.save(book);
         log.info("Added Title: "+book.getTitle()+" "+" ISBN: "+book.getIsbn());
     }
@@ -37,7 +38,7 @@ public class BookServiceImpl implements BookService{
             bookToBeEdited.setAuthors(editedBook.getAuthors());
             bookToBeEdited.setTitle(editedBook.getTitle());
             bookToBeEdited.setPublicationYear(editedBook.getPublicationYear());
-            bookToBeEdited.setGenres(editedBook.getGenres());
+//            bookToBeEdited.setGenres(editedBook.getGenres());
             bookToBeEdited.setBookStatus(editedBook.getBookStatus());
 
             bookRepository.save(bookToBeEdited);
@@ -65,7 +66,8 @@ public class BookServiceImpl implements BookService{
         List<Book> booksTobeReturned = bookRepository.findAll(pageRequest).stream().filter(book -> book
                 .getBookStatus()!=BookStatus.DELETED).toList();
         log.info(booksTobeReturned.toString());
-
+        if (booksTobeReturned == null)
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,"No records found");
         return booksTobeReturned;
     }
 
@@ -87,17 +89,17 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public List<Book> searchBooksByAuthor(String authorName) {
-        return bookRepository.searchBooksByAuthor(authorName);
+        return bookRepository.searchBooksByAuthorName(authorName);
     }
 
     @Override
     public List<Book> searchBooksByGenre(String genreName) {
-        return bookRepository.searchBooksByGenre(genreName);
+        return bookRepository.searchBooksByGenreName(genreName);
     }
 
     @Override
-    public List<Book> searchBooksByPublisher(Publisher publisher) {
-        return null;
+    public List<Book> searchBooksByPublisherName(String publisherName) {
+        return bookRepository.searchBooksByPublisherName(publisherName);
     }
 
 }

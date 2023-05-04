@@ -6,7 +6,6 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
-
 @Setter
 @Getter
 public class PaymentInfoDto implements Serializable {

@@ -3,15 +3,12 @@ package com.flight.flightcrud.service.impl;
 import com.flight.flightcrud.dto.TicketInfo;
 import com.flight.flightcrud.exception.PassengerNotFoundException;
 import com.flight.flightcrud.model.PassengerInfo;
-import com.flight.flightcrud.model.PaymentInfo;
 import com.flight.flightcrud.repository.PassengerInfoRepository;
 import com.flight.flightcrud.repository.PaymentInfoRepository;
 import com.flight.flightcrud.service.TicketInfoService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class TicketInfoServiceImpl implements TicketInfoService {
@@ -25,16 +22,15 @@ public class TicketInfoServiceImpl implements TicketInfoService {
         this.paymentInfoRepository = paymentInfoRepository;
     }
 
-    public TicketInfo findTicketInfoByPassengerId(Long id){
+    public TicketInfo findTicketInfoByPassengerId(Long id) {
         Optional<PassengerInfo> passengerInfo = passengerInfoRepository.findById(id);
-        if (!passengerInfo.isPresent()){
+        if (!passengerInfo.isPresent()) {
             throw new PassengerNotFoundException("Passenger not found for id : " + id);
         }
-        TicketInfo ticketInfo = paymentInfoRepository.getTicketInfoByPassengerId(id);
-        return ticketInfo;
+        return paymentInfoRepository.getTicketInfoByPassengerId(id);
     }
 
-    private List<TicketInfo> convertToDetails(List<PaymentInfo> paymentInfos) {
+   /* private List<TicketInfo> convertToDetails(List<PaymentInfo> paymentInfos) {
         return paymentInfos.stream()
                 .map(paymentInfo -> {
                     TicketInfo ticketInfo = new TicketInfo();
@@ -44,5 +40,5 @@ public class TicketInfoServiceImpl implements TicketInfoService {
                     return ticketInfo;
                 })
                 .collect(Collectors.toList());
-    }
+    }*/
 }

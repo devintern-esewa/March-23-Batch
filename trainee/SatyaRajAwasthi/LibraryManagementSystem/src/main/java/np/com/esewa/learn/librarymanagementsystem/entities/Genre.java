@@ -4,14 +4,15 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @Entity(name = "genres")
 public class Genre {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "genre_id")
+    private long id;
+
+    @Column(name = "genre_name", unique = true)
     private String name;
-    @ManyToMany(cascade = CascadeType.ALL)
-    private List<Book> listOfBooks;
 }

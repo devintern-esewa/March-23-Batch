@@ -10,9 +10,14 @@ import java.util.List;
 @Setter
 @Entity(name = "authors")
 public class Author {
-    private String name;
     @Id
+    @Column(name = "authors_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
+    @Column(name = "authors_name")
+    private String name;
+
+    @Column(unique = true, name = "authors_email")
     private String email;
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Book> listOfBooksWritten;
 }
