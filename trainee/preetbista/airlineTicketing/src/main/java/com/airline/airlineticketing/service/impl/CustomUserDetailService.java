@@ -1,12 +1,12 @@
 package com.airline.airlineticketing.service.impl;
 
-
-import com.airline.airlineticketing.model.User;
 import com.airline.airlineticketing.service.UserService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class CustomUserDetailService implements UserDetailsService {
@@ -19,8 +19,9 @@ public class CustomUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userService.findByUsername(username);
-        //if not found throw exception
-        return new CustomUserDetails(user);
+        return Optional.ofNullable(userService.findByUsername(username))
+                .map(CustomUserDetails::new)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("No user found for username : " + username));
     }
 }
