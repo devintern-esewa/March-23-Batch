@@ -1,7 +1,7 @@
-package com.multipledatabase.config_db.entity;
+package com.multipledatabase.configdb.entity;
 
 
-import com.multipledatabase.config_db.enums.FileDetailsEnum;
+import com.multipledatabase.configdb.enums.FileDetailsEnum;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 

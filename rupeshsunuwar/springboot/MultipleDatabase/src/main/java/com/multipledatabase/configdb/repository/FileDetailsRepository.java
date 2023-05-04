@@ -1,6 +1,6 @@
-package com.multipledatabase.config_db.repository;
+package com.multipledatabase.configdb.repository;
 
-import com.multipledatabase.config_db.entity.FileDetails;
+import com.multipledatabase.configdb.entity.FileDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

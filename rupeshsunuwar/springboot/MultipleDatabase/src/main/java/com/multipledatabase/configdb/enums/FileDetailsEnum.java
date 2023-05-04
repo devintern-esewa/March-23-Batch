@@ -1,4 +1,4 @@
-package com.multipledatabase.config_db.enums;
+package com.multipledatabase.configdb.enums;
 
 public enum FileDetailsEnum {
 

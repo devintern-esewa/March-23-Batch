@@ -1,4 +1,4 @@
-package com.multipledatabase.config_db.dto;
+package com.multipledatabase.configdb.dto;
 
 
 import lombok.AllArgsConstructor;

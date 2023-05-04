@@ -1,4 +1,4 @@
-package com.multipledatabase.config_db.config;
+package com.multipledatabase.configdb.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +23,7 @@ import java.util.Objects;
 @EnableTransactionManagement
 @EnableJpaRepositories(
         entityManagerFactoryRef = "entityManagerFactoryBean",
-        basePackages = {"com.multipledatabase.config_db.repository"},
+        basePackages = {"com.multipledatabase.configdb.repository"},
         transactionManagerRef = "transactionManager1"
 )
 public class Db1Config {
@@ -66,7 +66,7 @@ public class Db1Config {
 
 
         bean.setJpaPropertyMap(props);
-        bean.setPackagesToScan("com.multipledatabase.config_db.entity");
+        bean.setPackagesToScan("com.multipledatabase.configdb.entity");
 
 
         return bean;

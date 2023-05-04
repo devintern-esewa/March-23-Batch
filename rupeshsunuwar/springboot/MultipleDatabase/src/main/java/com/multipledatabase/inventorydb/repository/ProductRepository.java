@@ -1,6 +1,6 @@
-package com.multipledatabase.inventory_db.repository;
+package com.multipledatabase.inventorydb.repository;
 
-import com.multipledatabase.inventory_db.entity.Product;
+import com.multipledatabase.inventorydb.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,7 @@
-package com.multipledatabase.inventory_db.entity;
+package com.multipledatabase.inventorydb.entity;
 
 
-import com.multipledatabase.inventory_db.enums.ProductEnum;
+import com.multipledatabase.inventorydb.enums.ProductEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

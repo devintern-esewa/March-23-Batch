@@ -1,4 +1,4 @@
-package com.multipledatabase.inventory_db.config;
+package com.multipledatabase.inventorydb.config;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import java.util.Map;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(entityManagerFactoryRef = "secondEntityManagerFactoryBean",
-        basePackages = {"com.multipledatabase.inventory_db.repository"}, transactionManagerRef = "secondTransactionManager")
+        basePackages = {"com.multipledatabase.inventorydb.repository"}, transactionManagerRef = "secondTransactionManager")
 public class Db2Config {
 
 
@@ -63,7 +63,7 @@ public class Db2Config {
 
 
         bean.setJpaPropertyMap(props);
-        bean.setPackagesToScan("com.multipledatabase.inventory_db.entity");
+        bean.setPackagesToScan("com.multipledatabase.inventorydb.entity");
 
 
         return bean;

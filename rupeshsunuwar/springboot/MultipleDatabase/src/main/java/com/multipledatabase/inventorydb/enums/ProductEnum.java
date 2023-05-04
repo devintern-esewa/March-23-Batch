@@ -1,4 +1,4 @@
-package com.multipledatabase.inventory_db.enums;
+package com.multipledatabase.inventorydb.enums;
 
 public enum ProductEnum {
 
