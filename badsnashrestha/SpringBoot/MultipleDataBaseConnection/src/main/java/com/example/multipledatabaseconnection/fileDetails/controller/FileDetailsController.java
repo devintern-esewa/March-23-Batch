@@ -18,6 +18,7 @@ public class FileDetailsController {
 
     @GetMapping("/getAllFileDetails")
     public List<FileDetails> getAllFileDetails() {
+
         return fileDetailsService.getAllFileDetails();
     }
 
