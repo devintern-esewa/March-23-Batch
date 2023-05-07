@@ -10,6 +10,8 @@ import com.example.multipledatabaseconnection.productDetails.repo.ProductDetails
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +58,7 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
     }
 
     @Override
+    @Cacheable(cacheNames = "products", key = "#productDetailsId")
     public ProductDetailsResponseDto getProductDetailsById(Long productDetailsId) {
 
         logger.info("Getting productDetails as per the productDetailsId");
@@ -168,6 +171,7 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
 
 
     @Override
+    @CacheEvict(cacheNames = "products",key = "#productDetailsId")
     public void deleteProductDetailsById(Long productDetailsId) {
 
         logger.info("Getting productDetails as per the productDetailsId");

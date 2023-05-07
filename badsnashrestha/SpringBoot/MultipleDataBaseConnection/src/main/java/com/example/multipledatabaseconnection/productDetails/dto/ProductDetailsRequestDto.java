@@ -5,9 +5,11 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
-public class ProductDetailsRequestDto {
+public class ProductDetailsRequestDto  {
     private String productName;
     @Enumerated(EnumType.STRING)
     private ProductStatus productStatus;

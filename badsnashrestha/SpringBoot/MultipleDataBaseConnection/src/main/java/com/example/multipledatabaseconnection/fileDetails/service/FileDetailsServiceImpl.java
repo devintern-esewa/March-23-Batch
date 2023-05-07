@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
@@ -33,6 +35,8 @@ public class FileDetailsServiceImpl implements FileDetailsService {
     }
 
     @Override
+    @CachePut(cacheNames = "files", key = "#fileDetailsId")
+
     public FileDetailsResponseDto getFileDetailsById(Long fileDetailsId) {
         FileDetailsResponseDto fileDetailsResponseDto = new FileDetailsResponseDto();
 
@@ -69,7 +73,7 @@ public class FileDetailsServiceImpl implements FileDetailsService {
     }
 
     //to schedule the execution of method after 1 min of server start
-    @Scheduled(cron = "0 */1 * * * * ")
+    @Scheduled(cron = "*/30 * * * * * ")
     public void readFile() throws IOException {
         List<FileDetails> fileDetails = fileDetailsRepo.findByFileStatus(FileStatus.PENDING);
         for (FileDetails fileDetail : fileDetails) {

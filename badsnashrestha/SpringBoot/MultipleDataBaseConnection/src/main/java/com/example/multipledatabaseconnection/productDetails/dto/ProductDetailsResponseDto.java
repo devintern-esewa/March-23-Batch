@@ -5,11 +5,13 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDetailsResponseDto {
+public class ProductDetailsResponseDto implements Serializable {
     private String productName;
     @Enumerated(EnumType.STRING)
     private ProductStatus productStatus;

@@ -6,10 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 
-public class FileDetailsResponseDto {
+public class FileDetailsResponseDto implements Serializable {
     private String filePath;
     private FileStatus fileStatus;
 

@@ -43,7 +43,6 @@ public class AsceptTrying {
 
     @Before("execution(* com.example.multipledatabaseconnection.productDetails.service.ProductDetailsServiceImpl.getProductDetailsById(..)) && args(productDetailsId)")
     public Object decryptProductCode(Long productDetailsId) {
-        System.out.println(productDetailsId);
         ProductDetails productDetailsResponseDto = productDetailsRepo.findById(productDetailsId).orElseThrow(() -> new IdNotFoundException("Product with " + productDetailsId + " doesn't exists"));
         String decryptedCode = (String) aesEncrypter.convertToEntityAttribute(productDetailsResponseDto.getCode());
         productDetailsResponseDto.setCode(decryptedCode);
