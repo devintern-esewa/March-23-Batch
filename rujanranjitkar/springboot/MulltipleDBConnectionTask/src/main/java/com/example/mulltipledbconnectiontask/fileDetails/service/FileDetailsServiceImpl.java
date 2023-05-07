@@ -12,6 +12,8 @@ import com.example.mulltipledbconnectiontask.inventory.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +38,7 @@ public class FileDetailsServiceImpl implements FileDetailsService {
     }
 
     @Override
+    @CachePut(cacheNames = "fileDetails", key = "#fileDetailsId")
     public FileDetailsResponseDto getFileDetailsById(Long fileDetailsId) {
         FileDetailsResponseDto fileDetailsResponseDto = new FileDetailsResponseDto();
 

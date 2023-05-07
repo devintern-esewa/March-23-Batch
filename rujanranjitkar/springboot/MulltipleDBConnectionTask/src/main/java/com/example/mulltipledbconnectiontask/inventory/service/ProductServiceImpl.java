@@ -10,6 +10,8 @@ import com.example.mulltipledbconnectiontask.inventory.repo.ProductRepo;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +58,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Cacheable(cacheNames = "products", key = "#productId")
     public ProductResponseDto getProductById(Long productId) {
         logger.info("Getting products as per product id");
         Product product = productRepo.findById(productId).orElseThrow(() -> new IdDoesNotExistsException("Product with id " + productId + " does not exists"));
@@ -165,6 +168,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "products", key = "#productId")
     public void deleteProductById(Long productId) {
         logger.info("Getting products as per product id");
         Product product = productRepo.findById(productId).orElseThrow(() -> new IdDoesNotExistsException("Product with id " + productId + " does not exists"));
