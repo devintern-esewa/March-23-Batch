@@ -34,15 +34,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http
                 .authorizeRequests()
-                .antMatchers("/users/admin/add")
-                .hasRole("ADMIN")
-                .antMatchers("/users/**")
-                .authenticated()
-                .anyRequest()
-                .permitAll()
+                .antMatchers("/user/all").authenticated() // Allow authenticated users
+                .antMatchers("/user/all").hasRole("ADMIN") // Allow only users with role ADMIN
                 .and()
                 .formLogin()
-                .loginPage("/users/login")
-                .permitAll();
+                .loginPage("/login")
+                .and()
+                .logout()
+                .logoutSuccessUrl("/user/all");
     }
 }
