@@ -30,6 +30,15 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public User getUserById(long userId) {
+        try {
+            return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        } catch (UserNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public List<Book> getAllBooks(int startingPageNo) {
         return bookService.getAllBooks(startingPageNo);
     }
@@ -58,56 +67,6 @@ public class UserServiceImpl implements UserService{
     @Override
     public List<Book> searchBooksByPublisherName(String publisherName) {
         return bookService.searchBooksByPublisherName(publisherName);
-    }
-
-    @Override
-    public boolean borrowBook(long userId, long bookIsbnNo) throws BooKNotFoundException, UserNotFoundException {
-        Book book = null;
-        User user = null;
-        try {
-
-            user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-            book = bookService.getBookByIsbn(bookIsbnNo);
-            book.setBookStatus(BookStatus.BORROWED);
-            List<Book> listOfBorrowedBooks = new ArrayList<>();
-            listOfBorrowedBooks.add(book);
-            user.setListOfBorrowedBooks(listOfBorrowedBooks);
-            userRepository.save(user);
-
-            return true;
-        }
-        catch (BooKNotFoundException e) {
-            throw new BooKNotFoundException();
-        }
-        catch (UserNotFoundException e) {
-            throw new UserNotFoundException();
-        }
-    }
-
-    @Override
-    public boolean returnBook(long userId, long bookIsbnNo) throws BooKNotFoundException, UserNotFoundException {
-        Book book = null;
-        User user = null;
-        try {
-
-            user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-            book = bookService.getBookByIsbn(bookIsbnNo);
-
-            book.setBookStatus(BookStatus.AVAILABLE);
-            List<Book> listOfBorrowedBooks = user.getListOfBorrowedBooks();
-            listOfBorrowedBooks.remove(book);
-            user.setListOfBorrowedBooks(listOfBorrowedBooks);
-            userRepository.save(user);
-            bookService.addbook(book);
-
-            return true;
-        }
-        catch (BooKNotFoundException e) {
-            throw new BooKNotFoundException();
-        }
-        catch (UserNotFoundException e) {
-            throw new UserNotFoundException();
-        }
     }
 
     @Override
