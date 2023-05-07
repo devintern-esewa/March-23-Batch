@@ -41,9 +41,15 @@ public class SampleSecurityConfig {
                                         .permitAll()
                                         .and()
 
-                                        .logout();
-//                                        .and();
-//                                        .httpBasic(Customizer.withDefaults());
+                                        .logout(logout -> logout
+                                                .logoutUrl("/logout")
+                                                .logoutSuccessUrl("/login?logout")
+                                                .logoutSuccessHandler(logout.getLogoutSuccessHandler())
+                                                .invalidateHttpSession(true)
+                                                .deleteCookies("JSESSIONID")
+                                        )
+
+                                        .httpBasic(Customizer.withDefaults());
 
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
