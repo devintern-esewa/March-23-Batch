@@ -1,8 +1,7 @@
 package com.restapi.product;
 
 import com.restapi.product.customexception.DataProvidedInvalidException;
-import com.restapi.product.customexception.IdAlreadyExistException;
-import com.restapi.product.customexception.IdDoesNotExistException;
+import com.restapi.product.customexception.ProductAlreadyExistException;
 import com.restapi.product.customexception.ProductDoesNotExistException;
 import com.restapi.product.dao.ProductRepository;
 import com.restapi.product.dto.ProductDto;
@@ -38,7 +37,7 @@ public class ProductServiceImplTest {
 
 
     @Test
-    public void getAllProductsThenReturnProducts() {
+    public void getAllProducts_ThenReturnProducts() {
 
         List<Product> productList = new ArrayList<>();
         Product p1 = new Product(1, "Laptop", ProductEnum.Active, 9002022.0, "Electronics", "Best");
@@ -50,39 +49,39 @@ public class ProductServiceImplTest {
     }
 
     @Test
-    public void getProductWhenIdIsValidThenReturnProduct() {
+    public void getProduct_WhenProductNameIsValid_ThenReturnProduct() {
         Product p2 = new Product(5, "Laptop", ProductEnum.Active, 9009999.0, "Electronics", "Best");
-        when(productRepository.findById(5)).thenReturn(Optional.of(p2));
-        assertEquals(p2.getProductName(), productServiceImpl.getProduct(5).getProductName());
+        when(productRepository.findByProductName("Laptop")).thenReturn(Optional.of(p2));
+        assertEquals(p2.getProductName(), productServiceImpl.getProduct("Laptop").getProductName());
 
     }
 
     @Test
-    public void getProductWhenIdIsNotValidThenThrowException() {
+    public void getProduct_WhenProductNameIsNotValid_ThenThrowException() {
 
         when(productRepository.findById(6)).thenReturn(Optional.empty());
-        assertThrows(IdDoesNotExistException.class
-                , () -> productServiceImpl.getProduct(6));
+        assertThrows(ProductDoesNotExistException.class
+                , () -> productServiceImpl.getProduct("Laptop"));
     }
 
 
     @Test
-    public void addProductWhenAllDataIsValidThenReturnProduct() {
-        ProductDto productDto = new ProductDto("Laptop", 8000.0, "Electronics", "Best");
+    public void addProduct_WhenAllDataIsValid_ThenReturnProduct() {
+        ProductDto productDto = new ProductDto( "Laptop", 8000.0, "Electronics", "Best");
         when(productRepository.findById(1)).thenReturn(Optional.empty());
-        assertEquals(productDto.getProductName(), productServiceImpl.addProduct(productDto).getProductId());
+        assertEquals(productDto.getProductName(), productServiceImpl.addProduct(productDto).getProductName());
     }
 
     @Test
-    public void addProductWhenIdAlreadyExistThenThrowException() {
-        Product p1 = new Product("Laptop", ProductEnum.Active, 8000.0, "Electronics", "Best");
-        ProductDto productDto = new ProductDto("Laptop", 8000.0, "Electronics", "Best");
-        when(productRepository.findById(1)).thenReturn(Optional.of(p1));
-        assertThrows(IdAlreadyExistException.class, () -> productServiceImpl.addProduct(productDto));
+    public void addProduct_WhenProductAlreadyExist_ThenThrowException() {
+        Product p1 = new Product(1, "Laptop", ProductEnum.Active, 8000.0, "Electronics", "Best");
+        ProductDto productDto = new ProductDto( "Laptop", 8000.0, "Electronics", "Best");
+        when(productRepository.findByProductName("Laptop")).thenReturn(Optional.of(p1));
+        assertThrows(ProductAlreadyExistException.class, () -> productServiceImpl.addProduct(productDto));
     }
 
     @Test
-    public void addProductWhenDataProvidedIsInvalidThenReturnException() {
+    public void addProduct_WhenDataProvidedIsInvalid_ThenReturnException() {
         ProductDto productDto = new ProductDto("Laptop", -8000.0, "Electronics", "Best");
         assertThrows(DataProvidedInvalidException.class
                 , () -> productServiceImpl.addProduct(productDto));
@@ -90,35 +89,35 @@ public class ProductServiceImplTest {
 
 
     @Test
-    public void updateProductWhenProvidedIdExistThenReturnProduct() {
+    public void updateProduct_WhenProvidedIdExist_ThenReturnProduct() {
         Product p1 = new Product(1, "Laptop", ProductEnum.Active, 8000.0, "Electronics", "Best");
-        ProductDto productDto = new ProductDto(1, "Laptop", 8000.0, "Electronics", "Best");
-        when(productRepository.findById(1)).thenReturn(Optional.of(p1));
-        assertEquals(productDto.getProductId(), productServiceImpl.updateProduct(1, productDto).getProductId());
+        ProductDto productDto = new ProductDto("Laptop", 8000.0, "Electronics", "Best");
+        when(productRepository.findByProductName("Laptop")).thenReturn(Optional.of(p1));
+        assertEquals(productDto.getProductName(), productServiceImpl.updateProduct("Laptop", productDto).getProductName());
     }
 
     @Test
-    public void updateProductWhenProvidedIdDoesNotExistThenThrowException() {
+    public void updateProduct_WhenProvidedIdDoesNotExist_ThenThrowException() {
         Product p1 = new Product(1, "Laptop", ProductEnum.Active, 8000.0, "Electronics", "Best");
-        ProductDto productDto = new ProductDto(1, "Laptop", 8000.0, "Electronics", "Best");
+        ProductDto productDto = new ProductDto( "Laptop", 8000.0, "Electronics", "Best");
         when(productRepository.findById(10)).thenReturn(Optional.empty());
-        assertThrows(ProductDoesNotExistException.class, () -> productServiceImpl.updateProduct(10, productDto));
+        assertThrows(ProductDoesNotExistException.class, () -> productServiceImpl.updateProduct("Laptop", productDto));
     }
 
 
     @Test
-    public void deleteProductWhenProvidedIdExist() {
+    public void deleteProduct_WhenProvidedIdExist() {
 
         Product p1 = new Product(1, "Laptop", ProductEnum.Active, 8000.0, "Electronics", "Best");
-        when(productRepository.findById(1)).thenReturn(Optional.of(p1));
-        assertTrue(productServiceImpl.deleteProduct(1));
+        when(productRepository.findByProductName("Laptop")).thenReturn(Optional.of(p1));
+        assertTrue(productServiceImpl.deleteProduct("Laptop"));
     }
 
     @Test
-    public void deleteProductWhenProvidedIdDoesNotExistThenThrowException() {
+    public void deleteProduct_WhenProvidedIdDoesNotExist_ThenThrowException() {
 
-        when(productRepository.findById(100)).thenReturn(Optional.empty());
+        when(productRepository.findByProductName("Laptop")).thenReturn(Optional.empty());
 
-        assertThrows(ProductDoesNotExistException.class, () -> productServiceImpl.deleteProduct(100));
+        assertThrows(ProductDoesNotExistException.class, () -> productServiceImpl.deleteProduct("Laptop"));
     }
 }

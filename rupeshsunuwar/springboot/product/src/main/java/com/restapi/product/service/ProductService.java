@@ -8,13 +8,13 @@ public interface ProductService {
 
     public List<ProductDto> getAllProducts();
 
-    public ProductDto getProduct(Integer id);
+    public ProductDto getProduct(String productName);
 
     public ProductDto addProduct(ProductDto productDto);
 
-    public ProductDto updateProduct(Integer productId, ProductDto productDto);
+    public ProductDto updateProduct(String productName, ProductDto productDto);
 
-    public boolean deleteProduct(Integer id);
+    public boolean deleteProduct(String productName);
 
 
 }

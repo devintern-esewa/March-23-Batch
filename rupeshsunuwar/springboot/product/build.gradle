@@ -35,8 +35,7 @@ dependencies {
     testImplementation group: 'org.powermock', name: 'powermock-module-junit4', version: '2.0.9'
     // https://mvnrepository.com/artifact/org.postgresql/postgresql
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.0'
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-cache
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version: '2.7.0'
+
 
 
 

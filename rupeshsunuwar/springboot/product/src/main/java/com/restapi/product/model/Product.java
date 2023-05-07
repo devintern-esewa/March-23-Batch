@@ -9,13 +9,14 @@ import lombok.Setter;
 import org.hibernate.type.TrueFalseType;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Entity
-public class Product {
+public class Product implements Serializable {
 
 
     @Id

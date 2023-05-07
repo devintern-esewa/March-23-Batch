@@ -2,14 +2,12 @@ package com.restapi.product.service;
 
 
 import com.restapi.product.customexception.DataProvidedInvalidException;
-import com.restapi.product.customexception.IdAlreadyExistException;
-import com.restapi.product.customexception.IdDoesNotExistException;
+import com.restapi.product.customexception.ProductAlreadyExistException;
 import com.restapi.product.customexception.ProductDoesNotExistException;
 import com.restapi.product.dao.ProductRepository;
 import com.restapi.product.dto.ProductDto;
 import com.restapi.product.enums.ProductEnum;
 import com.restapi.product.model.Product;
-import com.sun.javafx.util.Logging;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,6 +24,7 @@ import java.util.Optional;
 
 @Service
 @Slf4j
+@EnableCaching
 public class ProductServiceImpl implements ProductService {
 
 
@@ -41,13 +41,13 @@ public class ProductServiceImpl implements ProductService {
         productRepository.findAll().forEach(products::add);
         for (Product product : products) {
 
-            productDto.add(createProductDto(Optional.ofNullable(product)));
+            productDto.add(convertToProductDto(Optional.ofNullable(product)));
         }
         logger.info("Getting All the Products from the Database");
         return productDto;
     }
 
-    public static ProductDto createProductDto(Optional<Product> product) {
+    public static ProductDto convertToProductDto(Optional<Product> product) {
         ProductDto productDto = new ProductDto();
         productDto.setProductName(product.get().getProductName());
         productDto.setProductCategory(product.get().getProductCategory());
@@ -58,7 +58,7 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-    public static Product createProduct(ProductDto productDto) {
+    public static Product convertToProduct(ProductDto productDto) {
 
         Product product = new Product();
         product.setProductName(productDto.getProductName());
@@ -69,46 +69,45 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
-    @Cacheable(cacheNames = "Product",key="#id")
-    public ProductDto getProduct(Integer id) {
+
+    @Cacheable(cacheNames = "product",key ="#name")
+    public ProductDto getProduct(String productName) {
+
+        Optional<Product> product = productRepository.findByProductName(productName);
         logger.info("Getting the product");
-        Optional<Product> product = productRepository.findById(id);
         if (product.isPresent()) {
-            logger.info("Getting the product");
-            return createProductDto(product);
+            return convertToProductDto(product);
 
         } else {
             logger.error("Throwing Exception because id doesnt exist.");
-            throw new IdDoesNotExistException("Invalid id");
+            throw new ProductDoesNotExistException("Invalid id");
         }
     }
 
+    public ProductDto addProduct(ProductDto productDto) {
 
-    @Cacheable(cacheNames="Product",key="#productDto")
-    public ProductDto addProduct(Integer id,ProductDto productDto) {
-
-        if (id < 0 || id< 0) {
+        if (productDto.getProductPrice() < 0) {
             logger.error("Provided Id Invalid Exception");
             throw new DataProvidedInvalidException("Data Invalid");
-        } else if (!productRepository.findById(id).isPresent()) {
-            productRepository.save(createProduct(productDto));
+        } else if (!productRepository.findByProductName(productDto.getProductName()).isPresent()){
+            productRepository.save(convertToProduct(productDto));
             logger.info("Added  product in database");
             return productDto;
 
         } else {
-            logger.info("Id Already Exist Exception");
-            throw new IdAlreadyExistException("Id Already Exist");
+            logger.info("Product Already Exist Exception");
+            throw new ProductAlreadyExistException("Product Already Exist");
         }
 
     }
 
 
-    @CachePut(cacheNames = "updateProduct",key="#productId")
-    public ProductDto updateProduct(Integer productId, ProductDto productDto) {
+    @CachePut(cacheNames ="product",key="#name")
+    public ProductDto updateProduct(String name, ProductDto productDto) {
 
-        if (productRepository.findById(productId).isPresent()) {
+        if (productRepository.findByProductName(name).isPresent()) {
             logger.info("Converting productDto to product");
-            Product product = createProduct(productDto);
+            Product product = convertToProduct(productDto);
             logger.info("Converted productDto to product");
             productRepository.save(product);
             logger.info("Save product in database");
@@ -118,12 +117,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-    @CacheEvict(cacheNames ="deleteProduct",allEntries = true)
-    public boolean deleteProduct(Integer id) {
+    @CacheEvict(cacheNames="product",key="#name")
+    public boolean deleteProduct(String name) {
 
-        if (productRepository.findById(id).isPresent()) {
+        if (productRepository.findByProductName(name).isPresent()) {
             logger.info("Product of this id exist");
-            productRepository.deleteById(id);
+            productRepository.deleteByProductName(name);
             logger.info("product deleted");
             return true;
         } else logger.error("Product Doest not exist");

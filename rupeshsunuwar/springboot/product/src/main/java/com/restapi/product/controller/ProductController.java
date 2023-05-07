@@ -21,10 +21,10 @@ public class ProductController {
         return productServiceImpl.getAllProducts();
     }
 
-    @GetMapping(value = "/product/{id}")
-    public ProductDto getProduct(@PathVariable Integer id) {
+    @GetMapping(value = "/product/{productName}")
+    public ProductDto getProduct(@PathVariable String productName) {
 
-        return productServiceImpl.getProduct(id);
+        return productServiceImpl.getProduct(productName);
     }
 
 
@@ -34,16 +34,16 @@ public class ProductController {
         return productServiceImpl.addProduct(product);
     }
 
-    @PutMapping(value = "/product/{id}")
-    public ProductDto updateProduct(@PathVariable Integer id, @RequestBody ProductDto product) {
+    @PutMapping(value = "/product/{productName}")
+    public ProductDto updateProduct(@PathVariable String productName, @RequestBody ProductDto product) {
 
-        return productServiceImpl.updateProduct(id, product);
+        return productServiceImpl.updateProduct(productName, product);
     }
 
-    @DeleteMapping(value = "/product/{id}")
-    public void deleteProduct(@PathVariable Integer id) {
+    @DeleteMapping(value = "/product/{productName}")
+    public void deleteProduct(@PathVariable String productName) {
 
-        productServiceImpl.deleteProduct(id);
+        productServiceImpl.deleteProduct(productName);
     }
 }
 
