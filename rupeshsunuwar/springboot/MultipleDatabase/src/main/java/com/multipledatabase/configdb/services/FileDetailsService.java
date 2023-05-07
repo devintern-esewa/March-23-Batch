@@ -9,16 +9,11 @@ import java.util.List;
 public interface FileDetailsService {
 
 
-
-
     public void getAllFileDetails();
 
     public void startProcessingFileDetails(FileDetails filesDetails) throws Exception;
 
     public List<Product> readDataFromCsv(FileDetails filesDetails) throws Exception;
-
-
-
 
 
 }

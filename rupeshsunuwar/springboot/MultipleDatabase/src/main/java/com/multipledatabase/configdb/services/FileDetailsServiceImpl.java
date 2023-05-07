@@ -24,6 +24,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.multipledatabase.inventorydb.services.ProductServiceImpl.createProduct;
 import static com.multipledatabase.security.Cipher.encryption;
 
 
@@ -35,9 +36,6 @@ public class FileDetailsServiceImpl implements FileDetailsService {
 
     private Logger logger = LoggerFactory.getLogger(FileDetailsServiceImpl.class);
 
-    private static int completedCount = 0;
-
-
 
     @Autowired
     FileDetailsRepository fileDetailsRepository;
@@ -45,10 +43,7 @@ public class FileDetailsServiceImpl implements FileDetailsService {
     ProductServiceImpl productService;
 
 
-
-
-
-    public FileDetails createFileDetails(FileDetailsDto fileDetailsDto) {
+    public FileDetails convertToModel(FileDetailsDto fileDetailsDto) {
 
         FileDetails fileDetails1 = new FileDetails();
         fileDetails1.setFile_Path(fileDetailsDto.getFile_Path());
@@ -58,26 +53,31 @@ public class FileDetailsServiceImpl implements FileDetailsService {
         return fileDetails1;
     }
 
+
     @Override
     //To schedule a method to be executed once and then every 1 minute using cron expression
-    @Scheduled(cron = "0 */1 * * * ?")
+    @Scheduled(cron = "*/20 * * * * ?")
     public void getAllFileDetails() {
 
         logger.info("Getting all FileDetails.");
-        List<FileDetails> fileDetailsList = fileDetailsRepository.findAll();
-        System.out.println(fileDetailsList);
-        for (int i = completedCount; i < fileDetailsList.size(); i++) {
-            System.out.println(i);
-            try {
-                logger.info("Starting processing file Details");
-                startProcessingFileDetails(fileDetailsList.get(i));
-                logger.info("Completed processing file Details");
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+        List<FileDetails> fileDetailsList = fileDetailsRepository.findByStatus(FileDetailsEnum.PENDING);
+
+        logger.info("Starting processing file Details");
+        try {
+            if (fileDetailsList.isEmpty()) {
+
+            } else {
+                for (FileDetails fileDetails : fileDetailsList) {
+                    startProcessingFileDetails(fileDetails);
+
+                }
             }
-
-
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+        logger.info("Completed processing file Details");
+
+
     }
 
 
@@ -97,16 +97,14 @@ public class FileDetailsServiceImpl implements FileDetailsService {
         filesDetails.setStatus((FileDetailsEnum.COMPLETE));
         logger.info("saving the status of FileDetails");
         fileDetailsRepository.save(filesDetails);
-        logger.info("saving the status of FileDetails");
-        completedCount++;
+        logger.info("saved the status of FileDetails");
     }
 
 
     public List<Product> readDataFromCsv(FileDetails filesDetails) throws Exception {
 
 
-
-        Cipher obj=new Cipher();
+        Cipher obj = new Cipher();
         logger.info("Calling the getSecretKey to get the secret key from Test class");
         logger.info("Received Secret key.");
         int successCount = 0;
@@ -122,24 +120,17 @@ public class FileDetailsServiceImpl implements FileDetailsService {
             br.readLine();
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
-
-
                 String name = values[0];
                 String code = values[1];
                 double qty = Double.parseDouble(values[3]);
                 double price = Double.parseDouble(values[4]);
                 System.out.println(name + code + qty + price);
-                Product product1 = new Product();
-                product1.setName(name);
-                product1.setStatus(ProductEnum.ACTIVE);
-                product1.setCode(code);
-                product1.setQty(qty);
-                product1.setPrice(price);
-                logger.info("Calling method checkProduct");
-                if (productService.checkProductStatus(product1, allProduct)) {
+                Product product = createProduct(name, code, qty, price);
+                logger.info("Calling method checkProductStatus");
+                if (productService.checkProductStatus(product, allProduct)) {
                     logger.info("product read from csv is not present in database");
                     successCount++;
-                    productList.add(product1);
+                    productList.add(product);
                 } else {
                     logger.info("product read from csv is present in database");
                     failureCount++;
@@ -159,10 +150,9 @@ public class FileDetailsServiceImpl implements FileDetailsService {
 
 
     public boolean addFileDetails(FileDetailsDto fileDetails) {
+
         logger.info("Saving the FilesDetails in database");
-        fileDetailsRepository.save(createFileDetails(fileDetails));
-
-
+        fileDetailsRepository.save(convertToModel(fileDetails));
         logger.info("Saved the FilesDetails in database");
 
         return true;

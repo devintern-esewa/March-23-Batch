@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,28 +27,51 @@ public class ProductServiceImpl implements ProductService {
     Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
 
-    public Product createProduct(ProductDto productDto) {
+    public Product convertToProductEntity(ProductDto productDto) {
 
         Product product = new Product();
-        product.setCode(productDto.getCode());
+        product.setCode(encryption(productDto.getCode()));
         product.setName(productDto.getName());
-        product.setStatus(ProductEnum.valueOf(productDto.getStatus()));
+        product.setStatus(ProductEnum.valueOf(productDto.getStatus().toUpperCase()));
         product.setQty(productDto.getQty());
         product.setPrice(productDto.getPrice());
 
         return product;
     }
 
-    public ProductDto createProductDto(Product product) {
+
+    public ProductDto convertToProductDto(Product product) {
 
         ProductDto productDto = new ProductDto();
-        productDto.setCode(decryption(product.getCode()));
+        productDto.setCode(product.getCode());
         productDto.setName(product.getName());
         productDto.setStatus(String.valueOf(product.getStatus()));
         productDto.setQty(product.getQty());
         productDto.setPrice(product.getPrice());
         return productDto;
     }
+
+    public static Product createProduct(String name, String code, double qty, double price) {
+
+        Product product1 = new Product();
+        product1.setName(name);
+        product1.setStatus(ProductEnum.ACTIVE);
+        product1.setCode(code);
+        product1.setQty(qty);
+        product1.setPrice(price);
+
+        return product1;
+    }
+
+    public ProductDto findByName(String name) {
+
+        Product product = productRepository.findByName(name);
+        System.out.println(product.getName());
+        return convertToProductDto(productRepository.findByName(name));
+
+
+    }
+
 
     @Override
     public List<ProductDto> getAllProduct() {
@@ -57,26 +81,26 @@ public class ProductServiceImpl implements ProductService {
 
         for (Product product : productList) {
 
-            productDtoList.add(createProductDto(product));
+            productDtoList.add(convertToProductDto(product));
 
         }
         return productDtoList;
-
-
     }
 
     @Override
     public void addAllProduct(List<Product> productList) {
 
-        for (Product product : productList) {
-            logger.info(product.getCode() + " " + "Product code before encryption");
-            logger.info("Encrypting the product code to set in database");
-            product.setCode(encryption(product.getCode(), generateKey()));
-            logger.info("Product code after encryption" + product.getCode());
-        }
+
         logger.info("Saving all the product in database");
         productRepository.saveAll(productList);
         logger.info("Saved all the product in database");
+    }
+
+    public ProductDto addProduct(ProductDto productDto) {
+
+        Product product = productRepository.save(convertToProductEntity(productDto));
+
+        return convertToProductDto(product);
     }
 
 

@@ -8,9 +8,9 @@ import java.util.List;
 public interface ProductService {
 
 
-
-    public List<ProductDto> getAllProduct() ;
+    public List<ProductDto> getAllProduct();
 
     public void addAllProduct(List<Product> productList);
-    public  boolean checkProductStatus(Product product, List<ProductDto> productList);
+
+    public boolean checkProductStatus(Product product, List<ProductDto> productList);
 }

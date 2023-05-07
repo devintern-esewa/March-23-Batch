@@ -1,15 +1,11 @@
 package com.multipledatabase.inventorydb.dto;
 
-import com.multipledatabase.inventorydb.enums.ProductEnum;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import lombok.*;
 
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class ProductDto {
