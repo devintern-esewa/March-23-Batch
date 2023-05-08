@@ -27,10 +27,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDto createUser(UserDto userDTO) {
         User user = new User(userDTO.getUserName(),
-                userDTO.getPassword(), userDTO.getMobileNumber(), userDTO.getRole());
+                userDTO.getPassword(), userDTO.getMobileNumber(), userDTO.getRole(), userDTO.getProduct());
         User savedUser = userRepository.save(user);
         return new UserDto(savedUser.getUserName(),
-                savedUser.getPassword(), savedUser.getMobileNumber(), savedUser.getRole());
+                savedUser.getPassword(), savedUser.getMobileNumber(), savedUser.getRole(), savedUser.getProduct());
     }
 
     @Override
@@ -55,7 +55,8 @@ public class UserServiceImpl implements UserService {
                         user.getUserName(),
                         user.getPassword(),
                         user.getMobileNumber(),
-                        user.getRole()));
+                        user.getRole(),
+                        user.getProduct()));
     }
 
     @Override
