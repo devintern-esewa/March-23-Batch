@@ -2,6 +2,7 @@ package np.com.esewa.learn.springsecuritysample.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class User {
     private String email;
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch=FetchType.EAGER)
     private List<Role> roles;
 
     public User(String username, String email, String password, List<Role> roles) {
