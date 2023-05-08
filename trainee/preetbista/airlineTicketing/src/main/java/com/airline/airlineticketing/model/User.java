@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -30,6 +31,17 @@ public class User {
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Role> role;
+
+    @Transient
+    List<Product> product = new ArrayList<>();
+
+    public User(String username, String password, Long mobileNumber, List<Role> role, List<Product> product) {
+        this.userName = username;
+        this.password = password;
+        this.mobileNumber = mobileNumber;
+        this.role = role;
+        this.product=product;
+    }
 
     public User(String username, String password, Long mobileNumber, List<Role> role) {
         this.userName = username;

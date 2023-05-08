@@ -1,6 +1,7 @@
 package com.airline.airlineticketing.controller;
 
 import com.airline.airlineticketing.dto.UserDto;
+import com.airline.airlineticketing.model.Product;
 import com.airline.airlineticketing.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,8 +11,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/users")
@@ -20,6 +26,9 @@ public class UserController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -27,7 +36,7 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String login(){
+    public String login() {
         return "login";
     }
 
@@ -53,9 +62,18 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long userId) {
-        return userService.getUserById(userId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.noContent().build());
+        Optional<UserDto> userDtoOptional = userService.getUserById(userId);
+        List<Product> productList = new ArrayList<>();
+        Product product = this.restTemplate.getForObject("http://localhost:8085/products/users/" + userId, Product.class);
+        productList.add(product);
+
+        if (userDtoOptional.isPresent()) {
+            UserDto userDtoWithProductList = userDtoOptional.get();
+            userDtoWithProductList.setProduct(productList);
+            return ResponseEntity.ok(userDtoWithProductList);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @DeleteMapping("/{userId}")
@@ -70,8 +88,8 @@ public class UserController {
 
     @GetMapping("/all")
 //    @PreAuthorize("hasAnyRole('ADMIN')")
-    String getAllUsers(Model model){
-        model.addAttribute("users",userService.getAllUsers());
+    String getAllUsers(Model model) {
+        model.addAttribute("users", userService.getAllUsers());
         return "data"; // returns a students view which should be created inside templates
     }
 }
