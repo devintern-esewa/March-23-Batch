@@ -8,6 +8,8 @@ import com.inventoryDb.enums.ProductEnum;
 import com.inventoryDb.exception.ResourceNotFoundException;
 import com.inventoryDb.model.Product;
 import com.inventoryDb.repository.ProductRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -105,6 +107,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @CacheEvict(value = "saveProduct", key = "#root.methodName")
     public void saveProduct(List<Product> products) {
         productRepository.saveAll(products);
     }
@@ -112,12 +115,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @DecryptProduct
+    @Cacheable(value = "getAllProduct", key= "#root.methodName")
     public List<ProductDto> getAllProducts() {
         return productRepository.getAllProductDto();
     }
 
     @Override
     @DecryptProduct
+    @Cacheable(value = "getProductByPage", key = "#root.methodName")
     public List<ProductDto> getAllProductsByPage(int offSet, int pageSize, String field) {
         Page<Product> allProducts =
                 productRepository.findAll(PageRequest.of(offSet, pageSize).withSort(Sort.Direction.ASC,
@@ -140,6 +145,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @DecryptProduct
+    @Cacheable(value = "productById",key = "#id")
     public List<ProductDto> getProductById(long id) {
         Product products = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product is" +
                 " not found"));

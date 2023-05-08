@@ -3,6 +3,7 @@ package com.inventoryDb.controller;
 import com.inventoryDb.dto.ProductDto;
 import com.inventoryDb.payload.ApiResponse;
 import com.inventoryDb.service.ProductService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,12 +36,12 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}")
-    public ResponseEntity<List<ProductDto>> getProductById(@PathVariable("id") long id) {
+    public ResponseEntity<List<ProductDto>> getProductById(@PathVariable long id) {
         return new ResponseEntity<>(productService.getProductById(id), HttpStatus.OK);
     }
 
     @DeleteMapping("/products/{id}")
-    public ResponseEntity<ApiResponse> deleteProduct(@PathVariable("id") long id) {
+    public ResponseEntity<ApiResponse> deleteProduct(@PathVariable long id) {
         productService.deleteProduct(id);
         return new ResponseEntity<>(new ApiResponse("deleted product successfully", true), HttpStatus.OK);
     }
