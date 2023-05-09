@@ -29,13 +29,4 @@ public class Product {
     private LocalDateTime created;
 
 
-    public Product(int id, String name, String code, ProductEnum status, int qty, int price) {
-
-        this.id=id;
-        this.name=name;
-        this.code=code;
-        this.status=status;
-        this.qty=qty;
-        this.price=price;
-    }
 }

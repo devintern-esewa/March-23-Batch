@@ -16,9 +16,8 @@ public class ConfigController {
     private FileDetailsServiceImpl fileDetailsService;
 
 
-
     @PostMapping(value = "/file")
-    public boolean saveFileDetails(@RequestBody FileDetailsDto fileDetails){
+    public boolean saveFileDetails(@RequestBody FileDetailsDto fileDetails) {
 
         return fileDetailsService.addFileDetails(fileDetails);
     }

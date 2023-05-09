@@ -5,16 +5,13 @@ import com.multipledatabase.configdb.dto.FileDetailsDto;
 import com.multipledatabase.configdb.entity.FileDetails;
 import com.multipledatabase.configdb.enums.FileDetailsEnum;
 import com.multipledatabase.configdb.repository.FileDetailsRepository;
-import com.multipledatabase.security.Cipher;
 import com.multipledatabase.inventorydb.dto.ProductDto;
 import com.multipledatabase.inventorydb.entity.Product;
-import com.multipledatabase.inventorydb.enums.ProductEnum;
 import com.multipledatabase.inventorydb.services.ProductServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -25,16 +22,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.multipledatabase.inventorydb.services.ProductServiceImpl.createProduct;
-import static com.multipledatabase.security.Cipher.encryption;
 
 
 @Service
 @Slf4j
 @EnableScheduling
-@EnableCaching
 public class FileDetailsServiceImpl implements FileDetailsService {
 
-    private Logger logger = LoggerFactory.getLogger(FileDetailsServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(FileDetailsServiceImpl.class);
 
 
     @Autowired
@@ -43,7 +38,7 @@ public class FileDetailsServiceImpl implements FileDetailsService {
     ProductServiceImpl productService;
 
 
-    public FileDetails convertToModel(FileDetailsDto fileDetailsDto) {
+    public FileDetails convertToFileDetails(FileDetailsDto fileDetailsDto) {
 
         FileDetails fileDetails1 = new FileDetails();
         fileDetails1.setFile_Path(fileDetailsDto.getFile_Path());
@@ -57,7 +52,7 @@ public class FileDetailsServiceImpl implements FileDetailsService {
     @Override
     //To schedule a method to be executed once and then every 1 minute using cron expression
     @Scheduled(cron = "*/20 * * * * ?")
-    public void getAllFileDetails() {
+    public boolean getAllFileDetails() {
 
         logger.info("Getting all FileDetails.");
         List<FileDetails> fileDetailsList = fileDetailsRepository.findByStatus(FileDetailsEnum.PENDING);
@@ -66,16 +61,20 @@ public class FileDetailsServiceImpl implements FileDetailsService {
         try {
             if (fileDetailsList.isEmpty()) {
 
+                logger.info("No FileDetails Which has Pending Status");
+                return false;
+
             } else {
                 for (FileDetails fileDetails : fileDetailsList) {
                     startProcessingFileDetails(fileDetails);
 
                 }
+                logger.info("Completed processing file Details");
+                return true;
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        logger.info("Completed processing file Details");
 
 
     }
@@ -104,9 +103,6 @@ public class FileDetailsServiceImpl implements FileDetailsService {
     public List<Product> readDataFromCsv(FileDetails filesDetails) throws Exception {
 
 
-        Cipher obj = new Cipher();
-        logger.info("Calling the getSecretKey to get the secret key from Test class");
-        logger.info("Received Secret key.");
         int successCount = 0;
         int failureCount = 0;
         logger.info("Getting all the product from the database");
@@ -152,7 +148,7 @@ public class FileDetailsServiceImpl implements FileDetailsService {
     public boolean addFileDetails(FileDetailsDto fileDetails) {
 
         logger.info("Saving the FilesDetails in database");
-        fileDetailsRepository.save(convertToModel(fileDetails));
+        fileDetailsRepository.save(convertToFileDetails(fileDetails));
         logger.info("Saved the FilesDetails in database");
 
         return true;

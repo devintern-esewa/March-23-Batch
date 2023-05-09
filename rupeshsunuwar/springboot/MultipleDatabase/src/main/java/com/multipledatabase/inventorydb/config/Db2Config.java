@@ -21,8 +21,7 @@ import java.util.Map;
 
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories(entityManagerFactoryRef = "secondEntityManagerFactoryBean",
-        basePackages = {"com.multipledatabase.inventorydb.repository"}, transactionManagerRef = "secondTransactionManager")
+@EnableJpaRepositories(entityManagerFactoryRef = "secondEntityManagerFactoryBean", basePackages = {"com.multipledatabase.inventorydb.repository"}, transactionManagerRef = "secondTransactionManager")
 public class Db2Config {
 
 

@@ -28,6 +28,4 @@ public class FileDetails {
     private LocalDateTime created;
 
 
-
-
 }

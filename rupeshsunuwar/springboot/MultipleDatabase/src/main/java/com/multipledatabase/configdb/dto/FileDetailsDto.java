@@ -13,7 +13,6 @@ import lombok.ToString;
 public class FileDetailsDto {
 
 
-
     String file_Path;
 
 

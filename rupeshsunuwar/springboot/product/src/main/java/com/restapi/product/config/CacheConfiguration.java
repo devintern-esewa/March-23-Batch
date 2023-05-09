@@ -22,7 +22,7 @@ public class CacheConfiguration{
 
            cacheManager.setAllowNullValues(false);
            cacheManager.setStoreByValue(true);
-            System.out.println("Customize Cachea");
+            System.out.println("Customize Cache");
 
         }
     }

@@ -22,7 +22,7 @@ public class ProductController {
     }
 
     @GetMapping(value = "/product/{productName}")
-    public ProductDto getProduct(@PathVariable String productName) {
+    public ProductDto getProduct(@PathVariable("productName") String productName) {
 
         return productServiceImpl.getProduct(productName);
     }
@@ -35,13 +35,13 @@ public class ProductController {
     }
 
     @PutMapping(value = "/product/{productName}")
-    public ProductDto updateProduct(@PathVariable String productName, @RequestBody ProductDto product) {
+    public ProductDto updateProduct(@PathVariable("productName") String productName, @RequestBody ProductDto product) {
 
         return productServiceImpl.updateProduct(productName, product);
     }
 
     @DeleteMapping(value = "/product/{productName}")
-    public void deleteProduct(@PathVariable String productName) {
+    public void deleteProduct(@PathVariable("productName" )String productName) {
 
         productServiceImpl.deleteProduct(productName);
     }

@@ -70,7 +70,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-    @Cacheable(cacheNames = "product",key ="#name")
+    @Cacheable(cacheNames = "product",key ="#productName")
     public ProductDto getProduct(String productName) {
 
         Optional<Product> product = productRepository.findByProductName(productName);
@@ -102,10 +102,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-    @CachePut(cacheNames ="product",key="#name")
-    public ProductDto updateProduct(String name, ProductDto productDto) {
+    @CachePut(cacheNames ="product",key="#productName")
+    public ProductDto updateProduct(String productName, ProductDto productDto) {
 
-        if (productRepository.findByProductName(name).isPresent()) {
+        if (productRepository.findByProductName(productName).isPresent()) {
             logger.info("Converting productDto to product");
             Product product = convertToProduct(productDto);
             logger.info("Converted productDto to product");
@@ -117,12 +117,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-    @CacheEvict(cacheNames="product",key="#name")
-    public boolean deleteProduct(String name) {
+    @CacheEvict(cacheNames="product",key="#productName")
+    public boolean deleteProduct(String productName) {
 
-        if (productRepository.findByProductName(name).isPresent()) {
+        if (productRepository.findByProductName(productName).isPresent()) {
             logger.info("Product of this id exist");
-            productRepository.deleteByProductName(name);
+            productRepository.deleteByProductName(productName);
             logger.info("product deleted");
             return true;
         } else logger.error("Product Doest not exist");

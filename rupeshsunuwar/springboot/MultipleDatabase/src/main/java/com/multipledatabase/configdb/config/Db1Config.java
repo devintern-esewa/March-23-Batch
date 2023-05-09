@@ -21,11 +21,7 @@ import java.util.Objects;
 
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories(
-        entityManagerFactoryRef = "entityManagerFactoryBean",
-        basePackages = {"com.multipledatabase.configdb.repository"},
-        transactionManagerRef = "transactionManager1"
-)
+@EnableJpaRepositories(entityManagerFactoryRef = "entityManagerFactoryBean", basePackages = {"com.multipledatabase.configdb.repository"}, transactionManagerRef = "transactionManager1")
 public class Db1Config {
 
 

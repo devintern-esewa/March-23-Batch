@@ -30,7 +30,7 @@ public class ProductController {
     }
 
     @PostMapping(value = "/product")
-    public ProductDto addProduct(@RequestBody ProductDto productDto) {
+    public boolean addProduct(@RequestBody ProductDto productDto) {
 
         return productService.addProduct(productDto);
 

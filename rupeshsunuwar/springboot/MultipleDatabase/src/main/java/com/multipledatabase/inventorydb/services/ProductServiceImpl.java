@@ -3,16 +3,18 @@ package com.multipledatabase.inventorydb.services;
 import com.multipledatabase.inventorydb.dto.ProductDto;
 import com.multipledatabase.inventorydb.entity.Product;
 import com.multipledatabase.inventorydb.enums.ProductEnum;
+import com.multipledatabase.inventorydb.exception.ProductAlreadyExistException;
+import com.multipledatabase.inventorydb.exception.ProductDoesNotExistException;
 import com.multipledatabase.inventorydb.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.multipledatabase.security.Cipher.*;
 
@@ -40,14 +42,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-    public ProductDto convertToProductDto(Product product) {
+    public ProductDto convertToProductDto(Optional<Product> product) {
 
         ProductDto productDto = new ProductDto();
-        productDto.setCode(product.getCode());
-        productDto.setName(product.getName());
-        productDto.setStatus(String.valueOf(product.getStatus()));
-        productDto.setQty(product.getQty());
-        productDto.setPrice(product.getPrice());
+        productDto.setCode(product.get().getCode());
+        productDto.setName(product.get().getName());
+        productDto.setStatus(String.valueOf(product.get().getStatus()));
+        productDto.setQty(product.get().getQty());
+        productDto.setPrice(product.get().getPrice());
         return productDto;
     }
 
@@ -65,10 +67,9 @@ public class ProductServiceImpl implements ProductService {
 
     public ProductDto findByName(String name) {
 
-        Product product = productRepository.findByName(name);
-        System.out.println(product.getName());
-        return convertToProductDto(productRepository.findByName(name));
-
+        if (productRepository.findByName(name).isPresent()) {
+            return convertToProductDto(Optional.of(productRepository.findByName(name).get()));
+        } else throw new ProductDoesNotExistException("Does not exist");
 
     }
 
@@ -81,26 +82,32 @@ public class ProductServiceImpl implements ProductService {
 
         for (Product product : productList) {
 
-            productDtoList.add(convertToProductDto(product));
+            productDtoList.add(convertToProductDto(Optional.ofNullable(product)));
 
         }
         return productDtoList;
     }
 
     @Override
-    public void addAllProduct(List<Product> productList) {
+    public boolean addAllProduct(List<Product> productList) {
 
 
         logger.info("Saving all the product in database");
         productRepository.saveAll(productList);
-        logger.info("Saved all the product in database");
+        return true;
     }
 
-    public ProductDto addProduct(ProductDto productDto) {
+    public boolean addProduct(ProductDto productDto) {
 
-        Product product = productRepository.save(convertToProductEntity(productDto));
+        if (productRepository.findByName(productDto.getName()).isPresent()) {
 
-        return convertToProductDto(product);
+            throw new ProductAlreadyExistException("Product Exist");
+        } else {
+            productRepository.save(convertToProductEntity(productDto));
+
+
+            return true;
+        }
     }
 
 
@@ -110,8 +117,7 @@ public class ProductServiceImpl implements ProductService {
         boolean flag = true;
 
         for (ProductDto productDto : productList) {
-            String code = decryption(product.getCode());
-            if (code.equals(productDto.getCode()) || product.getStatus().equals(ProductEnum.valueOf(productDto.getStatus()))) {
+            if (product.getCode().equals(productDto.getCode()) && product.getStatus().equals(ProductEnum.valueOf(productDto.getStatus().toUpperCase()))) {
                 flag = false;
                 break;
             }
