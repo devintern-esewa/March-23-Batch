@@ -3,13 +3,12 @@ package np.com.esewa.learn.paymentservice.services;
 import np.com.esewa.learn.paymentservice.entities.TransactionDetails;
 import np.com.esewa.learn.paymentservice.enums.PaymentStatus;
 import np.com.esewa.learn.paymentservice.exceptions.TransactionNotFoundException;
-import np.com.esewa.learn.paymentservice.repositories.PaymentRepository;
+import np.com.esewa.learn.paymentservice.repositories.TransactionDetailsRepository;
 import np.com.esewa.learn.paymentservice.resources.PaymentRequest;
 import np.com.esewa.learn.paymentservice.resources.PaymentResponse;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Optional;
 import java.util.logging.Logger;
 
 /**
@@ -22,15 +21,15 @@ import java.util.logging.Logger;
 @Service
 public class PaymentServiceImpl implements PaymentService{
 
-    private final PaymentRepository paymentRepository;
+    private final TransactionDetailsRepository transactionDetailsRepository;
     Logger log = Logger.getLogger("PaymentServiceImpl.class");
 
-    public PaymentServiceImpl(PaymentRepository paymentRepository) {
-        this.paymentRepository = paymentRepository;
+    public PaymentServiceImpl(TransactionDetailsRepository transactionDetailsRepository) {
+        this.transactionDetailsRepository = transactionDetailsRepository;
     }
 
     @Override
-    public long doPayment(PaymentRequest paymentRequest) {
+    public long     doPayment(PaymentRequest paymentRequest) {
         log.info("\n PaymentServiceImpl | doPayment(paymentRequest) | do payment request ");
 
         TransactionDetails transactionDetails
@@ -42,7 +41,7 @@ public class PaymentServiceImpl implements PaymentService{
                 .referenceNumber(paymentRequest.getReferenceNumber())
                 .paymentStatus(PaymentStatus.SUCCESS)
                 .build();
-        transactionDetails = paymentRepository.save(transactionDetails);
+        transactionDetails = transactionDetailsRepository.save(transactionDetails);
         log.info(" payment transaction successful for "+transactionDetails.getOrderId()+" with transaction Id: "+transactionDetails.getId());
         return transactionDetails.getId();
     }
@@ -50,7 +49,7 @@ public class PaymentServiceImpl implements PaymentService{
     @Override
     public PaymentResponse getPaymentDetailsByOrderId(long orderId) {
         log.info("\n PaymentServiceImpl | getPaymentDetailsByOrderId(orderId) | for orderId: "+orderId);
-        TransactionDetails transactionDetails = paymentRepository.findByOrderId(orderId).orElseThrow(
+        TransactionDetails transactionDetails = transactionDetailsRepository.findByOrderId(orderId).orElseThrow(
                 ()-> new TransactionNotFoundException("No payment transaction details for orderId "+orderId)
         );
         log.info(" payment details for Id: "+transactionDetails.getOrderId()+" returned. ");

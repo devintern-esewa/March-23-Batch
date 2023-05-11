@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @author SatyaRajAwasth1
  * Written on: 5/9/2023
  * @project paymentservice
- * Custom response entity class for errors @
+ * Custom response entity class for errors
  */
 @Builder
 @Setter
