@@ -1,0 +1,10 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: product-service
+
+eureka:
+  instance:
+    hostname: localhost

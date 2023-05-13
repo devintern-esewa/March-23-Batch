@@ -1,0 +1,15 @@
+spring:
+  data:
+    mongodb:
+      database: orderdb
+      port: 27017
+      uri: mongodb://localhost:27017
+
+
+  application:
+    name: ORDER-SERVICE
+
+server:
+  port: 8083
+
+

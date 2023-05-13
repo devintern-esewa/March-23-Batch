@@ -4,14 +4,15 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @Entity(name = "publishers")
 public class Publisher {
     @Id
+    @Column(name = "publishers_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @Column(name = "publishers_name")
     private String name;
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Book> listOfBooksPublished;
 }

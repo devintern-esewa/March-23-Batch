@@ -1,0 +1,10 @@
+# Configuration for postgres database
+spring:
+  datasource:
+    username: postgres
+    url: jdbc:postgresql://localhost:5432/spring_security
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: 'true'
