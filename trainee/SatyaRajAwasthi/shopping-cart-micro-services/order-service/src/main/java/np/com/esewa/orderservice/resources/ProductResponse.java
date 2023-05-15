@@ -21,4 +21,6 @@ import java.io.Serializable;
 public class ProductResponse implements Serializable {
     private long productId;
     private String productName;
+    private int quantity;
+    private float price;
 }

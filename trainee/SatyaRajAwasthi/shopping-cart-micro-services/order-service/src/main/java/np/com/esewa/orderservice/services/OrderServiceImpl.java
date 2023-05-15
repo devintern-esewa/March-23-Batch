@@ -120,6 +120,8 @@ public class OrderServiceImpl implements OrderService{
                 .builder()
                 .productName(Objects.requireNonNull(productResponse).getProductName())
                 .productId(productResponse.getProductId())
+                .quantity(productResponse.getQuantity())
+                .price(productResponse.getPrice())
                 .build();
 
         OrderResponse.PaymentDetails paymentDetails

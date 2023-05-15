@@ -34,8 +34,8 @@ public class OrderResponse {
 
             private String productName;
             private long productId;
-            private long quantity;
-            private long price;
+            private int quantity;
+            private float price;
         }
 
         @Data
