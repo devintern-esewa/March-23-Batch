@@ -9,5 +9,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * @project orderservice
  * a repository extendation child of mongo repository for order
  */
-public interface OrderRepository extends MongoRepository<Order, Long> {
+public interface OrderRepository extends MongoRepository<Order, String> {
 }

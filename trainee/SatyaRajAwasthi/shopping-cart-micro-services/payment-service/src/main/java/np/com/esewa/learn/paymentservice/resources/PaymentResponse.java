@@ -27,5 +27,5 @@ public class PaymentResponse implements Serializable {
     private PaymentMode paymentMode;
     private float amount;
     private Instant paymentDate;
-    private long orderId;
+    private String orderId;
 }

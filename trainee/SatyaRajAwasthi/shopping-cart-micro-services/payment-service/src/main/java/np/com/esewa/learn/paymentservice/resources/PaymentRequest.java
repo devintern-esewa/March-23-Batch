@@ -20,7 +20,7 @@ import java.io.Serializable;
 @Builder
 @JsonIgnoreProperties
 public class PaymentRequest implements Serializable {
-    private long orderId;
+    private String orderId;
     private float amount;
     private String referenceNumber;
     private PaymentMode paymentMode;

@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public long placeOrder(OrderRequest orderRequest) {
+    public String placeOrder(OrderRequest orderRequest) {
         log.info("\n OrderServiceImpl | placeOrder(orderRequest) | creating order with status created for order details:  "+orderRequest.toString());
         Order order
                 = Order.builder()
@@ -86,15 +86,14 @@ public class OrderServiceImpl implements OrderService{
             updatedOrder.setOrderStatus(OrderStatus.PAYMENT_FAILED);
         }
 
-        orderRepository.delete(order);
-        log.warning("deleted existing order with order id: "+order.getId()+" and stored updated");
+        log.warning("updating existing order with order id: "+order.getId()+" with order status placed or payment_failed");
         orderRepository.save(updatedOrder);
         log.info("\n order success for order Id: "+updatedOrder.getId());
         return updatedOrder.getId();
     }
 
     @Override
-    public OrderResponse getOrderDetails(long orderId) {
+    public OrderResponse getOrderDetails(String orderId) {
         log.info("\n OrderServiceImpl | getOrderDetails(orderId) | with orderId: "+orderId);
 
         Order order
@@ -144,6 +143,6 @@ public class OrderServiceImpl implements OrderService{
 
         log.info("OrderServiceImpl | getOrderDetails | orderResponse : " + orderResponse.toString());
 
-        return null;
+        return orderResponse;
     }
 }

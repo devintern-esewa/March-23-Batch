@@ -12,5 +12,5 @@ import np.com.esewa.learn.paymentservice.resources.PaymentResponse;
 public interface PaymentService {
 //    return paymentId after successful payment
     public long doPayment(PaymentRequest paymentRequest);
-    PaymentResponse getPaymentDetailsByOrderId(long orderId);
+    PaymentResponse getPaymentDetailsByOrderId(String orderId);
 }
