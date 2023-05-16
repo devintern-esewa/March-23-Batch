@@ -19,7 +19,7 @@ import java.time.Instant;
 @Data
 @Builder
 public class OrderResponse {
-        private long orderId;
+        private String orderId;
         private Instant orderDate;
         private OrderStatus orderStatus;
         private float amount;
@@ -34,8 +34,8 @@ public class OrderResponse {
 
             private String productName;
             private long productId;
-            private long quantity;
-            private long price;
+            private int quantity;
+            private float price;
         }
 
         @Data

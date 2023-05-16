@@ -27,15 +27,15 @@ public class OrderController {
     }
 
     @PostMapping("/place-order")
-    ResponseEntity<Long> placeOrder(@RequestBody OrderRequest orderRequest){
+    ResponseEntity<String> placeOrder(@RequestBody OrderRequest orderRequest){
         log.info("OrderController | placeOrder | orderRequest: {}"+ orderRequest.toString());
-        long orderId = orderService.placeOrder(orderRequest);
+        String orderId = orderService.placeOrder(orderRequest);
 
         return new ResponseEntity<>(orderId, HttpStatus.OK);
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<OrderResponse> getOrderDetails(@PathVariable long orderId) {
+    public ResponseEntity<OrderResponse> getOrderDetails(@PathVariable String orderId) {
 
         log.info("OrderController | getOrderDetails is called");
 

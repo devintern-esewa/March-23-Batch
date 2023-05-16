@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import np.com.esewa.orderservice.enums.OrderStatus;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
@@ -20,8 +22,11 @@ import java.time.Instant;
 @Builder
 @Document(collection = "orders")
 public class Order {
+//    @Transient
+//    public static final String SEQUENCE_NAME = "orders_sequence";
 
-    private long id;
+    @Id
+    private String id;
     
     private long productId;
 

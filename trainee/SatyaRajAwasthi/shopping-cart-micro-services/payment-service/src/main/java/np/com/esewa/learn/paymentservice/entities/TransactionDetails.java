@@ -26,7 +26,7 @@ public class TransactionDetails {
     private long id;
 
     @Column(name = "order_id")
-    private long orderId;
+    private String orderId;
 
     @Column(name = "mode")
     @Enumerated(EnumType.STRING)
