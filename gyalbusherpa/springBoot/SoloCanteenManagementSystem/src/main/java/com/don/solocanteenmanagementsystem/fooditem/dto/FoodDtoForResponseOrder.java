@@ -9,9 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class FoodDtoForOrder {
-    private String foodCategoryName;
+public class FoodDtoForResponseOrder {
     private String foodName;
-
-    private int foodQuantity;
+    private long quantity;
 }

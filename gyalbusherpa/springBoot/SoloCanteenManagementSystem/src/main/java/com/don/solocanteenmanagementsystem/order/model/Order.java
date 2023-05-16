@@ -2,6 +2,7 @@ package com.don.solocanteenmanagementsystem.order.model;
 
 import com.don.solocanteenmanagementsystem.customer.model.Customer;
 import com.don.solocanteenmanagementsystem.fooditem.model.FoodItem;
+import com.don.solocanteenmanagementsystem.fooditem.model.StoreFoodQuantity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 

@@ -1,6 +1,7 @@
 package com.don.solocanteenmanagementsystem.order.dto;
 
 import com.don.solocanteenmanagementsystem.fooditem.dto.FoodDtoForOrder;
+import com.don.solocanteenmanagementsystem.fooditem.dto.FoodDtoForResponseOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,5 +17,5 @@ public class ResponseOrderDto {
     private double totalPrice;
     private double quantity;
     private long customerId;
-    private List<FoodDtoForOrder> foodItems;
+    private List<FoodDtoForResponseOrder> foodItems;
 }

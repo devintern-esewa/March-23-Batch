@@ -19,5 +19,7 @@ public class StoreFoodQuantity {
     private int quantity;
     private Long customerId;
     private Long foodId;
+    private String foodCategoryName;
+    private long token;
 }
 

@@ -14,4 +14,10 @@ public class GlobalExceptionHandlerOrder {
         return new ResponseEntity<>(new ApiResponse("ORDER_ID_NOT_EXISTS", exception.getMessage()),
                 HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(OutOfStockException.class)
+    public ResponseEntity<ApiResponse> orderIdNotFound(OutOfStockException exception) {
+        return new ResponseEntity<>(new ApiResponse("OUT_OF_STOCK", exception.getMessage()),
+                HttpStatus.BAD_REQUEST);
+    }
 }

@@ -38,6 +38,7 @@ public class FoodCategoryServiceImpl implements FoodCategoryService {
                 foodItemResponseDto1.setName(foodItem.getName());
                 foodItemResponseDto1.setDescription(foodItem.getDescription());
                 foodItemResponseDto1.setAvailability(foodItem.getAvailability());
+                foodItemResponseDto1.setStock(foodItem.getStock());
                 foodItemResponseDto1.setPrice(foodItem.getPrice());
 
                 itemResponseDtoArrayList.add(foodItemResponseDto1);

@@ -87,6 +87,7 @@ public class FoodItemServiceImpl implements FoodItemService {
             foodItemResponseDto.setName(item.getName());
             foodItemResponseDto.setAvailability(item.getAvailability());
             foodItemResponseDto.setPrice(item.getPrice());
+            foodItemResponseDto.setStock(item.getStock());
             foodItemResponseDto.setDescription(item.getDescription());
 
             foodItemResponseDtoArrayList.add(foodItemResponseDto);
