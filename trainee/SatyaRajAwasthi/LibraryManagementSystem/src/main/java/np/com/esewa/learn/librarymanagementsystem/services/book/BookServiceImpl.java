@@ -38,7 +38,7 @@ public class BookServiceImpl implements BookService{
             bookToBeEdited.setAuthors(editedBook.getAuthors());
             bookToBeEdited.setTitle(editedBook.getTitle());
             bookToBeEdited.setPublicationYear(editedBook.getPublicationYear());
-            bookToBeEdited.setGenres(editedBook.getGenres());
+//            bookToBeEdited.setGenres(editedBook.getGenres());
             bookToBeEdited.setBookStatus(editedBook.getBookStatus());
 
             bookRepository.save(bookToBeEdited);

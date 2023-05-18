@@ -2,9 +2,12 @@ package np.com.esewa.learn.librarymanagementsystem.controllers;
 
 import np.com.esewa.learn.librarymanagementsystem.entities.Book;
 import np.com.esewa.learn.librarymanagementsystem.entities.User;
+import np.com.esewa.learn.librarymanagementsystem.entities.transactions.UserBorrowReturnBook;
 import np.com.esewa.learn.librarymanagementsystem.exceptions.BooKNotFoundException;
 import np.com.esewa.learn.librarymanagementsystem.exceptions.UserNotFoundException;
+import np.com.esewa.learn.librarymanagementsystem.services.transactions.UserBorrowReturnBookService;
 import np.com.esewa.learn.librarymanagementsystem.services.user.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,9 +21,15 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final UserService userService;
-    public UserController(UserService userService) {
+    private UserService userService;
+    @Autowired
+    public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+    private UserBorrowReturnBookService userBorrowReturnBookService;
+    @Autowired
+    public void setUserBorrowReturnBookService(UserBorrowReturnBookService userBorrowReturnBookService) {
+        this.userBorrowReturnBookService = userBorrowReturnBookService;
     }
 
     @PostMapping("/add")
@@ -45,6 +54,10 @@ public class UserController {
 
     @GetMapping("/{userId}/borrow/{bookIsbnNo}")
     public boolean  borrowBook(@RequestParam long usrId, long bookIsbnNo) throws UserNotFoundException, BooKNotFoundException {
-        return userService.borrowBook(usrId,bookIsbnNo);
+        return userBorrowReturnBookService.borrowBook(usrId,bookIsbnNo);
+    }
+    @GetMapping("/{userId}/return/{bookIsbnNo}")
+    public boolean returnBook(@RequestParam long usrId, long bookIsbnNo) throws UserNotFoundException, BooKNotFoundException {
+        return userBorrowReturnBookService.returnBook(usrId,bookIsbnNo);
     }
 }

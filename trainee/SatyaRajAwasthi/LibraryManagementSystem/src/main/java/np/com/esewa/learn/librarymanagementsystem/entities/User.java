@@ -13,10 +13,13 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue  (strategy = GenerationType.IDENTITY)
+    @Column(name = "users_id")
     private long id;
+
+    @Column(name = "users_name")
     private String name;
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Book> listOfBorrowedBooks;
+
     @Enumerated(EnumType.STRING)
+    @Column(name = "users_role")
     private Role role;
 }
