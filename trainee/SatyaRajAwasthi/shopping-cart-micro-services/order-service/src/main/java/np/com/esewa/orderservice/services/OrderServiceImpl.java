@@ -10,7 +10,7 @@ import np.com.esewa.orderservice.exceptions.OrderNoFoundException;
 import np.com.esewa.orderservice.repositories.OrderRepository;
 import np.com.esewa.orderservice.resources.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 public class OrderServiceImpl implements OrderService{
     Logger log = Logger.getLogger("OrderServiceImpl.class");
     private final OrderRepository orderRepository;
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
 
     @Autowired
@@ -39,8 +39,15 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public String placeOrder(OrderRequest orderRequest) {
+    public String placeOrder(OrderRequest orderRequest, String authorizationToken) {
         log.info("\n OrderServiceImpl | placeOrder(orderRequest) | creating order with status created for order details:  "+orderRequest.toString());
+
+//            Send request with JWT Token while calling APIS through RestTemplate, so get Token
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization","Bearer "+authorizationToken);
+        HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+
         Order order
                 = Order.builder()
                 .orderDate(Instant.now())
@@ -63,14 +70,18 @@ public class OrderServiceImpl implements OrderService{
                 .build();
         try {
             log.info("\n requesting payment for order Id: "+order.getId()+" calling PAYMENT-SERVICE");
+//            Http Entity with header and paymentRequest in body
+            HttpEntity<PaymentRequest> httpEntityForPayment = new HttpEntity<>(paymentRequest,headers);
             ResponseEntity<Long> paymentIdResponseEntity
-                    = restTemplate.postForEntity("http://localhost:8082/api/payment", paymentRequest, Long.class);
-            long paymentId = paymentIdResponseEntity.getBody().longValue();
+                    = restTemplate.postForEntity("http://localhost:8082/api/payment", httpEntityForPayment, Long.class);
+            long paymentId = paymentIdResponseEntity.getBody();
             log.info("\n payment request done with transaction/payment Id: "+paymentId+" called from PAYMENT-SERVICE");
 
             log.info("\n getting payment details for order Id: "+order.getId()+" calling PAYMENT-SERVICE");
+
             ResponseEntity<Object> response
-                    = restTemplate.getForEntity("http://localhost:8082/api/payment/order/"+order.getId(), Object.class);
+                    = restTemplate.exchange(
+                            "http://localhost:8082/api/payment/order/"+order.getId(), HttpMethod.GET, httpEntity, Object.class);
             Object responseObject = response.getBody();
             ObjectMapper objectMapper = JsonMapper.builder()
                     .addModule(new JavaTimeModule())
@@ -93,8 +104,18 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public OrderResponse getOrderDetails(String orderId) {
+    public OrderResponse getOrderDetails(String orderId, String authorizationToken) {
         log.info("\n OrderServiceImpl | getOrderDetails(orderId) | with orderId: "+orderId);
+        //            Send request with JWT Token while calling APIS through RestTemplate, so get Token
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        if (!authorizationToken.startsWith("Bearer ")) {
+            headers.set("Authorization", "Bearer " + authorizationToken);
+        }
+        else {
+            headers.set("Authorization", authorizationToken);
+        }
+        HttpEntity<String> httpEntity = new HttpEntity<>(headers);
 
         Order order
                 = orderRepository.findById(orderId)
@@ -103,17 +124,17 @@ public class OrderServiceImpl implements OrderService{
 
         log.info("OrderServiceImpl | getOrderDetails | Invoking Product service to fetch the product for id: {}"+ order.getProductId());
         ProductResponse productResponse
-                = restTemplate.getForObject(
-                "http://localhost:8081/api/product/" + order.getProductId(),
+                = restTemplate.exchange(
+                "http://localhost:8081/api/product/" + order.getProductId(), HttpMethod.GET, httpEntity,
                 ProductResponse.class
-        );
+        ).getBody();
 
         log.info("OrderServiceImpl | getOrderDetails | Getting payment information form the payment Service");
         PaymentResponse paymentResponse
-                = restTemplate.getForObject(
-                "http://localhost:8082/api/payment/order/" + order.getId(),
+                = restTemplate.exchange(
+                "http://localhost:8082/api/payment/order/" + order.getId(), HttpMethod.GET,httpEntity,
                 PaymentResponse.class
-        );
+        ).getBody();
 
         OrderResponse.ProductDetails productDetails
                 = OrderResponse.ProductDetails

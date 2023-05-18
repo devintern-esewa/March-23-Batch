@@ -27,19 +27,19 @@ public class OrderController {
     }
 
     @PostMapping("/place-order")
-    ResponseEntity<String> placeOrder(@RequestBody OrderRequest orderRequest){
+    ResponseEntity<String> placeOrder(@RequestHeader(value="Authorization") String authorizationHeader, @RequestBody OrderRequest orderRequest){
         log.info("OrderController | placeOrder | orderRequest: {}"+ orderRequest.toString());
-        String orderId = orderService.placeOrder(orderRequest);
+        String orderId = orderService.placeOrder(orderRequest, authorizationHeader);
 
         return new ResponseEntity<>(orderId, HttpStatus.OK);
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<OrderResponse> getOrderDetails(@PathVariable String orderId) {
+    public ResponseEntity<OrderResponse> getOrderDetails(@PathVariable String orderId, @RequestHeader(value="Authorization") String authorizationHeader) {
 
         log.info("OrderController | getOrderDetails is called");
 
-        OrderResponse orderResponse = orderService.getOrderDetails(orderId);
+        OrderResponse orderResponse = orderService.getOrderDetails(orderId, authorizationHeader);
 
         log.info("OrderController | getOrderDetails | orderResponse : " + orderResponse.toString());
 

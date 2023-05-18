@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface OrderService {
-    String placeOrder(OrderRequest orderRequest);
+    String placeOrder(OrderRequest orderRequest, String authorizationToken);
 
-    OrderResponse getOrderDetails(String orderId);
+    OrderResponse getOrderDetails(String orderId, String authorizationToken);
 }
