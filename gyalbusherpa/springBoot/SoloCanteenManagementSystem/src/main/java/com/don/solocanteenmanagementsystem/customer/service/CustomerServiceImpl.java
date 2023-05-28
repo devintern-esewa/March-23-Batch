@@ -6,6 +6,7 @@ import com.don.solocanteenmanagementsystem.customer.exception.CustomerDoNotExist
 import com.don.solocanteenmanagementsystem.customer.model.Customer;
 import com.don.solocanteenmanagementsystem.customer.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -14,6 +15,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public long createCustomer(CustomerRequestDto customerRequestDto) {
@@ -27,7 +29,9 @@ public class CustomerServiceImpl implements CustomerService {
             throw new CustomerAlreadyExistException("customer already exist");
         } else {
             customer = Customer.builder()
-                    .name(customerRequestDto.getName())
+                    .userName(customerRequestDto.getUserName())
+                    .role("user")
+                    .password(passwordEncoder.encode(customerRequestDto.getPassword()))
                     .address(customerRequestDto.getAddress())
                     .email(customerRequestDto.getEmail())
                     .phoneNumber(customerRequestDto.getPhoneNumber())
