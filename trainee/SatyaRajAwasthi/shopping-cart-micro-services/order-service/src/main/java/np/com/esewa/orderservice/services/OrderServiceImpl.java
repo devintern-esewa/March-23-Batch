@@ -125,7 +125,7 @@ public class OrderServiceImpl implements OrderService{
         log.info("OrderServiceImpl | getOrderDetails | Invoking Product service to fetch the product for id: {}"+ order.getProductId());
         ProductResponse productResponse
                 = restTemplate.exchange(
-                "http://localhost:8081/api/product/" + order.getProductId(), HttpMethod.GET, httpEntity,
+                "http://localhost:8081/api/products/" + order.getProductId(), HttpMethod.GET, httpEntity,
                 ProductResponse.class
         ).getBody();
 

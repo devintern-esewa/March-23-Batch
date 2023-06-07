@@ -1,14 +1,15 @@
-package np.com.esewa.learn.productservice.services;
+package np.com.esewa.learn.productservice.services.product;
 
-import lombok.extern.slf4j.Slf4j;
 import np.com.esewa.learn.productservice.entities.Product;
 import np.com.esewa.learn.productservice.exceptions.ProductNotFoundException;
 import np.com.esewa.learn.productservice.repositories.ProductRepository;
 import np.com.esewa.learn.productservice.resources.ProductRequest;
 import np.com.esewa.learn.productservice.resources.ProductResponse;
-import org.slf4j.LoggerFactory;
+import np.com.esewa.learn.productservice.services.category.CategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -22,6 +23,11 @@ public class ProductServiceImpl implements ProductService{
 
     Logger log = Logger.getLogger("ProductServiceImpl.class");
     private final ProductRepository productRepository;
+    private CategoryService categoryService;
+    @Autowired
+    public void setCategoryService(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
 
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
@@ -34,10 +40,29 @@ public class ProductServiceImpl implements ProductService{
                     .productName(productRequest.getName())
                     .price(productRequest.getPrice())
                     .quantity(productRequest.getQuantity())
+                    .imageLink(productRequest.getImage())
+                    .category(categoryService.getCategoryByName(productRequest.getCategory()))
+                    .description(productRequest.getDescription())
                     .build();
         product = productRepository.save(product);
         log.info("ProductServiceImpl | addProduct | Saved product with id: "+product.getProductId());
         return product.getProductId();
+    }
+
+    @Override
+    public List<ProductResponse> getAllProducts() {
+        List<Product> productList = productRepository.findAll();
+        return productList.stream().map(
+                        product -> new ProductResponse(
+                                product.getProductId(),
+                                product.getProductName(),
+                                product.getQuantity(),
+                                product.getPrice(),
+                                product.getCategory().getName(),
+                                product.getImageLink(),
+                                product.getDescription()
+                        )
+                ).toList();
     }
 
     @Override
@@ -55,6 +80,26 @@ public class ProductServiceImpl implements ProductService{
         .quantity(product.getQuantity())
         .productId(productId)
         .build();
+    }
+
+    @Override
+    public List<ProductResponse> getProductsByCategory(String categoryName) {
+
+        List<Product> productList = productRepository.getAllByCategory(categoryService.getCategoryByName(categoryName));
+        if (!productList.isEmpty()){
+        return productList.stream().map(
+                product -> new ProductResponse(
+                        product.getProductId(),
+                        product.getProductName(),
+                        product.getQuantity(),
+                        product.getPrice(),
+                        product.getCategory().getName(),
+                        product.getImageLink(),
+                        product.getDescription()
+                )
+        ).toList();
+    }
+        return getAllProducts();
     }
 
     @Override
@@ -92,5 +137,13 @@ public class ProductServiceImpl implements ProductService{
                 );
         productRepository.delete(productToBeDeleted);
         log.info(" deleted product with id: "+productId);
+    }
+
+    @Override
+    public void addListOfProducts(List<ProductRequest> listOfProductRequests) {
+        for (ProductRequest productRequest : listOfProductRequests) {
+            addProduct(productRequest);
+        }
+
     }
 }

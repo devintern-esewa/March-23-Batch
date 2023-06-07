@@ -20,4 +20,7 @@ public class ProductRequest implements Serializable {
     private String name;
     private int quantity;
     private float price;
+    private String category;
+    private String image;
+    private String description;
 }

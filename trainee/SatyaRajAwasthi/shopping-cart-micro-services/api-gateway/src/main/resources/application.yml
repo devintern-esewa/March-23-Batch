@@ -7,7 +7,7 @@ spring:
         - id: PRODUCT-SERVICE
           uri: http://localhost:8081
           predicates:
-            - Path=/api/product/**
+            - Path=/api/products/**
 
         - id: PAYMENT-SERVICE
           uri: http://localhost:8082

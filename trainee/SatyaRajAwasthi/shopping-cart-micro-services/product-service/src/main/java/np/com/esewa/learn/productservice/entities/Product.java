@@ -22,4 +22,8 @@ public class Product {
     private String productName;
     private float price;
     private int quantity;
+    private String imageLink;
+    private String description;
+    @ManyToOne
+    private Category category;
 }
