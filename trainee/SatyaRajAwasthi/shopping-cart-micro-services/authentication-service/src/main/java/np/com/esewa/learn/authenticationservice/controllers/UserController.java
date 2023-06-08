@@ -1,5 +1,6 @@
 package np.com.esewa.learn.authenticationservice.controllers;
 
+import np.com.esewa.learn.authenticationservice.dtos.RegisterSuccessResponse;
 import np.com.esewa.learn.authenticationservice.exceptions.UserNotFoundException;
 import np.com.esewa.learn.authenticationservice.model.User;
 import np.com.esewa.learn.authenticationservice.services.UserService;
@@ -7,10 +8,7 @@ import np.com.esewa.learn.authenticationservice.tokenutils.JwtGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author SatyaRajAwasth1
@@ -21,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/auth")
+@CrossOrigin
 public class UserController {
     private final UserService userService;
     private final JwtGenerator jwtGenerator;
@@ -29,24 +28,26 @@ public class UserController {
         this.userService=userService;
         this.jwtGenerator=jwtGenerator;
     }
+
     @PostMapping("/register")
-    public ResponseEntity<?> postUser(@RequestBody User user){
+    public ResponseEntity<?> registerUser(@RequestBody User user){
         try{
             userService.saveUser(user);
-            return new ResponseEntity<>(user, HttpStatus.CREATED);
+            return new ResponseEntity<>(new RegisterSuccessResponse("registration success, user username and password to login"), HttpStatus.CREATED);
         } catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
     }
+
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody User user) {
         try {
             if(user.getUserName() == null || user.getPassword() == null) {
-                throw new UserNotFoundException("UserName or Password is Empty");
+                throw new UserNotFoundException("Email or Password is Empty");
             }
             User userData = userService.getUserByUserNameAndPassword(user.getUserName(), user.getPassword());
             if(userData == null){
-                throw new UserNotFoundException("UserName or Password is Invalid");
+                throw new UserNotFoundException("Email or Password is Invalid");
             }
             return new ResponseEntity<>(jwtGenerator.generateToken(user), HttpStatus.OK);
         } catch (UserNotFoundException e) {
@@ -54,3 +55,4 @@ public class UserController {
         }
     }
 }
+

@@ -19,7 +19,7 @@ public class FilterConfig {
         filter.setFilter(new JwtFilter());
         // endpoints that needs to be restricted.
         // All Endpoints would be restricted if unspecified
-        filter.addUrlPatterns("/api/product/*");
+        filter.addUrlPatterns("/api/products/add");
 
         return filter;
     }
