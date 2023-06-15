@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/auth")
-@CrossOrigin
+//@CrossOrigin // no required as cross-origin is enabled on the api gateway globally
 public class UserController {
     private final UserService userService;
     private final JwtGenerator jwtGenerator;

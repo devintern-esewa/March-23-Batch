@@ -1,5 +1,6 @@
 package np.com.esewa.orderservice.resources;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,7 +9,9 @@ import np.com.esewa.orderservice.enums.OrderStatus;
 import np.com.esewa.orderservice.enums.PaymentMode;
 import np.com.esewa.orderservice.enums.PaymentStatus;
 
+import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 
 /**
  * @author SatyaRajAwasth1
@@ -18,12 +21,13 @@ import java.time.Instant;
  */
 @Data
 @Builder
-public class OrderResponse {
+@JsonIgnoreProperties
+public class OrderResponse implements Serializable {
         private String orderId;
         private Instant orderDate;
         private OrderStatus orderStatus;
         private float amount;
-        private ProductDetails productDetails;
+        private List<ProductDetails> productDetails;
         private PaymentDetails paymentDetails;
 
         @Data

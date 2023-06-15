@@ -8,7 +8,6 @@ package np.com.esewa.learn.paymentservice.enums;
  */
 public enum PaymentMode {
     ESEWA,
-    KHALTI,
-    IMEPAY,
+    FONEPAY,
     CASH_ON_DELIVERY
 }

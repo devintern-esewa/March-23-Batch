@@ -4,17 +4,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import np.com.esewa.orderservice.documents.Order;
+import np.com.esewa.orderservice.documents.OrderedProduct;
 import np.com.esewa.orderservice.enums.OrderStatus;
 import np.com.esewa.orderservice.enums.PaymentStatus;
 import np.com.esewa.orderservice.exceptions.OrderNoFoundException;
 import np.com.esewa.orderservice.repositories.OrderRepository;
+import np.com.esewa.orderservice.repositories.OrderedProductRepository;
 import np.com.esewa.orderservice.resources.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -29,14 +35,21 @@ import java.util.logging.Logger;
 public class OrderServiceImpl implements OrderService{
     Logger log = Logger.getLogger("OrderServiceImpl.class");
     private final OrderRepository orderRepository;
+    private final OrderedProductRepository orderedProductRepository;
     private final RestTemplate restTemplate;
 
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, OrderedProductRepository orderedProductRepository) {
         this.orderRepository = orderRepository;
+        this.orderedProductRepository = orderedProductRepository;
         this.restTemplate = new RestTemplate();
     }
+
+/*    public String initializeOrder(OrderRequest orderRequest, String authorizationToken){
+
+        return "orderId";
+    }*/
 
     @Override
     public String placeOrder(OrderRequest orderRequest, String authorizationToken) {
@@ -52,9 +65,10 @@ public class OrderServiceImpl implements OrderService{
                 = Order.builder()
                 .orderDate(Instant.now())
                 .amount(orderRequest.getTotalAmount())
-                .quantity(orderRequest.getQuantity())
-                .productId(orderRequest.getProductId())
+                .orderedProduct(orderedProductRepository.saveAll(orderRequest.getCartItems()))
                 .orderStatus(OrderStatus.CREATED)
+                .deliveryAddress(orderRequest.getDeliveryAddress()
+                )
                 .build();
 
         order = orderRepository.save(order);
@@ -75,7 +89,8 @@ public class OrderServiceImpl implements OrderService{
             ResponseEntity<Long> paymentIdResponseEntity
                     = restTemplate.postForEntity("http://localhost:8082/api/payment", httpEntityForPayment, Long.class);
             long paymentId = paymentIdResponseEntity.getBody();
-            log.info("\n payment request done with transaction/payment Id: "+paymentId+" called from PAYMENT-SERVICE");
+            log.info("\n payment request done with transaction" +
+                    "/payment Id: "+paymentId+" called from PAYMENT-SERVICE");
 
             log.info("\n getting payment details for order Id: "+order.getId()+" calling PAYMENT-SERVICE");
 
@@ -122,28 +137,46 @@ public class OrderServiceImpl implements OrderService{
                 .orElseThrow(() -> new OrderNoFoundException("Order not found for the order Id:" + orderId )
                 );
 
-        log.info("OrderServiceImpl | getOrderDetails | Invoking Product service to fetch the product for id: {}"+ order.getProductId());
-        ProductResponse productResponse
+        log.info("OrderServiceImpl | getOrderDetails | Invoking Product service to fetch the product for id: {}");
+        String getProductFromIdsUri = "http://localhost:8080/api/products/ids";
+        Long [] productIds
+                = order.getOrderedProduct()
+                .stream()
+                .map(OrderedProduct::getProductId)
+                .toArray(Long[]::new);
+
+        UriComponentsBuilder productIdUriBuilder
+                = UriComponentsBuilder
+                .fromUriString(getProductFromIdsUri)
+                .queryParam("productIds",productIds)
+                ;
+        List<ProductResponse> productResponse
                 = restTemplate.exchange(
-                "http://localhost:8081/api/products/" + order.getProductId(), HttpMethod.GET, httpEntity,
-                ProductResponse.class
+                productIdUriBuilder.toUriString(), HttpMethod.GET, httpEntity,
+                new ParameterizedTypeReference<List<ProductResponse>>() {
+                }
         ).getBody();
+
 
         log.info("OrderServiceImpl | getOrderDetails | Getting payment information form the payment Service");
         PaymentResponse paymentResponse
                 = restTemplate.exchange(
-                "http://localhost:8082/api/payment/order/" + order.getId(), HttpMethod.GET,httpEntity,
+                "http://localhost:8080/api/payment/order/" + order.getId(), HttpMethod.GET,httpEntity,
                 PaymentResponse.class
         ).getBody();
 
-        OrderResponse.ProductDetails productDetails
-                = OrderResponse.ProductDetails
-                .builder()
-                .productName(Objects.requireNonNull(productResponse).getProductName())
-                .productId(productResponse.getProductId())
-                .quantity(productResponse.getQuantity())
-                .price(productResponse.getPrice())
-                .build();
+        List<OrderResponse.ProductDetails> productDetails = new ArrayList<>();
+        for (ProductResponse response : productResponse) {
+            OrderResponse.ProductDetails productDetail
+                    = OrderResponse.ProductDetails
+                    .builder()
+                    .productName(Objects.requireNonNull(response).getProductName())
+                    .productId(response.getProductId())
+                    .quantity(response.getQuantity())
+                    .price(response.getPrice())
+                    .build();
+            productDetails.add(productDetail);
+        }
 
         OrderResponse.PaymentDetails paymentDetails
                 = OrderResponse.PaymentDetails

@@ -9,6 +9,7 @@ import np.com.esewa.learn.productservice.services.category.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -80,6 +81,16 @@ public class ProductServiceImpl implements ProductService{
         .quantity(product.getQuantity())
         .productId(productId)
         .build();
+    }
+
+    @Override
+    public List<ProductResponse> getProductsByIds(long[] productsIds) {
+        List<ProductResponse> productResponseList = new ArrayList<>();
+        for (int i = 0; i < productsIds.length; i++) {
+            ProductResponse productResponse = getProductById(productsIds[i]);
+            productResponseList.add(productResponse);
+        }
+        return productResponseList;
     }
 
     @Override

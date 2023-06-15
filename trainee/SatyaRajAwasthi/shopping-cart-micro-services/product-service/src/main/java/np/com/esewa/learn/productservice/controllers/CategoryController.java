@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/products")
-@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "*")
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -26,6 +26,7 @@ public class CategoryController {
 
     @GetMapping("/categories")
     public ResponseEntity<String[]> getAllProductCategories(){
+        System.out.println("getting all categories");
         return ResponseEntity.ok(categoryService.getAllCategories());
     }
 

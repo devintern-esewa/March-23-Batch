@@ -1,4 +1,4 @@
-package np.com.esewa.learn.productservice.config;
+package np.com.esewa.learn.apigateway.configs;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,7 +17,8 @@ import java.io.IOException;
  * @project shopping-cart-micro-services
  * A filter class for cross-origin policy
  */
-//@Configuration // uncomment to filter and allow cross-origin policy to all requests globally
+//include the cors configuration on both the application and also include this filter
+@Configuration
 public class CORSFilter extends OncePerRequestFilter {
     private static final Log LOG = LogFactory.getLog(CORSFilter.class);
 

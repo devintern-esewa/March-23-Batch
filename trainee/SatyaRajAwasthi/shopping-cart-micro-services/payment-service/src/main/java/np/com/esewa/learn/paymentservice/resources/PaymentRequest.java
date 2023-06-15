@@ -11,7 +11,7 @@ import java.io.Serializable;
 /**
  * @author SatyaRajAwasth1
  * Written on: 5/9/2023
- * @project paymentservice
+ * paymentservice
  * Resource DTO class for using as a payload for transaction requests
  */
 
