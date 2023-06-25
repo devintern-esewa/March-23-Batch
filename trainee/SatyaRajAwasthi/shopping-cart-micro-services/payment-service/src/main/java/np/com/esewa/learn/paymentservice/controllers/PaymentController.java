@@ -1,5 +1,6 @@
 package np.com.esewa.learn.paymentservice.controllers;
 
+import np.com.esewa.learn.paymentservice.enums.PaymentMode;
 import np.com.esewa.learn.paymentservice.resources.PaymentRequest;
 import np.com.esewa.learn.paymentservice.resources.PaymentResponse;
 import np.com.esewa.learn.paymentservice.services.PaymentService;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 /**
@@ -47,6 +49,13 @@ public class PaymentController {
                 paymentService.getPaymentDetailsByOrderId(orderId),
                 HttpStatus.OK
         );
+    }
+
+    @GetMapping("/modes")
+    public ResponseEntity<PaymentMode[]> getAllPaymentModes(){
+        System.out.println(Arrays.toString(PaymentMode.values()));
+        PaymentMode[] paymentModes = PaymentMode.values();
+        return  new ResponseEntity<>(paymentModes, HttpStatus.OK);
     }
 
 }

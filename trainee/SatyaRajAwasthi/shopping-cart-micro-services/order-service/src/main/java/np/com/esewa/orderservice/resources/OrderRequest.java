@@ -1,7 +1,10 @@
 package np.com.esewa.orderservice.resources;
 
 import lombok.*;
+import np.com.esewa.orderservice.documents.OrderedProduct;
 import np.com.esewa.orderservice.enums.PaymentMode;
+
+import java.util.List;
 
 /**
  * @author SatyaRajAwasth1
@@ -12,8 +15,8 @@ import np.com.esewa.orderservice.enums.PaymentMode;
 @Data
 @Builder
 public class OrderRequest {
-    private long productId;
     private float totalAmount;
-    private int quantity;
+    private String deliveryAddress;
     private PaymentMode paymentMode;
+    private List<OrderedProduct> cartItems;
 }

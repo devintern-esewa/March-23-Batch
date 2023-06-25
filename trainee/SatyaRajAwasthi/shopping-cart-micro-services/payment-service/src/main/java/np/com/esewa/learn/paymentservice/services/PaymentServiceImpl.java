@@ -29,7 +29,7 @@ public class PaymentServiceImpl implements PaymentService{
     }
 
     @Override
-    public long     doPayment(PaymentRequest paymentRequest) {
+    public long doPayment(PaymentRequest paymentRequest) {
         log.info("\n PaymentServiceImpl | doPayment(paymentRequest) | do payment request ");
 
         TransactionDetails transactionDetails

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -17,7 +18,7 @@ import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/products")
-@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "*")
 public class ProductController {
     Logger log = Logger.getLogger("ProductController.class");
     private final ProductService productService;
@@ -28,13 +29,14 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<ProductResponse>> getAllProducts(){
+        log.info("Getting all products");
         return new ResponseEntity<>(productService.getAllProducts(),HttpStatus.OK);
     }
 
-    @GetMapping("/product")
-    public ResponseEntity<ProductResponse> getProductById(@RequestParam("id") long productId){
-        log.info("ProductController | getProductById | request with "+productId);
-        ProductResponse productResponse = productService.getProductById(productId);
+    @GetMapping("/ids")
+    public ResponseEntity<List<ProductResponse>> getProductsByIds(@RequestParam("productIds") long[] productIds){
+        log.info("ProductController | getProductById | request with "+ Arrays.toString(productIds));
+        List<ProductResponse> productResponse = productService.getProductsByIds(productIds);
         log.info("get product response with details: "+productResponse.toString());
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }

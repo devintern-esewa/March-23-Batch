@@ -16,6 +16,8 @@ public interface ProductService {
 
     ProductResponse getProductById(long productId);
 
+    List<ProductResponse> getProductsByIds(long[] productsIds);
+
     List<ProductResponse> getProductsByCategory(String categoryName);
 
     void editProduct(long productId, ProductRequest productRequest);
